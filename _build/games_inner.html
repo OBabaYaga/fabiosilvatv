@@ -1,0 +1,166 @@
+<div class="games-tabs" id="gamesTabs">
+                    <button class="game-tab active" data-game="blackjack">
+                        <i class="fas fa-heart" aria-hidden="true"></i> Blackjack
+                    </button>
+                    <button class="game-tab" data-game="dice">
+                        <i class="fas fa-dice" aria-hidden="true"></i> Dados
+                    </button>
+                    <button class="game-tab" data-game="mines">
+                        <i class="fas fa-bomb" aria-hidden="true"></i> Minas
+                    </button>
+                </div>
+
+                <!-- BLACKJACK -->
+                <div class="game-panel active" id="panel-blackjack">
+                    <div class="game-card">
+                        <div class="bj-table">
+                            <div class="bj-hand-area">
+                                <div class="bj-hand-label">
+                                    <span>Dealer</span>
+                                    <span class="bj-hand-score" id="dealerScore">0</span>
+                                </div>
+                                <div class="bj-cards" id="dealerCards"></div>
+                            </div>
+
+                            <hr class="bj-divider">
+
+                            <div class="bj-hand-area">
+                                <div class="bj-hand-label">
+                                    <span>A Tua Mão</span>
+                                    <span class="bj-hand-score" id="playerScore">0</span>
+                                </div>
+                                <div class="bj-cards" id="playerCards"></div>
+                            </div>
+
+                            <p class="bj-message" id="bjMessage" aria-live="polite">Faz a tua aposta para começar.</p>
+                        </div>
+
+                        <div class="game-controls">
+                            <div class="bet-control">
+                                <label for="bjBet">Aposta</label>
+                                <div class="bet-input-group">
+                                    <button class="bet-step" data-target="bjBet" data-step="-10" aria-label="Diminuir aposta">−</button>
+                                    <input type="number" id="bjBet" value="50" min="10" step="10">
+                                    <button class="bet-step" data-target="bjBet" data-step="10" aria-label="Aumentar aposta">+</button>
+                                </div>
+                            </div>
+
+                            <div class="game-actions" id="bjPreActions">
+                                <button class="btn-primary" id="bjDealBtn">Distribuir Cartas</button>
+                            </div>
+
+                            <div class="game-actions hidden" id="bjInGameActions">
+                                <button class="btn-secondary" id="bjHitBtn">Pedir Carta</button>
+                                <button class="btn-secondary" id="bjStandBtn">Ficar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DICE -->
+                <div class="game-panel" id="panel-dice">
+                    <div class="game-card">
+                        <div class="dice-table">
+                            <div class="dice-result-display">
+                                <span class="dice-result-label">Resultado</span>
+                                <span class="dice-result-value" id="diceResultValue">--</span>
+                            </div>
+
+                            <div class="dice-track-wrapper">
+                                <div class="dice-track">
+                                    <div class="dice-track-fill" id="diceTrackFill"></div>
+                                    <div class="dice-track-marker" id="diceTrackMarker"></div>
+                                </div>
+                                <div class="dice-track-labels">
+                                    <span>0</span>
+                                    <span>25</span>
+                                    <span>50</span>
+                                    <span>75</span>
+                                    <span>100</span>
+                                </div>
+                            </div>
+
+                            <p class="dice-message" id="diceMessage" aria-live="polite">Escolhe um número e roda os dados.</p>
+                        </div>
+
+                        <div class="game-controls">
+                            <div class="dice-config-row">
+                                <div class="bet-control">
+                                    <label for="diceTarget">Rolar abaixo de</label>
+                                    <input type="number" id="diceTarget" value="50" min="2" max="98">
+                                </div>
+                                <div class="bet-control">
+                                    <span class="bet-label" id="diceChanceLabel">Hipótese de Ganhar</span>
+                                    <div class="dice-static-value" id="diceChance" aria-labelledby="diceChanceLabel" aria-live="polite">50.00%</div>
+                                </div>
+                                <div class="bet-control">
+                                    <span class="bet-label" id="diceMultLabel">Multiplicador</span>
+                                    <div class="dice-static-value" id="diceMultiplier" aria-labelledby="diceMultLabel" aria-live="polite">1.9500x</div>
+                                </div>
+                            </div>
+
+                            <div class="bet-control">
+                                <label for="diceBet">Aposta</label>
+                                <div class="bet-input-group">
+                                    <button class="bet-step" data-target="diceBet" data-step="-10" aria-label="Diminuir aposta">−</button>
+                                    <input type="number" id="diceBet" value="50" min="10" step="10">
+                                    <button class="bet-step" data-target="diceBet" data-step="10" aria-label="Aumentar aposta">+</button>
+                                </div>
+                            </div>
+
+                            <div class="game-actions">
+                                <button class="btn-primary" id="diceRollBtn">Rodar Dados</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MINES -->
+                <div class="game-panel" id="panel-mines">
+                    <div class="game-card">
+                        <div class="mines-table">
+                            <div class="mines-grid" id="minesGrid"></div>
+                            <p class="mines-message" id="minesMessage" aria-live="polite">Escolhe o número de minas e começa a jogar.</p>
+                        </div>
+
+                        <div class="game-controls">
+                            <div class="dice-config-row">
+                                <div class="bet-control">
+                                    <label for="minesBet">Aposta</label>
+                                    <div class="bet-input-group">
+                                        <button class="bet-step" data-target="minesBet" data-step="-10" aria-label="Diminuir aposta">−</button>
+                                        <input type="number" id="minesBet" value="50" min="10" step="10">
+                                        <button class="bet-step" data-target="minesBet" data-step="10" aria-label="Aumentar aposta">+</button>
+                                    </div>
+                                </div>
+                                <div class="bet-control">
+                                    <label for="minesCount">Nº de Minas</label>
+                                    <select id="minesCount">
+                                        <option value="3">3</option>
+                                        <option value="5" selected>5</option>
+                                        <option value="10">10</option>
+                                        <option value="15">15</option>
+                                        <option value="24">24</option>
+                                    </select>
+                                </div>
+                                <div class="bet-control">
+                                    <span class="bet-label" id="minesMultLabel">Multiplicador Atual</span>
+                                    <div class="dice-static-value" id="minesMultiplier" aria-labelledby="minesMultLabel" aria-live="polite">1.00x</div>
+                                </div>
+                            </div>
+
+                            <div class="game-actions" id="minesPreActions">
+                                <button class="btn-primary" id="minesStartBtn">Iniciar Jogo</button>
+                            </div>
+
+                            <div class="game-actions hidden" id="minesInGameActions">
+                                <button class="btn-secondary" id="minesCashoutBtn">Recolher <span id="minesCashoutValue"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="games-disclaimer">
+                    <i class="fas fa-circle-info" aria-hidden="true"></i>
+                    Fichas virtuais sem valor real, apenas para diversão. Joga com responsabilidade.
+                </p>

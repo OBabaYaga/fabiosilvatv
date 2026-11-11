@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja de pontos — FabioSilva_TV</title>
+    <meta name="description" content="Troca os teus pontos de fidelidade por prémios e vantagens exclusivas.">
+    <link rel="canonical" href="https://fabiosilvatv.com/loja.html">
+    <meta name="theme-color" content="#040d1c">
+    <meta name="rating" content="adult">
+    <link rel="icon" href="assets/favicon-64.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="FabioSilva_TV">
+    <meta property="og:locale" content="pt_PT">
+    <meta property="og:title" content="Loja de pontos — FabioSilva_TV">
+    <meta property="og:description" content="Troca os teus pontos de fidelidade por prémios e vantagens exclusivas.">
+    <meta property="og:url" content="https://fabiosilvatv.com/loja.html">
+    <meta property="og:image" content="https://fabiosilvatv.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Loja de pontos — FabioSilva_TV">
+    <meta name="twitter:description" content="Troca os teus pontos de fidelidade por prémios e vantagens exclusivas.">
+    <meta name="twitter:image" content="https://fabiosilvatv.com/assets/og-image.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=36">
+</head>
+<body>
+<div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
+  <div class="age-gate-content">
+    <div class="age-gate-icon"><i class="fas fa-user-shield" aria-hidden="true"></i></div>
+    <h2 class="age-gate-title" id="ageGateTitle">Verificação de idade</h2>
+    <p class="age-gate-text">Este site contém conteúdo relacionado com jogos de fortuna e azar e destina-se apenas a maiores de 18 anos.</p>
+    <p class="age-gate-question">Confirmas que tens 18 anos ou mais?</p>
+    <div class="age-gate-buttons">
+      <button id="ageConfirm" class="age-btn age-btn-confirm">Sim, tenho +18</button>
+      <button id="ageDeny" class="age-btn age-btn-deny">Não, sou menor</button>
+    </div>
+    <p class="age-gate-warning"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Joga com responsabilidade</p>
+  </div>
+</div>
+<div class="backdrop" id="backdrop"></div>
+<div class="app has-chat" id="app">
+<aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+  <a class="sidebar-brand" href="index.html"><img class="marca-logo" src="assets/logo-fabio.png" alt="FabioSilva_TV"></a>
+  <div class="atalhos"><a class="atalho destaque" href="casinos.html"><small>Reclama</small><strong>Ofertas</strong><i class="fas fa-gift" aria-hidden="true"></i></a><div class="linha2"><a class="atalho loja" href="loja.html"><small>Pontos</small><strong>Loja</strong><i class="fas fa-cart-shopping" aria-hidden="true"></i></a><a class="atalho rank" href="ranking.html"><small>Semana</small><strong>Ranking</strong><i class="fas fa-trophy" aria-hidden="true"></i></a></div></div>
+  <nav><div class="sidebar-group">Principal</div><a class="sidebar-link" href="index.html"><i class="fas fa-house" aria-hidden="true"></i>Início</a><a class="sidebar-link" href="casinos.html"><i class="fas fa-gift" aria-hidden="true"></i>Casinos</a><a class="sidebar-link" href="comunidade.html"><i class="fas fa-users" aria-hidden="true"></i>Comunidade</a><a class="sidebar-link active" href="loja.html"><i class="fas fa-cart-shopping" aria-hidden="true"></i>Loja</a><div class="sidebar-group">Live</div><a class="sidebar-link" href="index.html#live"><i class="fas fa-tower-broadcast" aria-hidden="true"></i>Live Hub<span class="pill live" id="navLivePill" hidden>LIVE</span></a><a class="sidebar-link" href="ranking.html"><i class="fas fa-trophy" aria-hidden="true"></i>Ranking</a><div class="sidebar-group">Ferramentas</div><a class="sidebar-link" href="bonus-hunt.html"><i class="fas fa-crosshairs" aria-hidden="true"></i>Bonus Hunt</a><a class="sidebar-link" href="jogos.html"><i class="fas fa-gamepad" aria-hidden="true"></i>Minijogos</a><a class="sidebar-link" href="contacto.html"><i class="fas fa-envelope" aria-hidden="true"></i>Contacto</a></nav>
+  <div class="sidebar-socials"><a href="https://www.twitch.tv/fabiosilva_tv" target="_blank" rel="noopener noreferrer" aria-label="Twitch"><i class="fab fa-twitch" aria-hidden="true"></i></a><a href="https://discord.gg/fDWqsxheRb" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="fab fa-discord" aria-hidden="true"></i></a><a href="https://www.instagram.com/fabiosilva_tv75/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a><a href="https://t.me/+IZ6rt8kCZixmNzY0" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram" aria-hidden="true"></i></a></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar"><i class="fas fa-bars" aria-hidden="true"></i></button>
+  <div class="crumb"><small>Estás em</small><strong>Loja</strong></div>
+  <form class="search" role="search" action="casinos.html" method="get"><i class="fas fa-magnifying-glass" aria-hidden="true"></i><input type="search" name="q" id="siteSearch" placeholder="Pesquisar casinos, ofertas, códigos..." autocomplete="off" aria-label="Pesquisar"></form>
+  <div class="topbar-actions">
+    <div class="nav-auth" id="navAuth"></div>
+    <button class="chat-toggle" id="chatToggle" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
+  </div>
+</header>
+<main id="content">
+<section class="panel page-hero">
+  <div class="icon gold"><i class="fas fa-cart-shopping" aria-hidden="true"></i></div>
+  <div><h1>Loja</h1><p>Troca os teus pontos por prémios e vantagens exclusivas.</p></div>
+</section>
+<section class="panel">
+  <div class="store-card">
+    <div class="gate-icon"><i class="fas fa-store" aria-hidden="true"></i></div>
+    <h2 class="gate-title">A loja abre na StreamElements</h2>
+    <p class="gate-text">Por segurança, a StreamElements não permite incorporar a loja noutros sites. Abre-a diretamente: entras com a tua conta Twitch e os teus pontos são os mesmos.</p>
+    <a class="btn-gold" href="https://streamelements.com/fabiosilva_tv/store" target="_blank" rel="noopener noreferrer"><i class="fas fa-store" aria-hidden="true"></i> Abrir a loja</a>
+  </div>
+  <p class="store-note"><i class="fas fa-shield-halved" aria-hidden="true"></i> A loja é gerida pela StreamElements. O teu saldo de pontos e os resgates acontecem diretamente lá, em segurança.</p>
+</section>
+</main>
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand"><img src="assets/logo-160.png" alt=""><div><div class="footer-brand-name">FabioSilva_TV</div><div class="footer-brand-tagline">Casino Streamer · Twitch</div></div></div>
+    <div class="footer-social"><a href="https://www.twitch.tv/fabiosilva_tv" target="_blank" rel="noopener noreferrer" aria-label="Twitch"><i class="fab fa-twitch" aria-hidden="true"></i></a><a href="https://discord.gg/fDWqsxheRb" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="fab fa-discord" aria-hidden="true"></i></a><a href="https://www.instagram.com/fabiosilva_tv75/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a><a href="https://t.me/+IZ6rt8kCZixmNzY0" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram" aria-hidden="true"></i></a></div>
+  </div>
+  <div class="gambling-logos">
+    <span class="age-warning" title="Apenas para maiores de 18 anos">18+</span>
+    <a href="https://www.jogoresponsavel.pt/" target="_blank" rel="noopener noreferrer">Jogo Responsável (SRIJ)</a>
+    <a href="https://www.sicad.pt/" target="_blank" rel="noopener noreferrer">SICAD · Linha Vida 1414</a>
+    <a href="https://www.begambleaware.org/" target="_blank" rel="noopener noreferrer">BeGambleAware</a>
+  </div>
+  <div>
+    <div class="warning-header"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Aviso importante</div>
+    <p class="warning-text">Este site apresenta e compara ofertas de bónus de vários operadores de jogo. Destina-se exclusivamente a adultos, em países onde a utilização dos operadores apresentados é legalmente permitida. Não organizamos jogos de fortuna e azar nem aceitamos apostas. A informação é verificada com cuidado, mas sem garantia de estar completa, exata ou atualizada. O jogo é entretenimento, não uma fonte de rendimento, e pode criar dependência. Se sentes que estás a perder o controlo, procura ajuda em <a href="https://www.jogoresponsavel.pt/" target="_blank" rel="noopener noreferrer">jogoresponsavel.pt</a> ou na Linha Vida <a href="tel:1414">1414</a>.</p>
+    <p class="warning-text affiliate-disclosure"><strong>Transparência:</strong> os links para casinos são links de afiliado. Se te registares através deles, o FabioSilva_TV pode receber uma comissão, sem custo adicional para ti. Confirma sempre se o operador está autorizado no teu país antes de jogares.</p>
+  </div>
+  <div class="footer-bottom">
+    <p>© <span id="year">2026</span> FabioSilva_TV · Joga com responsabilidade. 18+</p>
+    <div class="footer-links"><a href="termos.html">Termos e Condições</a><a href="privacidade.html">Política de Privacidade</a><a href="cookies.html">Política de Cookies</a><a href="contacto.html">Contacto</a></div>
+  </div>
+</footer>
+</div>
+<aside class="chat" id="chat" aria-label="Chat da comunidade">
+  <div class="chat-head"><i class="fas fa-comment" aria-hidden="true"></i><span>Chat da comunidade <em class="live" id="chatLive">● OFFLINE</em></span><button class="chat-collapse" id="chatCollapse" aria-label="Recolher chat"><i class="fas fa-chevron-right" aria-hidden="true"></i></button></div>
+  <iframe id="chatFrame" title="Chat da Twitch do fabiosilva_tv" loading="lazy" data-channel="fabiosilva_tv"></iframe>
+</aside>
+</div>
+<script src="script.js?v=36"></script>
+<script src="twitch-auth.js?v=36"></script>
+<button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
+<script src="rebrand.js?v=36"></script>
+</body>
+</html>
