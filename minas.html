@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minas — Minijogos FabioSilva_TV</title>
-    <meta name="description" content="Minas com fichas virtuais: limpa a grelha e foge das minas.">
+    <meta name="description" content="Minas com fichas virtuais: encontra gemas, evita as minas e recolhe quando quiseres.">
     <link rel="canonical" href="https://fabiosilvatv.com/minas.html">
     <meta name="theme-color" content="#040d1c">
     <meta name="rating" content="adult">
@@ -14,22 +14,23 @@
     <meta property="og:site_name" content="FabioSilva_TV">
     <meta property="og:locale" content="pt_PT">
     <meta property="og:title" content="Minas — Minijogos FabioSilva_TV">
-    <meta property="og:description" content="Minas com fichas virtuais: limpa a grelha e foge das minas.">
+    <meta property="og:description" content="Minas com fichas virtuais: encontra gemas, evita as minas e recolhe quando quiseres.">
     <meta property="og:url" content="https://fabiosilvatv.com/minas.html">
     <meta property="og:image" content="https://fabiosilvatv.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Minas — Minijogos FabioSilva_TV">
-    <meta name="twitter:description" content="Minas com fichas virtuais: limpa a grelha e foge das minas.">
+    <meta name="twitter:description" content="Minas com fichas virtuais: encontra gemas, evita as minas e recolhe quando quiseres.">
     <meta name="twitter:image" content="https://fabiosilvatv.com/assets/og-image.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=37">
+    <link rel="stylesheet" href="style.css?v=38">
+    <link rel="stylesheet" href="og.css?v=2">
 </head>
-<body data-game="mines">
+<body data-game="crash">
 <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
   <div class="age-gate-content">
     <div class="age-gate-icon"><i class="fas fa-user-shield" aria-hidden="true"></i></div>
@@ -76,44 +77,20 @@
   <span class="btn-gold">Ver parceiros <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
   <span class="pb-age">18+</span>
 </a>
-<section class="game-layout">
-  <aside class="panel game-controls">
-    
-<div class="balance-box">
-  <div><span class="balance-label">Saldo</span><span class="balance-value"><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></span></div>
-  <button class="balance-reset" id="balanceReset" type="button"><i class="fas fa-rotate-right" aria-hidden="true"></i> Repor</button>
-</div>
-    
-<div class="bet-control">
-  <label for="minesBet">Aposta</label>
-  <div class="bet-input-group">
-    <button class="bet-step" type="button" data-target="minesBet" data-step="-10" aria-label="Diminuir aposta">−</button>
-    <input type="number" id="minesBet" value="50" min="10" step="10">
-    <button class="bet-step" type="button" data-target="minesBet" data-step="10" aria-label="Aumentar aposta">+</button>
+<section class="og-shell">
+<aside class="og-side">
+  <div class="og-balance"><span class="og-balance-l">Saldo</span><strong><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></strong><button class="og-mini" id="balanceReset" type="button" title="Repor 1.000 fichas"><i class="fas fa-rotate-right" aria-hidden="true"></i></button></div>
+  <div class="og-field">
+    <label class="og-label" for="minesBet">Montante da aposta</label>
+    <div class="og-amount"><i class="fas fa-coins" aria-hidden="true"></i><input id="minesBet" type="number" min="1" step="1" value="10" inputmode="numeric"><button type="button" data-bet-op="half" data-target="minesBet">½</button><button type="button" data-bet-op="double" data-target="minesBet">2×</button><button type="button" data-bet-op="max" data-target="minesBet">Máx</button></div>
   </div>
-  <div class="bet-quick">
-    <button class="bet-step" type="button" data-target="minesBet" data-op="half">½</button>
-    <button class="bet-step" type="button" data-target="minesBet" data-op="double">2×</button>
-    <button class="bet-step" type="button" data-target="minesBet" data-op="max">Máx</button>
-  </div>
-</div>
-<div class="bet-control">
-  <label for="minesCount">Nº de minas</label>
-  <select id="minesCount"><option value="3">3</option><option value="5" selected>5</option><option value="10">10</option><option value="15">15</option><option value="24">24</option></select>
-</div>
-<div class="info-grid">
-  <div class="stat"><small>Multiplicador</small><strong id="minesMultiplier">1.00x</strong></div>
-  <div class="stat"><small>Próxima gema</small><strong id="minesNext">1.00x</strong></div>
-</div>
-<div class="game-actions" id="minesPreActions"><button class="btn-primary" id="minesStartBtn" type="button">Iniciar jogo</button></div>
-<div class="game-actions hidden" id="minesInGameActions"><button class="btn-primary" id="minesCashoutBtn" type="button">Recolher <span id="minesCashoutValue"></span></button></div>
-<p class="game-message" id="minesMessage" aria-live="polite">Escolhe o número de minas e começa.</p>
-  </aside>
-  <div class="panel game-table-wrap">
-<div class="felt felt-purple">
-  <div class="felt-mark">BY</div>
-  <div class="mines-grid" id="minesGrid"></div>
-</div></div>
+  <div class="og-field"><label class="og-label" for="minesCount">Minas</label><select id="minesCount" class="og-select"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option></select></div>
+  <div class="og-stats2"><div><small>Gemas</small><strong id="minesGems">22</strong></div><div><small>Minas</small><strong id="minesBombs">3</strong></div><div><small>Multiplicador</small><strong id="minesMult">1.00x</strong></div><div><small>Próxima</small><strong id="minesNext">1.13x</strong></div></div>
+  <div class="og-field"><label class="og-label">Lucro</label><div class="og-amount og-readonly"><i class="fas fa-coins" aria-hidden="true"></i><span id="minesProfit">0</span></div></div>
+  <button class="og-play" id="minesPlay" type="button">Apostar</button>
+  <button class="og-btn2" id="minesRandom" type="button" hidden><i class="fas fa-shuffle" aria-hidden="true"></i> Escolha aleatória</button>
+  <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas virtuais · sem dinheiro real</p>
+</aside><div class="og-stage og-mines" id="minesStage"><div class="og-topbar"><div class="og-recent" id="minesRecent" aria-label="Resultados recentes"></div><button class="og-sound" type="button"></button></div><div class="og-mines-grid" id="minesGrid"></div></div>
 </section>
 
 <section class="panel">
@@ -155,7 +132,8 @@
 </div>
 <script src="script.js?v=36"></script>
 <script src="twitch-auth.js?v=36"></script>
-<script src="games.js?v=36"></script>
+<script src="og-core.js?v=1"></script>
+<script src="og-mines.js?v=1"></script>
 <button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
 <script src="rebrand.js?v=36"></script>
 </body>

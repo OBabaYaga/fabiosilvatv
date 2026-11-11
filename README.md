@@ -105,3 +105,25 @@ ferramenta continua a funcionar mas sem capas.
 **Se correres o `_build/build.py`:** a página nova e o link no menu
 ("Ferramentas → Bonus Hunt") têm de ser acrescentados ao `build.py`,
 senão desaparecem. O `?v=` também subiu para 30.
+
+
+## Minijogos "Originals" (novembro 2026)
+
+Os minijogos foram refeitos no estilo Stake/Roobet e passaram a ser 7:
+**Crash, Minas, Dados, Blackjack, Plinko, Roleta e Slot**. Continuam a usar
+**fichas virtuais** guardadas no browser (o saldo e o histórico antigos
+mantêm-se) e não têm ligação nenhuma ao saldo da loja.
+
+| Ficheiro | Função |
+|---|---|
+| `og-core.js` | Saldo, histórico, botões de aposta, sons, cartão de vitória, confettis |
+| `og-crash.js`, `og-mines.js`, `og-dice.js`, `og-blackjack.js`, `og-plinko.js`, `og-roulette.js`, `og-slots.js` | Um jogo cada |
+| `og.css` | Visual de todos os jogos |
+| `_build/originals.py` | Gera as 7 páginas (`crash.html`, `minas.html`, `dados.html`, `blackjack.html`, `plinko.html`, `roleta.html`, `slots.html`) |
+
+Margens: Crash 3%, Minas e Dados 1%, Plinko ≈1% (tabelas iguais às do Stake),
+Roleta europeia 2,7%, Slot ≈4% (calculado por simulação), Blackjack com as
+regras normais (6 baralhos, dealer fica em todos os 17, BJ paga 3:2).
+
+**Se correres o `_build/build.py`**, ele volta a gerar as páginas antigas
+dos jogos — corre `python3 _build/originals.py` logo a seguir.

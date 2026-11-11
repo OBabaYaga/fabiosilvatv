@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blackjack — Minijogos FabioSilva_TV</title>
-    <meta name="description" content="Blackjack com fichas virtuais. Vence o dealer, paga 3 para 2.">
+    <meta name="description" content="Blackjack com fichas virtuais: 6 baralhos, dealer fica nos 17, Blackjack paga 3 para 2. Dobrar e dividir.">
     <link rel="canonical" href="https://fabiosilvatv.com/blackjack.html">
     <meta name="theme-color" content="#040d1c">
     <meta name="rating" content="adult">
@@ -14,22 +14,23 @@
     <meta property="og:site_name" content="FabioSilva_TV">
     <meta property="og:locale" content="pt_PT">
     <meta property="og:title" content="Blackjack — Minijogos FabioSilva_TV">
-    <meta property="og:description" content="Blackjack com fichas virtuais. Vence o dealer, paga 3 para 2.">
+    <meta property="og:description" content="Blackjack com fichas virtuais: 6 baralhos, dealer fica nos 17, Blackjack paga 3 para 2. Dobrar e dividir.">
     <meta property="og:url" content="https://fabiosilvatv.com/blackjack.html">
     <meta property="og:image" content="https://fabiosilvatv.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Blackjack — Minijogos FabioSilva_TV">
-    <meta name="twitter:description" content="Blackjack com fichas virtuais. Vence o dealer, paga 3 para 2.">
+    <meta name="twitter:description" content="Blackjack com fichas virtuais: 6 baralhos, dealer fica nos 17, Blackjack paga 3 para 2. Dobrar e dividir.">
     <meta name="twitter:image" content="https://fabiosilvatv.com/assets/og-image.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=37">
+    <link rel="stylesheet" href="style.css?v=38">
+    <link rel="stylesheet" href="og.css?v=2">
 </head>
-<body data-game="blackjack">
+<body data-game="crash">
 <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
   <div class="age-gate-content">
     <div class="age-gate-icon"><i class="fas fa-user-shield" aria-hidden="true"></i></div>
@@ -76,49 +77,26 @@
   <span class="btn-gold">Ver parceiros <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
   <span class="pb-age">18+</span>
 </a>
-<section class="game-layout">
-  <aside class="panel game-controls">
-    
-<div class="balance-box">
-  <div><span class="balance-label">Saldo</span><span class="balance-value"><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></span></div>
-  <button class="balance-reset" id="balanceReset" type="button"><i class="fas fa-rotate-right" aria-hidden="true"></i> Repor</button>
+<section class="og-shell">
+<aside class="og-side">
+  <div class="og-balance"><span class="og-balance-l">Saldo</span><strong><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></strong><button class="og-mini" id="balanceReset" type="button" title="Repor 1.000 fichas"><i class="fas fa-rotate-right" aria-hidden="true"></i></button></div>
+  <div class="og-field">
+    <label class="og-label" for="bjBet">Montante da aposta</label>
+    <div class="og-amount"><i class="fas fa-coins" aria-hidden="true"></i><input id="bjBet" type="number" min="1" step="1" value="10" inputmode="numeric"><button type="button" data-bet-op="half" data-target="bjBet">½</button><button type="button" data-bet-op="double" data-target="bjBet">2×</button><button type="button" data-bet-op="max" data-target="bjBet">Máx</button></div>
+  </div>
+  <div class="og-bj-actions"><button class="og-btn2" id="bjHit" type="button">Pedir <kbd>H</kbd></button><button class="og-btn2" id="bjStand" type="button">Ficar <kbd>S</kbd></button><button class="og-btn2" id="bjSplit" type="button">Dividir</button><button class="og-btn2" id="bjDouble" type="button">Dobrar <kbd>D</kbd></button></div>
+  <button class="og-play" id="bjPlay" type="button">Distribuir</button>
+  
+  <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas virtuais · sem dinheiro real</p>
+</aside><div class="og-stage og-bj" id="bjStage"><div class="og-topbar"><div class="og-recent" id="bjRecent" aria-label="Resultados recentes"></div><button class="og-sound" type="button"></button></div>
+  <div class="og-bj-table">
+    <div class="og-shoe" aria-hidden="true"></div>
+    <div class="og-bj-dealer"><div class="og-cards" id="bjDealer"></div><span class="og-total" id="bjDealerTotal" hidden></span></div>
+    <div class="og-bj-felt"><strong>BLACKJACK PAGA 3 PARA 2</strong><span>O DEALER FICA EM TODOS OS 17</span></div>
+    <div class="og-bj-player" id="bjPlayer"></div>
+    <div class="og-bj-msg" id="bjMsg"></div>
+  </div>
 </div>
-    
-<div class="bet-control">
-  <label for="bjBet">Aposta</label>
-  <div class="bet-input-group">
-    <button class="bet-step" type="button" data-target="bjBet" data-step="-10" aria-label="Diminuir aposta">−</button>
-    <input type="number" id="bjBet" value="50" min="10" step="10">
-    <button class="bet-step" type="button" data-target="bjBet" data-step="10" aria-label="Aumentar aposta">+</button>
-  </div>
-  <div class="bet-quick">
-    <button class="bet-step" type="button" data-target="bjBet" data-op="half">½</button>
-    <button class="bet-step" type="button" data-target="bjBet" data-op="double">2×</button>
-    <button class="bet-step" type="button" data-target="bjBet" data-op="max">Máx</button>
-  </div>
-</div>
-<div class="game-actions" id="bjPreActions"><button class="btn-primary" id="bjDealBtn" type="button">Distribuir cartas</button></div>
-<div class="game-actions hidden" id="bjInGameActions">
-  <button class="btn-secondary" id="bjHitBtn" type="button">Pedir (H)</button>
-  <button class="btn-secondary" id="bjStandBtn" type="button">Ficar (S)</button>
-  <button class="btn-secondary" id="bjDoubleBtn" type="button" disabled>Dobrar</button>
-</div>
-<p class="game-message" id="bjMessage" aria-live="polite">Faz a tua aposta para começar.</p>
-  </aside>
-  <div class="panel game-table-wrap">
-<div class="felt">
-  <div class="felt-mark">BY</div>
-  <div class="bj-hand-area">
-    <div class="bj-hand-label"><span>Dealer</span><span class="bj-hand-score" id="dealerScore">—</span></div>
-    <div class="bj-cards" id="dealerCards"></div>
-  </div>
-  <div class="felt-plaque"><strong>Blackjack paga 3 para 2</strong><small>Dealer fica a 17 · Dobrar disponível</small></div>
-  <div class="bj-hand-area">
-    <div class="bj-hand-label"><span>A tua mão</span><span class="bj-hand-score" id="playerScore">—</span></div>
-    <div class="bj-cards" id="playerCards"></div>
-  </div>
-  <div class="felt-shoe" aria-hidden="true"><span></span><span></span><span></span></div>
-</div></div>
 </section>
 
 <section class="panel">
@@ -160,7 +138,8 @@
 </div>
 <script src="script.js?v=36"></script>
 <script src="twitch-auth.js?v=36"></script>
-<script src="games.js?v=36"></script>
+<script src="og-core.js?v=1"></script>
+<script src="og-blackjack.js?v=1"></script>
 <button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
 <script src="rebrand.js?v=36"></script>
 </body>

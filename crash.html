@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crash — Minijogos FabioSilva_TV</title>
-    <meta name="description" content="Crash com fichas virtuais: o multiplicador sobe até rebentar, recolhe a tempo.">
+    <meta name="description" content="Crash com fichas virtuais: o foguete sobe e o multiplicador com ele. Recolhe antes de rebentar.">
     <link rel="canonical" href="https://fabiosilvatv.com/crash.html">
     <meta name="theme-color" content="#040d1c">
     <meta name="rating" content="adult">
@@ -14,20 +14,21 @@
     <meta property="og:site_name" content="FabioSilva_TV">
     <meta property="og:locale" content="pt_PT">
     <meta property="og:title" content="Crash — Minijogos FabioSilva_TV">
-    <meta property="og:description" content="Crash com fichas virtuais: o multiplicador sobe até rebentar, recolhe a tempo.">
+    <meta property="og:description" content="Crash com fichas virtuais: o foguete sobe e o multiplicador com ele. Recolhe antes de rebentar.">
     <meta property="og:url" content="https://fabiosilvatv.com/crash.html">
     <meta property="og:image" content="https://fabiosilvatv.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Crash — Minijogos FabioSilva_TV">
-    <meta name="twitter:description" content="Crash com fichas virtuais: o multiplicador sobe até rebentar, recolhe a tempo.">
+    <meta name="twitter:description" content="Crash com fichas virtuais: o foguete sobe e o multiplicador com ele. Recolhe antes de rebentar.">
     <meta name="twitter:image" content="https://fabiosilvatv.com/assets/og-image.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=37">
+    <link rel="stylesheet" href="style.css?v=38">
+    <link rel="stylesheet" href="og.css?v=2">
 </head>
 <body data-game="crash">
 <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
@@ -76,42 +77,20 @@
   <span class="btn-gold">Ver parceiros <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
   <span class="pb-age">18+</span>
 </a>
-<section class="game-layout">
-  <aside class="panel game-controls">
-    
-<div class="balance-box">
-  <div><span class="balance-label">Saldo</span><span class="balance-value"><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></span></div>
-  <button class="balance-reset" id="balanceReset" type="button"><i class="fas fa-rotate-right" aria-hidden="true"></i> Repor</button>
-</div>
-    
-<div class="bet-control">
-  <label for="crashBet">Aposta</label>
-  <div class="bet-input-group">
-    <button class="bet-step" type="button" data-target="crashBet" data-step="-10" aria-label="Diminuir aposta">−</button>
-    <input type="number" id="crashBet" value="50" min="10" step="10">
-    <button class="bet-step" type="button" data-target="crashBet" data-step="10" aria-label="Aumentar aposta">+</button>
+<section class="og-shell">
+<aside class="og-side">
+  <div class="og-balance"><span class="og-balance-l">Saldo</span><strong><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></strong><button class="og-mini" id="balanceReset" type="button" title="Repor 1.000 fichas"><i class="fas fa-rotate-right" aria-hidden="true"></i></button></div>
+  <div class="og-field">
+    <label class="og-label" for="crashBet">Montante da aposta</label>
+    <div class="og-amount"><i class="fas fa-coins" aria-hidden="true"></i><input id="crashBet" type="number" min="1" step="1" value="10" inputmode="numeric"><button type="button" data-bet-op="half" data-target="crashBet">½</button><button type="button" data-bet-op="double" data-target="crashBet">2×</button><button type="button" data-bet-op="max" data-target="crashBet">Máx</button></div>
   </div>
-  <div class="bet-quick">
-    <button class="bet-step" type="button" data-target="crashBet" data-op="half">½</button>
-    <button class="bet-step" type="button" data-target="crashBet" data-op="double">2×</button>
-    <button class="bet-step" type="button" data-target="crashBet" data-op="max">Máx</button>
-  </div>
+  <div class="og-field"><label class="og-label" for="crashAuto">Recolha automática</label><div class="og-input-suffix"><input id="crashAuto" type="number" min="1.01" step="0.01" value="2.00"><span>x</span></div></div>
+  <button class="og-play" id="crashPlay" type="button">Apostar</button>
+  
+  <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas virtuais · sem dinheiro real</p>
+</aside><div class="og-stage og-crash" id="crashStage"><div class="og-topbar"><div class="og-recent" id="crashRecent" aria-label="Resultados recentes"></div><button class="og-sound" type="button"></button></div>
+  <div class="og-crash-area"><canvas id="crashCanvas"></canvas><div class="og-crash-center"><div class="og-crash-mult" id="crashMult">1.00x</div><div class="og-crash-status" id="crashStatus">Faz a tua aposta para lançar o foguete</div></div></div>
 </div>
-<div class="bet-control">
-  <label for="crashAuto">Recolha automática (x)</label>
-  <input type="number" id="crashAuto" value="2.00" min="1.01" step="0.1" placeholder="ex.: 2.00">
-</div>
-<div class="game-actions" id="crashPreActions"><button class="btn-primary" id="crashStartBtn" type="button">Apostar</button></div>
-<div class="game-actions hidden" id="crashInGameActions"><button class="btn-primary btn-cash" id="crashCashBtn" type="button">Recolher <span id="crashCashValue"></span></button></div>
-<p class="game-message" id="crashMessage" aria-live="polite">Aposta e recolhe antes de rebentar.</p>
-  </aside>
-  <div class="panel game-table-wrap">
-<div class="felt felt-red crash-table">
-  <div class="crash-history" id="crashHistory"></div>
-  <canvas id="crashCanvas" class="crash-canvas"></canvas>
-  <div class="crash-mult" id="crashMult">1.00x</div>
-  <div class="felt-plaque"><strong>O multiplicador sobe até rebentar</strong><small>Margem da casa 3%</small></div>
-</div></div>
 </section>
 
 <section class="panel">
@@ -153,7 +132,8 @@
 </div>
 <script src="script.js?v=36"></script>
 <script src="twitch-auth.js?v=36"></script>
-<script src="games.js?v=36"></script>
+<script src="og-core.js?v=1"></script>
+<script src="og-crash.js?v=1"></script>
 <button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
 <script src="rebrand.js?v=36"></script>
 </body>

@@ -7,7 +7,7 @@ from legal import TERMS, PRIVACY, COOKIES
 ROOT = pathlib.Path(__file__).parent.parent
 SITE = "https://obabayaga.com"
 AVATAR = "assets/logo-160.png"
-VER = "37"
+VER = "38"
 
 PAY_ICON = {
     "btc": '<span title="Bitcoin"><i class="fab fa-bitcoin" aria-hidden="true"></i><span class="sr-only">Bitcoin</span></span>',

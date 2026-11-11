@@ -2865,3 +2865,9 @@ body { background: var(--bg); }
 @media (max-width: 420px) {
   .loja-wallet { grid-template-columns: 1fr; }
 }
+
+/* Telemóvel: uma só coluna. (A regra "o chat sai da grelha" usa
+   !important e, sem isto, espremia o conteúdo numa coluna de 250px.) */
+@media (max-width: 899px) {
+  .app, .app.has-chat, .app.chat-collapsed { grid-template-columns: minmax(0, 1fr) !important; }
+}
