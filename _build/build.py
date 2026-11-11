@@ -7,7 +7,7 @@ from legal import TERMS, PRIVACY, COOKIES
 ROOT = pathlib.Path(__file__).parent.parent
 SITE = "https://obabayaga.com"
 AVATAR = "assets/logo-160.png"
-VER = "35"
+VER = "37"
 
 PAY_ICON = {
     "btc": '<span title="Bitcoin"><i class="fab fa-bitcoin" aria-hidden="true"></i><span class="sr-only">Bitcoin</span></span>',
@@ -581,20 +581,49 @@ def ranking():
 </section>'''
 
 def loja():
+    # Loja de pontos própria (loja.js + API fabiosilvatv-api).
     return '''
 <section class="panel page-hero">
-  <div class="icon gold"><i class="fas fa-cart-shopping" aria-hidden="true"></i></div>
-  <div><h1>Loja</h1><p>Troca os teus pontos por prémios e vantagens exclusivas.</p></div>
+<div class="icon gold"><i class="fas fa-cart-shopping" aria-hidden="true"></i></div>
+<div><h1>Loja</h1><p>Troca o teu saldo por prémios. Os teus pontos da live nunca são gastos.</p></div>
 </section>
+<section class="panel" id="lojaCarteira"><p class="loja-vazio">A carregar…</p></section>
 <section class="panel">
-  <div class="store-card">
-    <div class="gate-icon"><i class="fas fa-store" aria-hidden="true"></i></div>
-    <h2 class="gate-title">A loja abre na StreamElements</h2>
-    <p class="gate-text">Por segurança, a StreamElements não permite incorporar a loja noutros sites. Abre-a diretamente: entras com a tua conta Twitch e os teus pontos são os mesmos.</p>
-    <a class="btn-gold" href="https://streamelements.com/obaba_yaga/store" target="_blank" rel="noopener noreferrer"><i class="fas fa-store" aria-hidden="true"></i> Abrir a loja</a>
-  </div>
-  <p class="store-note"><i class="fas fa-shield-halved" aria-hidden="true"></i> A loja é gerida pela StreamElements. O teu saldo de pontos e os resgates acontecem diretamente lá, em segurança.</p>
-</section>'''
+<div class="panel-head"><div><h2 class="panel-title">Prémios</h2><p class="panel-sub">O saldo da loja ganha os mesmos pontos que recebes a ver a live.</p></div></div>
+<div class="loja-grid" id="lojaProdutos"><p class="loja-vazio">A carregar prémios…</p></div>
+</section>
+<section class="panel" id="lojaMeusPedidos" hidden>
+<div class="panel-head"><div><h2 class="panel-title">Os meus pedidos</h2><p class="panel-sub">Os pedidos ficam pendentes até serem entregues. Se forem recusados, os pontos voltam ao teu saldo.</p></div></div>
+<ul class="loja-pedidos" id="lojaMeusPedidosLista"></ul>
+</section>
+<section class="panel loja-admin" id="lojaAdmin" hidden>
+<div class="panel-head"><div><h2 class="panel-title"><i class="fas fa-screwdriver-wrench" aria-hidden="true"></i> Gestão da loja</h2><p class="panel-sub">Só tu vês esta secção.</p></div><span class="loja-badge" id="lojaAdminPendentes"></span></div>
+<h3 class="loja-admin-titulo">Pedidos</h3>
+<div class="loja-filtros"><button class="loja-filtro" data-filtro="pendente" type="button">Pendentes</button><button class="loja-filtro" data-filtro="entregue" type="button">Entregues</button><button class="loja-filtro" data-filtro="recusado" type="button">Recusados</button><button class="loja-filtro" data-filtro="todos" type="button">Todos</button></div>
+<ul class="loja-pedidos" id="lojaAdminPedidos"></ul>
+<h3 class="loja-admin-titulo">Prémios</h3>
+<div id="lojaAdminProdutos"></div>
+<form class="loja-admin-produto novo" id="lojaNovoProduto">
+<div class="loja-admin-grid">
+<label class="loja-campo largo"><span>Novo prémio</span><input name="nome" maxlength="80" placeholder="Ex: Voucher Amazon 10 €" required></label>
+<label class="loja-campo"><span>Preço (pontos)</span><input name="preco" type="number" min="1" required></label>
+<label class="loja-campo"><span>Stock</span><input name="stock" type="number" min="0" value="0"></label>
+<label class="loja-campo"><span>Máx./pessoa/mês</span><input name="limitePorMes" type="number" min="0" value="0"></label>
+<label class="loja-campo largo"><span>Descrição</span><input name="descricao" maxlength="300"></label>
+<label class="loja-campo largo"><span>Imagem (ex: assets/loja/nome.jpg ou https://…)</span><input name="imagem" maxlength="300"></label>
+<label class="loja-campo"><span>O viewer indica</span><select name="tipo"><option value="nenhum">Nada</option><option value="deposito">Casino + ID da conta</option><option value="email">Email</option><option value="texto">Texto livre</option></select></label>
+<label class="loja-check"><input type="checkbox" name="ativo" checked> Visível na loja</label>
+</div>
+<div class="loja-admin-acoes"><button type="submit" class="btn-gold"><i class="fas fa-plus" aria-hidden="true"></i> Adicionar prémio</button></div>
+</form>
+<h3 class="loja-admin-titulo">Ajustar saldo de um viewer</h3>
+<form class="loja-ajuste" id="lojaAjuste">
+<label class="loja-campo"><span>Utilizador da Twitch</span><input name="username" required placeholder="ex: fabiosilva_tv"></label>
+<label class="loja-campo"><span>Quantidade (+ ou −)</span><input name="quantidade" type="number" required placeholder="ex: 500 ou -500"></label>
+<button type="submit" class="btn-gold"><i class="fas fa-wallet" aria-hidden="true"></i> Aplicar</button>
+</form>
+</section>
+<script src="loja.js?v=2"></script>'''
 
 def contacto():
     return '''
