@@ -118,7 +118,7 @@ mantêm-se) e não têm ligação nenhuma ao saldo da loja.
 |---|---|
 | `og-motor.js` | A matemática dos 7 jogos (o mesmo ficheiro corre na API, em `lib/og-motor.js`) |
 | `og-core.js` | Modo Treino/Ranking, saldo, histórico, botões de aposta, sons, cartão de vitória, confettis |
-| `og-ranking.js` | Tabela do ranking semanal em `jogos.html` |
+| `og-ranking.js` | Tabela do ranking em `jogos.html` |
 | `og-crash.js`, `og-mines.js`, `og-dice.js`, `og-blackjack.js`, `og-plinko.js`, `og-roulette.js`, `og-slots.js` | Um jogo cada |
 | `og.css` | Visual de todos os jogos |
 | `_build/originals.py` | Gera as 7 páginas (`crash.html`, `minas.html`, `dados.html`, `blackjack.html`, `plinko.html`, `roleta.html`, `slots.html`) |
@@ -127,14 +127,16 @@ Margens: Crash 3%, Minas e Dados 1%, Plinko ≈1% (tabelas iguais às do Stake),
 Roleta europeia 2,7%, Slot ≈4% (calculado por simulação), Blackjack com as
 regras normais (6 baralhos, dealer fica em todos os 17, BJ paga 3:2).
 
-### Treino e Ranking semanal
+### Treino e Ranking
 
 Cada jogo tem dois modos (botões por cima do saldo):
 
 - **Treino** — fichas guardadas só no browser, recarregáveis à vontade.
-- **Ranking semanal** — exige login Twitch. Fichas guardadas na API
-  (`fabiosilvatv-api`, rota `/api/jogos`), toda a gente começa a semana com
-  1.000 + bónus diário de 500. É o servidor que sorteia. No Crash a recolha é
+- **Ranking** — exige login Twitch. Fichas guardadas na API
+  (`fabiosilvatv-api`, rota `/api/jogos`). Começa-se com 1.000; as fichas
+  **acumulam** (não há reset) e ganham-se mais **a ver a live** (cada ponto
+  novo da StreamElements = 1 ficha, ~120/hora). Quem chega a 0 só volta a
+  jogar depois de ver a live. É o servidor que sorteia; no Crash a recolha é
   sempre a automática. Jogos de Minas/Blackjack a meio continuam depois de
   recarregar a página.
 

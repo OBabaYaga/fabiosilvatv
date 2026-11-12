@@ -372,7 +372,7 @@
   .og-card.deal, .og-tile-face svg, .og-slot-cell.ganha span, .og-slot-win.big { animation: none; }
 }
 
-/* ---------- Treino / Ranking semanal ---------- */
+/* ---------- Treino / Ranking ---------- */
 .og-modo { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem; background: var(--og-input); border: 1px solid var(--og-line); border-radius: 0.7rem; padding: 0.25rem; }
 .og-modo button { border: 0; background: transparent; color: var(--muted); font: 700 0.78rem var(--font-body, inherit); padding: 0.55rem 0.4rem; border-radius: 0.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.35rem; white-space: nowrap; }
 .og-modo button:hover { color: var(--text); }
@@ -386,6 +386,8 @@
 .og-rank-linha a { color: var(--gold); font-weight: 700; text-decoration: none; }
 .og-rank-linha a:hover { text-decoration: underline; }
 .og-rank-nota { font-size: 0.75rem; }
+.og-rank-nota i, .og-rank-zero i { color: var(--gold); margin-right: 0.25rem; }
+.og-rank-zero { color: var(--text) !important; font-weight: 600; }
 .og-bonus { width: 100%; justify-content: center; color: var(--gold); border-color: rgba(240,193,75,0.4); }
 .og-em-ranking .og-balance { border-color: rgba(240,193,75,0.35); }
 

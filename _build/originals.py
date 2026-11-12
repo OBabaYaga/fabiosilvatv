@@ -15,10 +15,10 @@ import re
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
-VER = "3"
+VER = "4"
 
 # Seletor Treino / Ranking + saldo + caixa do ranking (igual em todos os jogos)
-SALDO = '''<div class="og-modo" role="group" aria-label="Modo de jogo"><button type="button" data-modo="treino" aria-pressed="true"><i class="fas fa-dumbbell" aria-hidden="true"></i> Treino</button><button type="button" data-modo="ranking" aria-pressed="false"><i class="fas fa-trophy" aria-hidden="true"></i> Ranking semanal</button></div>
+SALDO = '''<div class="og-modo" role="group" aria-label="Modo de jogo"><button type="button" data-modo="treino" aria-pressed="true"><i class="fas fa-dumbbell" aria-hidden="true"></i> Treino</button><button type="button" data-modo="ranking" aria-pressed="false"><i class="fas fa-trophy" aria-hidden="true"></i> Ranking</button></div>
   <div class="og-balance"><span class="og-balance-l">Fichas</span><strong><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></strong><button class="og-mini" id="balanceReset" type="button" title="Repor 1.000 fichas"><i class="fas fa-rotate-right" aria-hidden="true"></i></button></div>
   <div class="og-rankbox" id="ogRankBox" hidden></div>'''
 
@@ -43,7 +43,7 @@ JOGOS = {
     "crash": dict(
         nome="Crash", icone="fa-rocket", hist="crash", script="og-crash.js",
         desc="Crash com fichas virtuais: o foguete sobe e o multiplicador com ele. Recolhe antes de rebentar.",
-        html=lado("crashBet", '''<div class="og-field"><label class="og-label" for="crashAuto">Recolha automática</label><div class="og-input-suffix"><input id="crashAuto" type="number" min="1.01" step="0.01" value="2.00"><span>x</span></div><small class="og-hint" id="crashAutoNota" hidden>No ranking a recolha é sempre a automática.</small></div>''', "crashPlay")
+        html=lado("crashBet", '''<div class="og-field"><label class="og-label" for="crashAuto">Recolha automática</label><div class="og-input-suffix"><input id="crashAuto" type="number" min="1.01" step="0.01" value="2.00"><span>x</span></div><small class="og-hint" id="crashAutoNota" hidden>No Ranking a recolha é sempre a automática.</small></div>''', "crashPlay")
         + '''<div class="og-stage og-crash" id="crashStage">''' + topo("crashRecent") + '''
   <div class="og-crash-area"><canvas id="crashCanvas"></canvas><div class="og-crash-center"><div class="og-crash-mult" id="crashMult">1.00x</div><div class="og-crash-status" id="crashStatus">Faz a tua aposta para lançar o foguete</div></div></div>
 </div>'''),

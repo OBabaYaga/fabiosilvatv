@@ -1,7 +1,7 @@
 // ===================================================================
 // FabioSilva_TV Originals — base comum dos minijogos (estilo Stake)
 // Fichas virtuais, sem dinheiro real e sem valor nenhum. Dois modos:
-// Treino (fichas só neste browser) e Ranking semanal (servidor).
+// Treino (fichas só neste browser) e Ranking (servidor, fichas ganhas a ver a live).
 // A matemática dos jogos está em og-motor.js.
 // ===================================================================
 
@@ -49,15 +49,16 @@ const OG = (function () {
     return Math.floor(rand() * n);
   }
 
-  // ---------- modo: Treino (local) ou Ranking semanal (servidor) ----------
+  // ---------- modo: Treino (local) ou Ranking (servidor) ----------
   // Treino  -> fichas guardadas só neste browser, recarregáveis à vontade.
-  // Ranking -> fichas da semana guardadas no servidor; é o servidor que
-  //            sorteia. Não valem prémios nem se misturam com a loja.
+  // Ranking -> fichas guardadas no servidor, que acumulam e se ganham a
+  //            ver a live; é o servidor que sorteia. Não valem prémios
+  //            nem se misturam com a loja.
   const MODO_KEY = 'fstv_og_modo';
   const TOKEN_KEY = 'obaba_twitch_token';
   const API = (window.FSTV_API || 'https://fabiosilvatv-api.vercel.app') + '/api/jogos';
   let modo = store(true, MODO_KEY) === 'ranking' ? 'ranking' : 'treino';
-  let remoto = null; // { fichas, posicao, bonusDisponivel, bonus, ativos, … }
+  let remoto = null; // { fichas, posicao, ganhoAgora, fichasPorPonto, ativos }
   let aCarregar = false;
   let mostrado = null; // saldo mostrado no ecrã (pode ficar atrás do real durante as animações)
   let jogoAtual = null; // { emJogo(), reset(), retomar(ativos) }
@@ -182,6 +183,8 @@ const OG = (function () {
     remoto.fichas = r.fichas;
     mostrado = r.fichas - r.credito;
     renderBalance();
+    avisarGanho(r.ganhoAgora);
+    renderModo();
     return r;
   }
 
@@ -196,6 +199,7 @@ const OG = (function () {
     try {
       remoto = await pedirAPI({ acao: 'estado' });
       mostrado = null;
+      avisarGanho(remoto.ganhoAgora);
       if (jogoAtual && jogoAtual.retomar && remoto.ativos) jogoAtual.retomar(remoto.ativos);
     } catch (e) {
       remoto = null;
@@ -206,21 +210,11 @@ const OG = (function () {
       renderBalance();
     }
   }
-  async function receberBonus(btn) {
-    if (btn) btn.disabled = true;
-    try {
-      const r = await pedirAPI({ acao: 'bonus' });
-      remoto.fichas = r.fichas;
-      remoto.bonusDisponivel = false;
-      mostrado = null;
-      sound('win');
-      toast('+' + fmt(r.bonus) + ' fichas! Volta amanhã para mais.');
-    } catch (e) {
-      toast(e.message);
-      if (remoto) remoto.bonusDisponivel = false;
+  function avisarGanho(n) {
+    if (n > 0) {
+      sound('gem');
+      toast('+' + fmt(n) + ' fichas por veres a live!');
     }
-    renderModo();
-    renderBalance();
   }
 
   function mudarModo(novo) {
@@ -254,7 +248,7 @@ const OG = (function () {
     box.hidden = !emRanking();
     if (!emRanking()) return;
     if (!token()) {
-      box.innerHTML = '<p>Entra com a Twitch para jogares no ranking da semana.</p><button type="button" class="og-btn2" id="ogRankLogin"><i class="fab fa-twitch" aria-hidden="true"></i> Entrar com a Twitch</button>';
+      box.innerHTML = '<p>Entra com a Twitch para jogares no ranking. As fichas acumulam e ganhas mais a ver a live.</p><button type="button" class="og-btn2" id="ogRankLogin"><i class="fab fa-twitch" aria-hidden="true"></i> Entrar com a Twitch</button>';
       const b = document.getElementById('ogRankLogin');
       if (b) b.onclick = () => window.TwitchAuth && TwitchAuth.login();
       return;
@@ -263,14 +257,14 @@ const OG = (function () {
       box.innerHTML = '<p>A carregar as tuas fichas…</p>';
       return;
     }
-    const pos = remoto.posicao ? '<strong>#' + remoto.posicao + '</strong> esta semana' : 'Ainda sem jogadas esta semana';
+    const pos = remoto.posicao ? '<strong>#' + remoto.posicao + '</strong> no ranking' : 'Ainda sem lugar no ranking';
+    const porHora = Math.round(120 * (remoto.fichasPorPonto || 1));
     box.innerHTML =
       '<div class="og-rank-linha"><span><i class="fas fa-trophy" aria-hidden="true"></i> ' + pos + '</span><a href="jogos.html#ranking">Ver ranking</a></div>' +
-      (remoto.bonusDisponivel
-        ? '<button type="button" class="og-btn2 og-bonus" id="ogBonus"><i class="fas fa-gift" aria-hidden="true"></i> Bónus diário +' + fmt(remoto.bonus) + '</button>'
-        : '<p class="og-rank-nota">Bónus de hoje recebido. Volta amanhã!</p>');
-    const b = document.getElementById('ogBonus');
-    if (b) b.onclick = () => receberBonus(b);
+      (remoto.fichas <= 0
+        ? '<p class="og-rank-zero"><i class="fas fa-tv" aria-hidden="true"></i> Ficaste sem fichas. Vê a live para ganhares mais!</p>'
+        : '') +
+      '<p class="og-rank-nota"><i class="fas fa-tv" aria-hidden="true"></i> Ganhas fichas a ver a live (~' + fmt(porHora) + ' por hora). Atualiza de poucos em poucos minutos.</p>';
   }
   function registarJogo(j) {
     jogoAtual = j;
@@ -359,7 +353,7 @@ const OG = (function () {
     let v = Math.floor(Number(input.value));
     if (!Number.isFinite(v) || v < MIN_BET) v = MIN_BET;
     if (v > getBalance()) {
-      toast('Não tens fichas suficientes para essa aposta.');
+      toast(emRanking() && getBalance() <= 0 ? 'Ficaste sem fichas — vê a live para ganhares mais!' : 'Não tens fichas suficientes para essa aposta.');
       input.value = Math.max(MIN_BET, getBalance());
       shake(input.closest('.og-amount') || input);
       return null;
