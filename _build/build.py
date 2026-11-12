@@ -611,8 +611,16 @@ def loja():
 <label class="loja-campo"><span>Quantidade (+ ou −)</span><input name="quantidade" type="number" required placeholder="ex: 500 ou -500"></label>
 <button type="submit" class="btn-gold"><i class="fas fa-wallet" aria-hidden="true"></i> Aplicar</button>
 </form>
+<h3 class="loja-admin-titulo">Pôr pontos a zero (reset)</h3>
+<form class="loja-reset" id="lojaReset">
+<p class="loja-reset-aviso"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Afeta <strong>todos</strong> os viewers e não se pode desfazer. Os pontos da StreamElements e os pedidos já feitos não mudam.</p>
+<label class="loja-check"><input type="checkbox" name="saldos" checked> Saldo da loja de todos (fica 0; só conta o que ganharem a ver a live daqui para a frente)</label>
+<label class="loja-check"><input type="checkbox" name="fichas" checked> Fichas dos minijogos (todos voltam às 1.000 e o ranking fica vazio)</label>
+<label class="loja-campo"><span>Escreve RESET para confirmar</span><input name="confirmar" autocomplete="off" placeholder="RESET"></label>
+<button type="submit" class="btn-ghost loja-reset-btn"><i class="fas fa-rotate-left" aria-hidden="true"></i> Pôr a zero</button>
+</form>
 </section>
-<script src="loja.js?v=2"></script>'''
+<script src="loja.js?v=3"></script>'''
 
 def contacto():
     return '''

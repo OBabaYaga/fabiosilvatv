@@ -2855,6 +2855,10 @@ body { background: var(--bg); }
 .loja-admin-grid .largo { grid-column: span 2; }
 .loja-check { display: flex; gap: 0.45rem; align-items: center; font-size: 0.82rem; color: var(--text-soft); padding-bottom: 0.6rem; }
 .loja-ajuste { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.6rem; align-items: end; }
+.loja-reset { display: grid; gap: 0.6rem; max-width: 640px; padding: 0.9rem; border: 1px solid rgba(255, 77, 109, 0.35); border-radius: 0.8rem; background: rgba(255, 77, 109, 0.05); }
+.loja-reset-aviso { margin: 0; font-size: 0.85rem; color: var(--muted); }
+.loja-reset-aviso i { color: #ff4d6d; }
+.loja-reset-btn { justify-self: start; border-color: rgba(255, 77, 109, 0.5) !important; color: #ff8099 !important; }
 
 @media (max-width: 720px) {
   .loja-wallet { grid-template-columns: 1fr 1fr; }

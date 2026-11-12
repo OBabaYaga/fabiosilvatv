@@ -445,6 +445,30 @@
           toast(err.message, 'erro');
         }
       };
+    const reset = $('lojaReset');
+    if (reset)
+      reset.onsubmit = async (e) => {
+        e.preventDefault();
+        const el = reset.elements;
+        const saldos = el.saldos.checked, fichas = el.fichas.checked;
+        if (!saldos && !fichas) return toast('Escolhe o que queres pôr a zero.', 'erro');
+        if (el.confirmar.value.trim().toUpperCase() !== 'RESET') return toast('Escreve RESET na caixa para confirmar.', 'erro');
+        const btn = reset.querySelector('button');
+        btn.disabled = true;
+        try {
+          const r = await api({ acao: 'reset', saldos, fichas, confirmar: 'RESET' });
+          const partes = [];
+          if (r.saldos) partes.push(`saldo da loja a zero (${fmt(r.saldos.pessoas)} viewers com pontos)`);
+          if (r.fichas) partes.push('fichas dos minijogos a zero');
+          toast('Feito: ' + partes.join(' e ') + '.', 'ok');
+          reset.reset();
+          carregar();
+        } catch (err) {
+          toast(err.message, 'erro');
+        } finally {
+          btn.disabled = false;
+        }
+      };
   }
 
   // ---------------------------------------------------------------
