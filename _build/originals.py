@@ -15,7 +15,7 @@ import re
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
-VER = "5"
+VER = "6"
 
 # Seletor Treino / Ranking + saldo + caixa do ranking (igual em todos os jogos)
 SALDO = '''<div class="og-modo" role="group" aria-label="Modo de jogo"><button type="button" data-modo="treino" aria-pressed="true"><i class="fas fa-dumbbell" aria-hidden="true"></i> Treino</button><button type="button" data-modo="ranking" aria-pressed="false"><i class="fas fa-trophy" aria-hidden="true"></i> Ranking</button></div>
@@ -90,7 +90,9 @@ JOGOS = {
         nome="Plinko", icone="fa-circle-dot", hist="plinko", script="og-plinko.js",
         desc="Plinko com fichas virtuais: a bola cai pelos pinos até um multiplicador. Escolhe o risco e as linhas.",
         html=lado("plinkoBet", '''<div class="og-field"><label class="og-label" for="plinkoRisk">Risco</label><select id="plinkoRisk" class="og-select"><option value="baixo">Baixo</option><option value="medio" selected>Médio</option><option value="alto">Alto</option></select></div>
-  <div class="og-field"><label class="og-label" for="plinkoRows">Linhas</label><select id="plinkoRows" class="og-select"><option value="8">8</option><option value="12">12</option><option value="16" selected>16</option></select></div>''', "plinkoPlay", "Lançar bola")
+  <div class="og-field"><label class="og-label" for="plinkoRows">Linhas</label><select id="plinkoRows" class="og-select"><option value="8">8</option><option value="12">12</option><option value="16" selected>16</option></select></div>
+  <div class="og-field"><label class="og-label" for="plinkoBalls">Bolas por jogada <small>(aposta por bola)</small></label><select id="plinkoBalls" class="og-select">''' + "".join(f'<option value="{n}">{n}</option>' for n in range(1, 11)) + '''</select></div>
+  <div class="og-field"><label class="og-label">Total da jogada</label><div class="og-amount og-readonly"><i class="fas fa-coins" aria-hidden="true"></i><span id="plinkoTotal">10</span></div></div>''', "plinkoPlay", "Lançar")
         + '''<div class="og-stage og-plinko" id="plinkoStage">''' + topo("plinkoRecent") + '''<div class="og-plinko-area"><canvas id="plinkoCanvas"></canvas><div class="og-buckets" id="plinkoBuckets"></div></div></div>'''),
     "roleta": dict(
         nome="Roleta", icone="fa-life-ring", hist="roulette", script="og-roulette.js",

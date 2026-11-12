@@ -105,6 +105,11 @@ const OG = (function () {
   function adjust(d) {
     setBalance(saldoLocal() + d);
   }
+  // Mostra um valor à escolha (ex.: Plinko com várias bolas no ar)
+  function mostrarSaldo(v) {
+    mostrado = v;
+    renderBalance();
+  }
   // Mostra o saldo real (chamado no fim de cada animação)
   function revelarSaldo() {
     mostrado = null;
@@ -524,7 +529,7 @@ const OG = (function () {
 
   return {
     fmt, fmtMult, esc, rand, randInt,
-    getBalance, setBalance, adjust, renderBalance, revelarSaldo,
+    getBalance, setBalance, adjust, renderBalance, revelarSaldo, mostrarSaldo,
     jogar, emRanking, registarJogo,
     pushHistory, pushRecent, readBet, lockBet,
     toast, shake, winCard, confetti, sound,

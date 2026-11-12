@@ -106,8 +106,44 @@
   }
 
   let pendentes = 0;
+  let aLancar = false;
+  let ultimoSaldo = null; // saldo real depois da última jogada
+  const MAX_BOLAS = 10;
+
+  function nBolas() {
+    return Math.max(1, Math.min(MAX_BOLAS, parseInt($('plinkoBalls').value, 10) || 1));
+  }
+  function atualizarTotal() {
+    const a = Math.max(1, Math.floor(Number($('plinkoBet').value)) || 1);
+    $('plinkoTotal').textContent = OG.fmt(a * nBolas());
+  }
+  // saldo no ecrã = real − prémios das bolas que ainda não caíram
+  function mostrarSaldo() {
+    if (ultimoSaldo == null) return;
+    const porCair = bolas.filter((b) => !b.pago).reduce((s, b) => s + b.ganho, 0);
+    OG.mostrarSaldo(ultimoSaldo - porCair);
+  }
+
   async function lancar() {
+    if (aLancar) return;
     const aposta = OG.readBet('plinkoBet'); if (!aposta) return;
+    const n = nBolas();
+    if (aposta * n > OG.getBalance()) {
+      OG.toast(`Não tens fichas para ${n} bolas de ${OG.fmt(aposta)} (total ${OG.fmt(aposta * n)}).`);
+      return;
+    }
+    aLancar = true;
+    $('plinkoPlay').disabled = true;
+    for (let i = 0; i < n; i++) {
+      const ok = await lancarUma(aposta);
+      if (!ok) break;
+      if (i < n - 1) await new Promise((r) => setTimeout(r, 160));
+    }
+    aLancar = false;
+    $('plinkoPlay').disabled = false;
+  }
+
+  async function lancarUma(aposta) {
     const l = linhas, rk = risco;
     pendentes++;
     bloquear(true);
@@ -116,29 +152,32 @@
       res = await OG.jogar('plinko', 'iniciar', { aposta, linhas: l, risco: rk });
     } catch (e) {
       pendentes--;
-      return;
+      bloquear(bolas.length > 0 || pendentes > 0);
+      return false;
     }
     pendentes--;
-    if (l !== linhas) { OG.revelarSaldo(); return; }
     OG.sound('bet');
     const passos = res.view.passos;
     const xs = [geo.cx];
     const ks = [];
     let k = 0;
-    for (let r = 0; r < linhas; r++) {
+    for (let r = 0; r < l; r++) {
       ks.push(k);
       k += passos[r];
       xs.push(geo.cx + (k - (r + 1) / 2) * geo.gap);
     }
     bolas.push({ aposta, xs, ks, balde: res.view.balde, mult: res.view.mult, ganho: res.credito, risco: rk, t0: performance.now(), ultimo: -1, pago: false });
+    ultimoSaldo = res.fichas;
+    mostrarSaldo();
     if (!raf) raf = requestAnimationFrame(desenhar);
+    return true;
   }
 
   function aterrar(b) {
     const m = b.mult;
     const ganho = b.ganho;
-    if (!bolas.some((x) => x !== b && !x.pago)) OG.revelarSaldo();
-    else OG.renderBalance();
+    if (!bolas.some((x) => x !== b && !x.pago) && !pendentes && !aLancar) { ultimoSaldo = null; OG.revelarSaldo(); }
+    else mostrarSaldo();
     const el = $('plinkoBuckets').querySelector(`[data-i="${b.balde}"]`);
     if (el) { el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit'); }
     OG.sound(m >= 1 ? (m >= 3 ? 'win' : 'gem') : 'tick');
@@ -149,6 +188,7 @@
 
   function bloquear(sim) {
     $('plinkoRows').disabled = sim;
+    $('plinkoBalls').disabled = sim;
     $('plinkoRisk').disabled = sim;
   }
 
@@ -160,6 +200,10 @@
     $('plinkoRows').addEventListener('change', (e) => { linhas = +e.target.value; construirBaldes(); resize(); });
     $('plinkoRisk').addEventListener('change', (e) => { risco = e.target.value; construirBaldes(); });
     $('plinkoPlay').addEventListener('click', lancar);
+    $('plinkoBalls').addEventListener('change', atualizarTotal);
+    $('plinkoBet').addEventListener('input', atualizarTotal);
+    document.querySelectorAll('[data-target="plinkoBet"]').forEach((b) => b.addEventListener('click', () => setTimeout(atualizarTotal)));
+    atualizarTotal();
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); lancar(); }
     });

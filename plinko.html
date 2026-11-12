@@ -28,7 +28,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css?v=41">
-    <link rel="stylesheet" href="og.css?v=5">
+    <link rel="stylesheet" href="og.css?v=6">
 </head>
 <body data-game="crash">
 <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
@@ -88,7 +88,9 @@
   </div>
   <div class="og-field"><label class="og-label" for="plinkoRisk">Risco</label><select id="plinkoRisk" class="og-select"><option value="baixo">Baixo</option><option value="medio" selected>Médio</option><option value="alto">Alto</option></select></div>
   <div class="og-field"><label class="og-label" for="plinkoRows">Linhas</label><select id="plinkoRows" class="og-select"><option value="8">8</option><option value="12">12</option><option value="16" selected>16</option></select></div>
-  <button class="og-play" id="plinkoPlay" type="button">Lançar bola</button>
+  <div class="og-field"><label class="og-label" for="plinkoBalls">Bolas por jogada <small>(aposta por bola)</small></label><select id="plinkoBalls" class="og-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div>
+  <div class="og-field"><label class="og-label">Total da jogada</label><div class="og-amount og-readonly"><i class="fas fa-coins" aria-hidden="true"></i><span id="plinkoTotal">10</span></div></div>
+  <button class="og-play" id="plinkoPlay" type="button">Lançar</button>
   
   <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas sem valor · não se trocam por prémios</p>
 </aside><div class="og-stage og-plinko" id="plinkoStage"><div class="og-topbar"><div class="og-recent" id="plinkoRecent" aria-label="Resultados recentes"></div><button class="og-sound" type="button"></button></div><div class="og-plinko-area"><canvas id="plinkoCanvas"></canvas><div class="og-buckets" id="plinkoBuckets"></div></div></div>
@@ -133,9 +135,9 @@
 </div>
 <script src="script.js?v=36"></script>
 <script src="twitch-auth.js?v=39"></script>
-<script src="og-motor.js?v=5"></script>
-<script src="og-core.js?v=5"></script>
-<script src="og-plinko.js?v=5"></script>
+<script src="og-motor.js?v=6"></script>
+<script src="og-core.js?v=6"></script>
+<script src="og-plinko.js?v=6"></script>
 <button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
 <script src="rebrand.js?v=36"></script>
 </body>
