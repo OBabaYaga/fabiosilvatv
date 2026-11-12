@@ -1409,6 +1409,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .gch-art { height: 150px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: rgba(255, 255, 255, 0.9); background: var(--art, var(--gradient-card)); text-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); position: relative; }
 .gch-art::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 120%, rgba(0, 0, 0, 0.55), transparent 60%); }
 .gch-art i { position: relative; }
+.gch-art.gch-img { height: auto; aspect-ratio: 16 / 9; background: var(--img) center / cover no-repeat, #070b14; }
+.gch-art.gch-img::after { display: none; }
 .gch-body { padding: 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
 .gch-body strong { font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
 .gch-body strong i { color: var(--gold); font-size: 0.85rem; }
