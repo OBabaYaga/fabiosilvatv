@@ -414,3 +414,77 @@
 .og-ranking-pos.p3 { background: linear-gradient(180deg, #f2c29b, #b9733f); color: #2e1606; }
 .og-ranking-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; color: var(--muted); font-size: 0.82rem; margin: 0 0 0.8rem; }
 .og-ranking-vazio { color: var(--muted); padding: 1rem 0; }
+
+/* ===================================================================== */
+/* TELEMÓVEL — layout compacto ao estilo Stake:                          */
+/* jogo em cima, logo a seguir o modo, fichas, aposta e o botão; as      */
+/* opções extra (risco, linhas, minas…) ficam por baixo do botão.        */
+/* ===================================================================== */
+@media (max-width: 980px) {
+  /* nas páginas dos jogos, sem banner de parceiros nem título grande */
+  main:has(.og-shell) > .partner-banner,
+  main:has(.og-shell) > .game-header { display: none !important; }
+  main:has(.og-shell) > .og-shell { margin-top: 0; }
+  /* a bolha do chat tapava os botões da aposta (o chat continua no botão de cima) */
+  body:has(.og-shell) .chat-bolha { display: none !important; }
+
+  .og-side { padding: 0.7rem 0.75rem 0.8rem; gap: 0.55rem; }
+  .og-side > * { order: 5; }
+  .og-side > .og-modo { order: 0; }
+  .og-side > .og-balance { order: 1; padding: 0.45rem 0.7rem; }
+  .og-side > .og-field-aposta { order: 2; }
+  .og-side > .og-play,
+  .og-side > .og-bj-actions { order: 3; }
+  .og-side > .og-bj-actions:has(#rlUndo),
+  .og-side > #rlRepeat { order: 4; }
+  .og-side > .og-rankbox { order: 4; padding: 0.5rem 0.65rem; gap: 0.35rem; }
+  .og-side > .og-fair { order: 9; }
+  .og-side .og-label { margin-bottom: 0.25rem; }
+  .og-play { padding-top: 0.8rem; padding-bottom: 0.8rem; }
+  .og-modo button { padding: 0.45rem 0.4rem; }
+  .og-hint { font-size: 0.72rem; }
+
+  .og-stage { padding: 0.5rem 0.6rem 0.7rem; }
+  .og-topbar { margin-bottom: 0.15rem; }
+}
+@media (max-width: 600px) {
+  .og-crash-area { min-height: 250px; }
+  .og-dice-area { padding: 1.4rem 0.5rem 0.6rem; }
+  .og-dice-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
+  .og-dice-fields .og-label { font-size: 0.62rem; }
+  .og-dice-fields input { font-size: 0.85rem; padding-left: 0.45rem; padding-right: 0.2rem; }
+  .og-bj-table { min-height: 300px; gap: 0.5rem; }
+  .og-bj-felt { display: none; }
+  .og-mines-grid { gap: 0.35rem; }
+  .og-rl-wheelwrap { width: min(200px, 52vw); }
+  .og-rl-top { gap: 0.75rem; }
+  .og-slot-title { font-size: 1rem; }
+  .og-slot-info { display: none; }
+}
+
+/* ---------- Roleta no telemóvel: mesa na vertical (3 colunas × 12 linhas) ---------- */
+@media (max-width: 600px) {
+  .og-rl-board {
+    min-width: 0;
+    grid-template-columns: 2.3rem 2.3rem repeat(3, minmax(0, 1fr));
+    grid-template-rows: 2.4rem repeat(12, 2.35rem) 2.3rem;
+    gap: 4px;
+  }
+  .og-rl-zero { grid-column: 3 / 6; grid-row: 1; }
+  .og-rl-nums {
+    grid-column: 3 / 6; grid-row: 2 / 15;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(12, 2.35rem) 2.3rem;
+  }
+  .og-rl-nums > .og-rl-cell { grid-row: calc(var(--c) + 1); grid-column: var(--l); }
+  .og-rl-dozens { grid-column: 2; grid-row: 2 / 14; grid-template-columns: 1fr; grid-template-rows: repeat(3, 1fr); }
+  .og-rl-outs { grid-column: 1; grid-row: 2 / 14; grid-template-columns: 1fr; grid-template-rows: repeat(6, 1fr); }
+  .og-rl-dozens .og-rl-cell > span, .og-rl-outs .og-rl-cell > span { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+  .og-rl-outs .og-rl-diamond { transform: rotate(45deg); }
+  /* zonas entre números, rodadas: número+3 fica por baixo, número+1 à direita */
+  .og-rl-hot.dir { top: auto; bottom: -9px; left: 18%; right: 18%; width: auto; height: 14px; }
+  .og-rl-hot.cima { left: auto; right: -9px; top: 18%; bottom: 18%; width: 14px; height: auto; }
+  .og-rl-hot.canto { top: auto; bottom: -10px; right: -10px; }
+  .og-rl-hot.esq { left: 18%; right: 18%; top: -9px; bottom: auto; width: auto; height: 14px; }
+  .og-rl-boardwrap { overflow: visible; }
+}

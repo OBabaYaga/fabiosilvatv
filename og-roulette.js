@@ -35,14 +35,14 @@
   }
 
   function construirMesa() {
-    const cel = (chave, txt, cls, extra) => `<button type="button" class="og-rl-cell ${cls || ''}" data-k="${chave}"><span>${txt}</span>${extra || ''}</button>`;
+    const cel = (chave, txt, cls, extra, pos) => `<button type="button" class="og-rl-cell ${cls || ''}" data-k="${chave}"${pos ? ` style="--c:${pos[0]};--l:${pos[1]}"` : ''}><span>${txt}</span>${extra || ''}</button>`;
     let numeros = '';
     for (let linha = 3; linha >= 1; linha--) {
       for (let col = 0; col < 12; col++) {
         const n = col * 3 + linha;
-        numeros += cel('n:' + n, n, cor(n), zonas(n, col, linha));
+        numeros += cel('n:' + n, n, cor(n), zonas(n, col, linha), [col, linha]);
       }
-      numeros += cel('coluna:' + linha, '2:1', 'out col');
+      numeros += cel('coluna:' + linha, '2:1', 'out col', '', [12, linha]);
     }
     $('rlBoard').innerHTML = `
       <div class="og-rl-zero">${cel('n:0', '0', 'verde zero')}</div>

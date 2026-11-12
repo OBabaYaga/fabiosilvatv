@@ -15,7 +15,7 @@ import re
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
-VER = "6"
+VER = "7"
 
 # Seletor Treino / Ranking + saldo + caixa do ranking (igual em todos os jogos)
 SALDO = '''<div class="og-modo" role="group" aria-label="Modo de jogo"><button type="button" data-modo="treino" aria-pressed="true"><i class="fas fa-dumbbell" aria-hidden="true"></i> Treino</button><button type="button" data-modo="ranking" aria-pressed="false"><i class="fas fa-trophy" aria-hidden="true"></i> Ranking</button></div>
@@ -26,7 +26,7 @@ SALDO = '''<div class="og-modo" role="group" aria-label="Modo de jogo"><button t
 def lado(bet_id, extra="", botao_id="", botao_txt="Apostar", depois=""):
     return f'''<aside class="og-side">
 {SALDO}
-  <div class="og-field">
+  <div class="og-field og-field-aposta">
     <label class="og-label" for="{bet_id}">Montante da aposta</label>
     <div class="og-amount"><i class="fas fa-coins" aria-hidden="true"></i><input id="{bet_id}" type="number" min="1" step="1" value="10" inputmode="numeric"><button type="button" data-bet-op="half" data-target="{bet_id}">½</button><button type="button" data-bet-op="double" data-target="{bet_id}">2×</button><button type="button" data-bet-op="max" data-target="{bet_id}">Máx</button></div>
   </div>
@@ -99,7 +99,7 @@ JOGOS = {
         desc="Roleta europeia com fichas virtuais: aposta em números, cores, dúzias e colunas.",
         html='''<aside class="og-side">
   ''' + SALDO + '''
-  <div class="og-field"><span class="og-label">Valor da ficha</span><div class="og-chips" id="rlChips"></div></div>
+  <div class="og-field og-field-aposta"><span class="og-label">Valor da ficha</span><div class="og-chips" id="rlChips"></div></div>
   <div class="og-field"><span class="og-label">Total apostado</span><div class="og-amount og-readonly"><i class="fas fa-coins" aria-hidden="true"></i><span id="rlTotal">0</span></div></div>
   <div class="og-bj-actions"><button class="og-btn2" id="rlUndo" type="button"><i class="fas fa-rotate-left" aria-hidden="true"></i> Desfazer</button><button class="og-btn2" id="rlClear" type="button"><i class="fas fa-trash" aria-hidden="true"></i> Limpar</button></div>
   <button class="og-btn2" id="rlRepeat" type="button"><i class="fas fa-repeat" aria-hidden="true"></i> Repetir última aposta</button>
