@@ -116,7 +116,9 @@ mantêm-se) e não têm ligação nenhuma ao saldo da loja.
 
 | Ficheiro | Função |
 |---|---|
-| `og-core.js` | Saldo, histórico, botões de aposta, sons, cartão de vitória, confettis |
+| `og-motor.js` | A matemática dos 7 jogos (o mesmo ficheiro corre na API, em `lib/og-motor.js`) |
+| `og-core.js` | Modo Treino/Ranking, saldo, histórico, botões de aposta, sons, cartão de vitória, confettis |
+| `og-ranking.js` | Tabela do ranking semanal em `jogos.html` |
 | `og-crash.js`, `og-mines.js`, `og-dice.js`, `og-blackjack.js`, `og-plinko.js`, `og-roulette.js`, `og-slots.js` | Um jogo cada |
 | `og.css` | Visual de todos os jogos |
 | `_build/originals.py` | Gera as 7 páginas (`crash.html`, `minas.html`, `dados.html`, `blackjack.html`, `plinko.html`, `roleta.html`, `slots.html`) |
@@ -124,6 +126,25 @@ mantêm-se) e não têm ligação nenhuma ao saldo da loja.
 Margens: Crash 3%, Minas e Dados 1%, Plinko ≈1% (tabelas iguais às do Stake),
 Roleta europeia 2,7%, Slot ≈4% (calculado por simulação), Blackjack com as
 regras normais (6 baralhos, dealer fica em todos os 17, BJ paga 3:2).
+
+### Treino e Ranking semanal
+
+Cada jogo tem dois modos (botões por cima do saldo):
+
+- **Treino** — fichas guardadas só no browser, recarregáveis à vontade.
+- **Ranking semanal** — exige login Twitch. Fichas guardadas na API
+  (`fabiosilvatv-api`, rota `/api/jogos`), toda a gente começa a semana com
+  1.000 + bónus diário de 500. É o servidor que sorteia. No Crash a recolha é
+  sempre a automática. Jogos de Minas/Blackjack a meio continuam depois de
+  recarregar a página.
+
+As fichas **não têm valor**: não se compram, não se trocam por prémios e não
+tocam no saldo da loja. Se um dia quiseres dar prémio ao 1.º lugar, isso passa
+a ser um passatempo com sorte e precisa de autorização (ver a conversa sobre a
+Lei do Jogo, art. 159.º).
+
+`jogos.html` foi editado à mão (secção do ranking + `og-ranking.js`); o
+`_build/build.py` ainda tem a versão antiga desta página.
 
 **Se correres o `_build/build.py`**, ele volta a gerar as páginas antigas
 dos jogos — corre `python3 _build/originals.py` logo a seguir.

@@ -5,44 +5,29 @@
 // ===================================================================
 (function () {
   const $ = (id) => document.getElementById(id);
-  const NAIPES = ['♠', '♥', '♦', '♣'];
-  const VALORES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-
-  let sapato = [];
+  // As cartas vêm do motor (og-motor.js): no Treino é o browser que
+  // baralha, no Ranking é o servidor (e a carta virada do dealer só
+  // chega ao browser no fim da mão).
   let dealer = [];
-  let maos = []; // { cartas, aposta, terminada, dobrou, deAses, resultado }
+  let maos = []; // { cartas, aposta, terminada, resultado }
   let ativa = 0;
   let emJogo = false;
   let ocupado = false;
-  let idCarta = 0;
+  let ultimaView = null;
 
   const espera = (ms) => new Promise((r) => setTimeout(r, ms));
-
-  function novoSapato() {
-    sapato = [];
-    for (let d = 0; d < 6; d++) for (const n of NAIPES) for (const v of VALORES) sapato.push({ v, n });
-    for (let i = sapato.length - 1; i > 0; i--) { const j = OG.randInt(i + 1); [sapato[i], sapato[j]] = [sapato[j], sapato[i]]; }
-  }
-  function tirar(virada) {
-    if (sapato.length < 60) novoSapato();
-    const c = sapato.pop();
-    return { v: c.v, n: c.n, id: ++idCarta, virada: !!virada };
-  }
-  const valorCarta = (c) => (c.v === 'A' ? 11 : ['J', 'Q', 'K', '10'].includes(c.v) ? 10 : +c.v);
+  const valorCarta = OGMotor.valorCarta;
   function total(cartas) {
-    let t = 0, ases = 0;
-    cartas.forEach((c) => { if (c.virada) return; t += valorCarta(c); if (c.v === 'A') ases++; });
-    while (t > 21 && ases) { t -= 10; ases--; }
-    return { t, mole: ases > 0 && t <= 21 };
+    return OGMotor.total(cartas.filter((c) => !c.virada));
   }
-  const ehBJ = (cartas) => cartas.length === 2 && total(cartas).t === 21;
+  const ehBJ = (cartas) => cartas.length === 2 && !cartas.some((c) => c.virada) && total(cartas).t === 21;
 
   // ---------- desenho ----------
   function cartaHtml(c) {
     const vermelha = c.n === '♥' || c.n === '♦';
-    return `<div class="og-card${vermelha ? ' red' : ''}${c.virada ? ' down' : ''}" data-id="${c.id}">
+    return `<div class="og-card${vermelha ? ' red' : ''}${c.virada ? ' down' : ''}" data-id="${c.id}" data-v="${c.v || ''}">
       <div class="og-card-inner">
-        <div class="og-card-front"><span class="cr">${c.v}<i>${c.n}</i></span><span class="cc">${c.n}</span><span class="cr b">${c.v}<i>${c.n}</i></span></div>
+        <div class="og-card-front"><span class="cr">${c.v || ''}<i>${c.n || ''}</i></span><span class="cc">${c.n || ''}</span><span class="cr b">${c.v || ''}<i>${c.n || ''}</i></span></div>
         <div class="og-card-back"></div>
       </div></div>`;
   }
@@ -55,8 +40,16 @@
         d = el.lastElementChild;
         d.style.setProperty('--i', i);
         d.classList.add('deal');
+      } else if (c.v && d.dataset.v !== c.v) {
+        // carta que estava virada (sem valor) e agora se conhece
+        const novo = document.createElement('div');
+        novo.innerHTML = cartaHtml({ ...c, virada: true });
+        d.querySelector('.og-card-front').replaceWith(novo.querySelector('.og-card-front'));
+        d.classList.toggle('red', c.n === '♥' || c.n === '♦');
+        d.dataset.v = c.v;
+        void d.offsetWidth;
       }
-      d.classList.toggle('down', c.virada);
+      d.classList.toggle('down', !!c.virada);
     });
     el.querySelectorAll('.og-card').forEach((d) => { if (!cartas.some((c) => String(c.id) === d.dataset.id)) d.remove(); });
   }
@@ -89,137 +82,107 @@
   }
   function acoes() {
     const m = maos[ativa];
+    const v = ultimaView;
     const podeJogar = emJogo && !ocupado && m && !m.terminada;
     $('bjHit').disabled = !podeJogar;
     $('bjStand').disabled = !podeJogar;
-    $('bjDouble').disabled = !(podeJogar && m.cartas.length === 2 && OG.getBalance() >= m.aposta);
-    $('bjSplit').disabled = !(podeJogar && maos.length === 1 && m.cartas.length === 2 && valorCarta(m.cartas[0]) === valorCarta(m.cartas[1]) && OG.getBalance() >= m.aposta);
+    $('bjDouble').disabled = !(podeJogar && v && v.podeDobrar && OG.getBalance() >= m.aposta);
+    $('bjSplit').disabled = !(podeJogar && v && v.podeDividir && OG.getBalance() >= m.aposta);
     $('bjPlay').disabled = emJogo || ocupado;
     OG.lockBet('bjBet', emJogo || ocupado);
   }
 
-  // ---------- jogo ----------
-  async function dar(destino, virada) {
-    const c = tirar(virada);
-    destino.push(c);
-    OG.sound('card');
+  // ---------- animação: aplica a nova "view" carta a carta ----------
+  const idsDe = (v) => new Set([...v.dealer.map((c) => c.id), ...v.maos.flatMap((m) => m.cartas.map((c) => c.id))]);
+  async function animarPara(v) {
+    const antes = new Set([...dealer.map((c) => c.id), ...maos.flatMap((m) => m.cartas.map((c) => c.id))]);
+    const novos = [...idsDe(v)].filter((id) => !antes.has(id)).sort((a, b) => a - b);
+    // divisão de mão: muda a estrutura antes das cartas novas
+    if (v.maos.length !== maos.length && maos.length) {
+      $('bjPlayer').innerHTML = '';
+      maos = v.maos.map((m) => ({ ...m, cartas: m.cartas.filter((c) => antes.has(c.id)).map((c) => ({ ...c })) }));
+      ativa = v.ativa;
+      pintar();
+    }
+    let revelou = false;
+    for (const id of novos) {
+      const idx = v.dealer.findIndex((c) => c.id === id);
+      if (idx >= 0) {
+        if (idx === 1) dealer.push({ id, virada: true });
+        else {
+          if (idx >= 2 && v.revelado && !revelou) { await revelar(v); revelou = true; }
+          dealer.push({ ...v.dealer[idx] });
+        }
+      } else {
+        v.maos.forEach((m, i) => {
+          const c = m.cartas.find((x) => x.id === id);
+          if (!c) return;
+          if (!maos[i]) maos[i] = { ...m, cartas: [] };
+          maos[i].cartas.push({ ...c });
+        });
+      }
+      OG.sound('card');
+      pintar();
+      await espera(320);
+    }
+    if (v.revelado && !revelou) await revelar(v);
+    dealer = v.dealer.map((c) => (c.virada ? { id: c.id, virada: true } : { ...c }));
+    maos = v.maos.map((m) => ({ ...m, cartas: m.cartas.map((c) => ({ ...c })) }));
+    ativa = v.ativa;
+    ultimaView = v;
     pintar();
-    await espera(320);
-    return c;
+  }
+  async function revelar(v) {
+    if (!dealer.some((c) => c.virada)) return;
+    dealer = dealer.map((c) => {
+      const real = v.dealer.find((x) => x.id === c.id);
+      return real && !real.virada ? { ...real } : c;
+    });
+    OG.sound('card'); pintar();
+    await espera(450);
+  }
+
+  // ---------- jogadas ----------
+  async function enviar(passo, params) {
+    if (ocupado) return null;
+    ocupado = true; acoes();
+    let res = null;
+    try {
+      res = await OG.jogar('blackjack', passo, params || {});
+    } catch (e) {
+      ocupado = false; acoes();
+      return null;
+    }
+    if (res.debito) OG.sound('bet');
+    await animarPara(res.view);
+    ocupado = false;
+    if (res.fim) terminar(res);
+    else pintar();
+    return res;
   }
 
   async function distribuir() {
     if (emJogo || ocupado) return;
     const aposta = OG.readBet('bjBet'); if (!aposta) return;
-    OG.adjust(-aposta); OG.sound('bet');
-    ocupado = true; emJogo = true;
-    dealer = []; maos = [{ cartas: [], aposta, terminada: false }]; ativa = 0;
+    dealer = []; maos = []; ativa = 0; ultimaView = null;
+    $('bjPlayer').innerHTML = '';
     $('bjMsg').textContent = '';
     $('bjMsg').className = 'og-bj-msg';
     pintar();
-    await dar(maos[0].cartas);
-    await dar(dealer);
-    await dar(maos[0].cartas);
-    await dar(dealer, true);
-    ocupado = false;
+    emJogo = true;
+    const r = await enviar('iniciar', { aposta });
+    if (!r) { emJogo = false; pintar(); }
+  }
+  const pedir = () => emJogo && enviar('pedir');
+  const ficar = () => emJogo && enviar('ficar');
+  const dobrar = () => emJogo && !$('bjDouble').disabled && enviar('dobrar');
+  const dividir = () => emJogo && !$('bjSplit').disabled && enviar('dividir');
 
-    const jogadorBJ = ehBJ(maos[0].cartas);
-    const visivel = dealer[0];
-    const dealerBJ = ehBJ(dealer.map((c) => ({ ...c, virada: false })));
-    if (jogadorBJ || ((visivel.v === 'A' || valorCarta(visivel) === 10) && dealerBJ)) {
-      await revelarDealer();
-      return terminar();
-    }
-    pintar();
-  }
-
-  async function proximaMao() {
-    while (ativa < maos.length && maos[ativa].terminada) ativa++;
-    if (ativa >= maos.length) {
-      ativa = maos.length - 1;
-      await vezDoDealer();
-      terminar();
-      return;
-    }
-    // mão vinda de um "dividir" só tem 1 carta: recebe a segunda
-    if (maos[ativa].cartas.length === 1) {
-      ocupado = true;
-      await dar(maos[ativa].cartas);
-      ocupado = false;
-      if (maos[ativa].deAses || total(maos[ativa].cartas).t === 21) { maos[ativa].terminada = true; return proximaMao(); }
-    }
-    pintar();
-  }
-
-  async function pedir() {
-    const m = maos[ativa]; if (!m || m.terminada || ocupado) return;
-    ocupado = true;
-    await dar(m.cartas);
-    ocupado = false;
-    if (total(m.cartas).t >= 21) { m.terminada = true; return proximaMao(); }
-    pintar();
-  }
-  function ficar() {
-    const m = maos[ativa]; if (!m || m.terminada || ocupado) return;
-    m.terminada = true; proximaMao();
-  }
-  async function dobrar() {
-    const m = maos[ativa]; if (!m || m.cartas.length !== 2 || OG.getBalance() < m.aposta || ocupado) return;
-    OG.adjust(-m.aposta); m.aposta *= 2; m.dobrou = true; OG.sound('bet');
-    ocupado = true;
-    await dar(m.cartas);
-    ocupado = false;
-    m.terminada = true; proximaMao();
-  }
-  async function dividir() {
-    const m = maos[0];
-    if (maos.length !== 1 || m.cartas.length !== 2 || OG.getBalance() < m.aposta || ocupado) return;
-    OG.adjust(-m.aposta); OG.sound('bet');
-    const ases = m.cartas[0].v === 'A';
-    maos = [
-      { cartas: [m.cartas[0]], aposta: m.aposta, terminada: false, deAses: ases },
-      { cartas: [m.cartas[1]], aposta: m.aposta, terminada: false, deAses: ases },
-    ];
-    $('bjPlayer').innerHTML = '';
-    ativa = 0;
-    pintar();
-    await proximaMao();
-  }
-
-  async function revelarDealer() {
-    dealer.forEach((c) => (c.virada = false));
-    OG.sound('card'); pintar();
-    await espera(450);
-  }
-
-  async function vezDoDealer() {
-    ocupado = true;
-    await revelarDealer();
-    const vivas = maos.some((m) => total(m.cartas).t <= 21);
-    if (vivas) while (total(dealer).t < 17) await dar(dealer);
-    ocupado = false;
-  }
-
-  function terminar() {
-    const d = total(dealer).t;
-    const dBJ = ehBJ(dealer);
-    let liquido = 0, devolvido = 0, aposto = 0;
-    const etiquetas = [];
-    maos.forEach((m) => {
-      const p = total(m.cartas).t;
-      const pBJ = maos.length === 1 && ehBJ(m.cartas);
-      let paga = 0;
-      if (pBJ && !dBJ) { paga = m.aposta + Math.floor(m.aposta * 1.5); m.resultado = 'bj'; etiquetas.push('Blackjack!'); }
-      else if (p > 21) { m.resultado = 'lose'; etiquetas.push(`Rebentaste (${p})`); }
-      else if (dBJ && !pBJ) { m.resultado = 'lose'; etiquetas.push('Dealer tem Blackjack'); }
-      else if (pBJ && dBJ) { paga = m.aposta; m.resultado = 'push'; etiquetas.push('Empate (BJ)'); }
-      else if (d > 21 || p > d) { paga = m.aposta * 2; m.resultado = 'win'; etiquetas.push(d > 21 ? `Dealer rebentou (${d})` : `${p} contra ${d}`); }
-      else if (p === d) { paga = m.aposta; m.resultado = 'push'; etiquetas.push(`Empate ${p}`); }
-      else { m.resultado = 'lose'; etiquetas.push(`${p} contra ${d}`); }
-      devolvido += paga; aposto += m.aposta;
-    });
-    liquido = devolvido - aposto;
-    if (devolvido) OG.adjust(devolvido);
+  function terminar(res) {
+    const v = res.view;
+    const liquido = v.devolvido - v.apostado;
+    const etiquetas = v.etiquetas || [];
+    OG.revelarSaldo();
     emJogo = false;
     const msg = $('bjMsg');
     if (liquido > 0) {
@@ -233,14 +196,34 @@
       msg.className = 'og-bj-msg show push';
       msg.innerHTML = `${OG.esc(etiquetas.join(' · '))}<strong>Empate</strong>`;
     }
-    OG.pushHistory('blackjack', aposto, liquido, etiquetas.join(' · '));
+    OG.pushHistory('blackjack', v.apostado, liquido, etiquetas.join(' · '));
     OG.pushRecent('bjRecent', liquido > 0 ? 'Ganhou' : liquido < 0 ? 'Perdeu' : 'Empate', liquido > 0 ? 'win' : liquido < 0 ? 'lose' : '');
     pintar();
   }
 
+  function reset() {
+    dealer = []; maos = []; ativa = 0; emJogo = false; ultimaView = null;
+    $('bjPlayer').innerHTML = '';
+    $('bjMsg').className = 'og-bj-msg';
+    pintar();
+  }
+  // mão que ficou a meio no Ranking (ex.: recarregaste a página)
+  function retomar(ativos) {
+    const v = ativos && ativos.blackjack;
+    if (!v) return;
+    reset();
+    emJogo = true;
+    dealer = v.dealer.map((c) => ({ ...c }));
+    maos = v.maos.map((m) => ({ ...m, cartas: m.cartas.map((c) => ({ ...c })) }));
+    ativa = v.ativa;
+    ultimaView = v;
+    pintar();
+    OG.toast('Tinhas uma mão de Blackjack a meio — continua!');
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('bjDealer')) return;
-    novoSapato();
+    OG.registarJogo({ emJogo: () => ocupado || (emJogo && !OG.emRanking()), reset, retomar });
     $('bjPlay').addEventListener('click', distribuir);
     $('bjHit').addEventListener('click', pedir);
     $('bjStand').addEventListener('click', ficar);

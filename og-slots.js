@@ -2,23 +2,16 @@
 // Slot "FabioSilva" — 5 rolos × 3 linhas, 10 linhas de pagamento.
 // Ganha quem tiver 3, 4 ou 5 símbolos iguais seguidos a partir do
 // 1.º rolo numa linha. Retorno teórico ≈ 96% (calculado por simulação).
+// Os resultados vêm de OG.jogar (motor local no Treino, servidor no Ranking).
 // ===================================================================
 (function () {
   const $ = (id) => document.getElementById(id);
-  const SIMBOLOS = [
-    { id: 'cereja', e: '🍒', w: 22, paga: [16, 42, 125] },
-    { id: 'limao', e: '🍋', w: 20, paga: [17, 47, 160] },
-    { id: 'uvas', e: '🍇', w: 17, paga: [23, 63, 230] },
-    { id: 'melancia', e: '🍉', w: 14, paga: [31, 94, 315] },
-    { id: 'sino', e: '🔔', w: 10, paga: [47, 157, 630] },
-    { id: 'estrela', e: '⭐', w: 8, paga: [78, 260, 1250] },
-    { id: 'diamante', e: '💎', w: 5, paga: [157, 630, 3150] },
-    { id: 'coroa', e: '👑', w: 3, paga: [315, 1570, 8400] },
-  ]; // "paga" = vezes a aposta POR LINHA (aposta total / 10)
-  const LINHAS = [
-    [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2],
-    [0, 0, 1, 2, 2], [2, 2, 1, 0, 0], [1, 0, 0, 0, 1], [1, 2, 2, 2, 1], [1, 0, 1, 2, 1],
-  ];
+  // pesos e prémios vêm do motor (og-motor.js); aqui só os desenhos
+  const EMOJI = { cereja: '🍒', limao: '🍋', uvas: '🍇', melancia: '🍉', sino: '🔔', estrela: '⭐', diamante: '💎', coroa: '👑' };
+  const SIMBOLOS = OGMotor.SIMBOLOS.map((s) => Object.assign({ e: EMOJI[s.id] }, s)); // "paga" em décimas da aposta
+  const POR_ID = Object.fromEntries(SIMBOLOS.map((s) => [s.id, s]));
+  const LINHAS = OGMotor.LINHAS;
+  let ultimosGanhos = [];
   const CORES_LINHA = ['#f0c14b', '#4da3ff', '#3ddc84', '#ff5f8f', '#b38bff', '#ff9f43', '#2ee6d6', '#ffd166', '#ff6b6b', '#7bed9f'];
   const PESO = SIMBOLOS.reduce((s, x) => s + x.w, 0);
 
@@ -38,17 +31,6 @@
     $('slotPaytable').innerHTML = SIMBOLOS.slice().reverse().map((s) => `<div class="og-pay-row"><span class="og-pay-sym">${s.e}</span><span>×3 <b>${(s.paga[0] / 10).toFixed(1)}x</b></span><span>×4 <b>${(s.paga[1] / 10).toFixed(1)}x</b></span><span>×5 <b>${(s.paga[2] / 10).toFixed(0)}x</b></span></div>`).join('');
   }
 
-  function avaliar() {
-    const ganhos = [];
-    LINHAS.forEach((L, li) => {
-      const s = grelha[0][L[0]];
-      let k = 1;
-      while (k < 5 && grelha[k][L[k]].id === s.id) k++;
-      if (k >= 3) ganhos.push({ li, k, s, mult: s.paga[k - 3] / 10 });
-    });
-    return ganhos;
-  }
-
   function desenharLinhas(ganhos) {
     const svg = $('slotLines');
     const box = $('slotReels').getBoundingClientRect();
@@ -63,18 +45,25 @@
     }).join('');
   }
 
-  function girar() {
+  async function girar() {
     if (aGirar) return;
     const aposta = OG.readBet('slotBet'); if (!aposta) return;
     aGirar = true;
-    OG.adjust(-aposta); OG.sound('bet');
     $('slotPlay').disabled = true;
     OG.lockBet('slotBet', true);
+    let res;
+    try {
+      res = await OG.jogar('slots', 'iniciar', { aposta });
+    } catch (e) {
+      aGirar = false; $('slotPlay').disabled = false; OG.lockBet('slotBet', false);
+      return;
+    }
+    OG.sound('bet');
     $('slotLines').innerHTML = '';
     $('slotWin').className = 'og-slot-win';
     $('slotReels').querySelectorAll('.og-slot-cell.ganha').forEach((c) => c.classList.remove('ganha'));
 
-    const novo = Array.from({ length: 5 }, () => [sortear(), sortear(), sortear()]);
+    const novo = res.view.grelha.map((col) => col.map((id) => POR_ID[id]));
     const reels = $('slotReels').querySelectorAll('.og-reel');
     const alturaCel = reels[0].clientHeight / 3;
     reels.forEach((reel, i) => {
@@ -98,22 +87,23 @@
         strip.style.transition = 'none';
         strip.style.transform = 'translateY(0)';
         OG.sound('reel');
-        if (i === 4) terminar(novo, aposta);
+        if (i === 4) terminar(novo, aposta, res);
       }, dur + 20);
     });
   }
 
-  function terminar(novo, aposta) {
+  function terminar(novo, aposta, res) {
     grelha = novo;
-    const ganhos = avaliar();
-    const mult = ganhos.reduce((s, g) => s + g.mult, 0) / 10; // por linha → total
-    const ganho = Math.floor(aposta * mult);
+    const ganhos = res.view.ganhos.map((g) => ({ li: g.li, k: g.k, s: POR_ID[g.id], mult: g.mult }));
+    const mult = res.view.mult;
+    const ganho = res.credito;
     const reels = $('slotReels').querySelectorAll('.og-reel');
     ganhos.forEach((g) => LINHAS[g.li].slice(0, g.k).forEach((row, col) => reels[col].querySelectorAll('.og-slot-cell')[row].classList.add('ganha')));
+    ultimosGanhos = ganhos;
     desenharLinhas(ganhos);
+    OG.revelarSaldo();
     const w = $('slotWin');
     if (ganho > 0) {
-      OG.adjust(ganho);
       w.className = 'og-slot-win show' + (mult >= 10 ? ' big' : '');
       w.innerHTML = `${mult >= 50 ? 'MEGA WIN' : mult >= 10 ? 'BIG WIN' : 'Ganhaste'} <strong>${OG.fmt(ganho)}</strong>`;
       OG.sound('win');
@@ -131,11 +121,12 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('slotReels')) return;
+    OG.registarJogo({ emJogo: () => aGirar });
     construir();
     $('slotPlay').addEventListener('click', girar);
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) { e.preventDefault(); girar(); }
     });
-    window.addEventListener('resize', () => { if (!aGirar) desenharLinhas(avaliar().length && $('slotLines').innerHTML ? avaliar() : []); });
+    window.addEventListener('resize', () => { if (!aGirar) desenharLinhas($('slotLines').innerHTML ? ultimosGanhos : []); });
   });
 })();

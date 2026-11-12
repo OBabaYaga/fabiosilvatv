@@ -1,7 +1,8 @@
 // ===================================================================
 // FabioSilva_TV Originals — base comum dos minijogos (estilo Stake)
-// Fichas virtuais, sem dinheiro real. Saldo e histórico ficam neste
-// browser e são os mesmos de antes (mesmas chaves do localStorage).
+// Fichas virtuais, sem dinheiro real e sem valor nenhum. Dois modos:
+// Treino (fichas só neste browser) e Ranking semanal (servidor).
+// A matemática dos jogos está em og-motor.js.
 // ===================================================================
 
 const OG = (function () {
@@ -48,30 +49,69 @@ const OG = (function () {
     return Math.floor(rand() * n);
   }
 
+  // ---------- modo: Treino (local) ou Ranking semanal (servidor) ----------
+  // Treino  -> fichas guardadas só neste browser, recarregáveis à vontade.
+  // Ranking -> fichas da semana guardadas no servidor; é o servidor que
+  //            sorteia. Não valem prémios nem se misturam com a loja.
+  const MODO_KEY = 'fstv_og_modo';
+  const TOKEN_KEY = 'obaba_twitch_token';
+  const API = (window.FSTV_API || 'https://fabiosilvatv-api.vercel.app') + '/api/jogos';
+  let modo = store(true, MODO_KEY) === 'ranking' ? 'ranking' : 'treino';
+  let remoto = null; // { fichas, posicao, bonusDisponivel, bonus, ativos, … }
+  let aCarregar = false;
+  let mostrado = null; // saldo mostrado no ecrã (pode ficar atrás do real durante as animações)
+  let jogoAtual = null; // { emJogo(), reset(), retomar(ativos) }
+  const estadoLocal = {};
+  let fila = Promise.resolve();
+
+  function token() {
+    return store(true, TOKEN_KEY);
+  }
+  function emRanking() {
+    return modo === 'ranking';
+  }
+
   // ---------- saldo ----------
-  function getBalance() {
+  function saldoLocal() {
     const s = store(true, BALANCE_KEY);
     const n = s === null ? START_BALANCE : parseInt(s, 10);
     return Number.isFinite(n) ? n : START_BALANCE;
   }
-  function setBalance(v) {
-    const val = Math.max(0, Math.round(v));
-    store(false, BALANCE_KEY, String(val));
-    renderBalance();
-    if (val <= 0) {
-      setTimeout(() => {
-        if (getBalance() <= 0) {
-          setBalance(START_BALANCE);
-          toast('As tuas fichas acabaram — aqui tens mais ' + fmt(START_BALANCE) + ' para continuares.');
-        }
-      }, 900);
-    }
+  function getBalance() {
+    if (emRanking()) return remoto ? remoto.fichas : 0;
+    return saldoLocal();
   }
+  function guardarLocal(v) {
+    store(false, BALANCE_KEY, String(Math.max(0, Math.round(v))));
+  }
+  function setBalance(v) {
+    if (emRanking()) return; // no ranking só o servidor mexe nas fichas
+    guardarLocal(v);
+    mostrado = null;
+    renderBalance();
+    verificarRecarga();
+  }
+  function verificarRecarga() {
+    if (emRanking() || saldoLocal() > 0) return;
+    setTimeout(() => {
+      if (!emRanking() && saldoLocal() <= 0 && !(jogoAtual && jogoAtual.emJogo())) {
+        setBalance(START_BALANCE);
+        toast('As tuas fichas acabaram — aqui tens mais ' + fmt(START_BALANCE) + ' para continuares.');
+      }
+    }, 900);
+  }
+  // compatibilidade: só no modo Treino
   function adjust(d) {
-    setBalance(getBalance() + d);
+    setBalance(saldoLocal() + d);
+  }
+  // Mostra o saldo real (chamado no fim de cada animação)
+  function revelarSaldo() {
+    mostrado = null;
+    renderBalance();
+    verificarRecarga();
   }
   function renderBalance() {
-    const v = fmt(getBalance());
+    const v = emRanking() && !remoto ? '—' : fmt(mostrado == null ? getBalance() : mostrado);
     document.querySelectorAll('[data-balance]').forEach((el) => {
       if (el.textContent !== v) {
         el.textContent = v;
@@ -82,10 +122,167 @@ const OG = (function () {
     });
   }
 
+  // ---------- uma jogada ----------
+  // Devolve { view, fim, debito, credito, fichas }. O saldo mostrado fica
+  // já com a aposta descontada; o prémio só aparece com revelarSaldo().
+  function jogar(jogo, passo, params) {
+    const p = fila.then(() => (emRanking() ? jogarRemoto(jogo, passo, params) : jogarLocal(jogo, passo, params)));
+    fila = p.catch(() => {});
+    return p;
+  }
+  async function jogarLocal(jogo, passo, params) {
+    let r;
+    try {
+      r = OGMotor.passo(jogo, passo, params, estadoLocal[jogo] || null, rand, { manual: true });
+    } catch (e) {
+      toast(e.message || 'Jogada inválida.');
+      throw e;
+    }
+    const saldo = saldoLocal();
+    if (r.debito > saldo) {
+      toast('Não tens fichas suficientes.');
+      throw new Error('SALDO');
+    }
+    estadoLocal[jogo] = r.fim ? null : r.estado;
+    const fichas = saldo - r.debito + r.credito;
+    guardarLocal(fichas);
+    mostrado = fichas - r.credito;
+    renderBalance();
+    return { view: r.view, fim: r.fim, debito: r.debito, credito: r.credito, fichas };
+  }
+  async function pedirAPI(corpo) {
+    const t = token();
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, t ? { Authorization: 'Bearer ' + t } : {}),
+      body: JSON.stringify(corpo),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const e = new Error(data.error || 'Sem ligação ao servidor. Tenta outra vez.');
+      e.code = data.code;
+      e.status = res.status;
+      throw e;
+    }
+    return data;
+  }
+  async function jogarRemoto(jogo, passo, params) {
+    if (!remoto) {
+      toast(token() ? 'A carregar as tuas fichas… tenta daqui a um segundo.' : 'Entra com a Twitch para jogar no ranking.');
+      throw new Error('SEM_SESSAO');
+    }
+    let r;
+    try {
+      r = await pedirAPI({ acao: 'jogar', jogo, passo, params });
+    } catch (e) {
+      toast(e.message);
+      if (e.code === 'SALDO' || e.code === 'A_DECORRER' || e.code === 'SEM_JOGO') carregarRemoto();
+      throw e;
+    }
+    remoto.fichas = r.fichas;
+    mostrado = r.fichas - r.credito;
+    renderBalance();
+    return r;
+  }
+
+  async function carregarRemoto() {
+    if (!emRanking() || aCarregar) return;
+    if (!token()) {
+      remoto = null;
+      renderModo();
+      return;
+    }
+    aCarregar = true;
+    try {
+      remoto = await pedirAPI({ acao: 'estado' });
+      mostrado = null;
+      if (jogoAtual && jogoAtual.retomar && remoto.ativos) jogoAtual.retomar(remoto.ativos);
+    } catch (e) {
+      remoto = null;
+      if (e.status !== 401) toast(e.message);
+    } finally {
+      aCarregar = false;
+      renderModo();
+      renderBalance();
+    }
+  }
+  async function receberBonus(btn) {
+    if (btn) btn.disabled = true;
+    try {
+      const r = await pedirAPI({ acao: 'bonus' });
+      remoto.fichas = r.fichas;
+      remoto.bonusDisponivel = false;
+      mostrado = null;
+      sound('win');
+      toast('+' + fmt(r.bonus) + ' fichas! Volta amanhã para mais.');
+    } catch (e) {
+      toast(e.message);
+      if (remoto) remoto.bonusDisponivel = false;
+    }
+    renderModo();
+    renderBalance();
+  }
+
+  function mudarModo(novo) {
+    if (novo === modo) return;
+    if (jogoAtual && jogoAtual.emJogo()) {
+      toast('Acaba a jogada antes de mudares de modo.');
+      return;
+    }
+    modo = novo;
+    store(false, MODO_KEY, modo);
+    mostrado = null;
+    if (jogoAtual && jogoAtual.reset) jogoAtual.reset();
+    renderModo();
+    renderBalance();
+    renderHistory();
+    if (emRanking()) carregarRemoto();
+    sound('tick');
+  }
+  function renderModo() {
+    document.querySelectorAll('.og-modo [data-modo]').forEach((b) => {
+      const sel = b.dataset.modo === modo;
+      b.classList.toggle('sel', sel);
+      b.setAttribute('aria-pressed', sel ? 'true' : 'false');
+    });
+    document.querySelectorAll('#balanceReset').forEach((b) => (b.hidden = emRanking()));
+    document.querySelectorAll('[data-so-treino]').forEach((el) => (el.hidden = emRanking()));
+    document.querySelectorAll('[data-so-ranking]').forEach((el) => (el.hidden = !emRanking()));
+    document.body.classList.toggle('og-em-ranking', emRanking());
+    const box = document.getElementById('ogRankBox');
+    if (!box) return;
+    box.hidden = !emRanking();
+    if (!emRanking()) return;
+    if (!token()) {
+      box.innerHTML = '<p>Entra com a Twitch para jogares no ranking da semana.</p><button type="button" class="og-btn2" id="ogRankLogin"><i class="fab fa-twitch" aria-hidden="true"></i> Entrar com a Twitch</button>';
+      const b = document.getElementById('ogRankLogin');
+      if (b) b.onclick = () => window.TwitchAuth && TwitchAuth.login();
+      return;
+    }
+    if (!remoto) {
+      box.innerHTML = '<p>A carregar as tuas fichas…</p>';
+      return;
+    }
+    const pos = remoto.posicao ? '<strong>#' + remoto.posicao + '</strong> esta semana' : 'Ainda sem jogadas esta semana';
+    box.innerHTML =
+      '<div class="og-rank-linha"><span><i class="fas fa-trophy" aria-hidden="true"></i> ' + pos + '</span><a href="jogos.html#ranking">Ver ranking</a></div>' +
+      (remoto.bonusDisponivel
+        ? '<button type="button" class="og-btn2 og-bonus" id="ogBonus"><i class="fas fa-gift" aria-hidden="true"></i> Bónus diário +' + fmt(remoto.bonus) + '</button>'
+        : '<p class="og-rank-nota">Bónus de hoje recebido. Volta amanhã!</p>');
+    const b = document.getElementById('ogBonus');
+    if (b) b.onclick = () => receberBonus(b);
+  }
+  function registarJogo(j) {
+    jogoAtual = j;
+  }
+
   // ---------- histórico ----------
+  function chaveHistorico() {
+    return emRanking() ? HISTORY_KEY + '_ranking' : HISTORY_KEY;
+  }
   function getHistory() {
     try {
-      return JSON.parse(store(true, HISTORY_KEY) || '[]');
+      return JSON.parse(store(true, chaveHistorico()) || '[]');
     } catch (e) {
       return [];
     }
@@ -93,7 +290,7 @@ const OG = (function () {
   function pushHistory(game, bet, result, label) {
     const list = getHistory();
     list.unshift({ game, bet: Math.round(bet), result: Math.round(result), label: label || '', t: Date.now() });
-    store(false, HISTORY_KEY, JSON.stringify(list.slice(0, HISTORY_MAX)));
+    store(false, chaveHistorico(), JSON.stringify(list.slice(0, HISTORY_MAX)));
     renderHistory();
   }
   function timeAgo(t) {
@@ -190,6 +387,8 @@ const OG = (function () {
     const reset = document.getElementById('balanceReset');
     if (reset)
       reset.addEventListener('click', () => {
+        if (emRanking()) return;
+        if (jogoAtual && jogoAtual.emJogo()) return toast('Acaba a jogada primeiro.');
         setBalance(START_BALANCE);
         toast('Saldo reposto para ' + fmt(START_BALANCE) + ' fichas.');
       });
@@ -313,18 +512,26 @@ const OG = (function () {
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.og-modo [data-modo]').forEach((b) => b.addEventListener('click', () => mudarModo(b.dataset.modo)));
+    renderModo();
     renderBalance();
     renderHistory();
     initBetControls();
     initSoundToggle();
+    if (emRanking()) {
+      // espera pelo login da Twitch (valida o token) antes de pedir as fichas
+      const p = window.TwitchAuth && TwitchAuth.pronto;
+      (p || Promise.resolve()).then(carregarRemoto);
+    }
   });
   window.addEventListener('storage', (e) => {
-    if (e.key === BALANCE_KEY) renderBalance();
+    if (e.key === BALANCE_KEY && !emRanking()) renderBalance();
   });
 
   return {
     fmt, fmtMult, esc, rand, randInt,
-    getBalance, setBalance, adjust, renderBalance,
+    getBalance, setBalance, adjust, renderBalance, revelarSaldo,
+    jogar, emRanking, registarJogo,
     pushHistory, pushRecent, readBet, lockBet,
     toast, shake, winCard, confetti, sound,
   };

@@ -371,3 +371,34 @@
 @media (prefers-reduced-motion: reduce) {
   .og-card.deal, .og-tile-face svg, .og-slot-cell.ganha span, .og-slot-win.big { animation: none; }
 }
+
+/* ---------- Treino / Ranking semanal ---------- */
+.og-modo { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem; background: var(--og-input); border: 1px solid var(--og-line); border-radius: 0.7rem; padding: 0.25rem; }
+.og-modo button { border: 0; background: transparent; color: var(--muted); font: 700 0.78rem var(--font-body, inherit); padding: 0.55rem 0.4rem; border-radius: 0.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.35rem; white-space: nowrap; }
+.og-modo button:hover { color: var(--text); }
+.og-modo button.sel { background: #2a3d57; color: var(--text); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset; }
+.og-modo button[data-modo="ranking"].sel { background: linear-gradient(180deg, #4a3a12, #33280c); color: var(--gold); }
+.og-rankbox { background: rgba(240,193,75,0.06); border: 1px solid rgba(240,193,75,0.25); border-radius: 0.7rem; padding: 0.65rem 0.75rem; display: grid; gap: 0.5rem; font-size: 0.82rem; }
+.og-rankbox[hidden] { display: none; }
+.og-rankbox p { margin: 0; color: var(--muted); }
+.og-rank-linha { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+.og-rank-linha i { color: var(--gold); }
+.og-rank-linha a { color: var(--gold); font-weight: 700; text-decoration: none; }
+.og-rank-linha a:hover { text-decoration: underline; }
+.og-rank-nota { font-size: 0.75rem; }
+.og-bonus { width: 100%; justify-content: center; color: var(--gold); border-color: rgba(240,193,75,0.4); }
+.og-em-ranking .og-balance { border-color: rgba(240,193,75,0.35); }
+
+/* ranking na página dos jogos */
+.og-ranking-tabela { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.og-ranking-tabela th, .og-ranking-tabela td { padding: 0.55rem 0.6rem; border-bottom: 1px solid var(--og-line); text-align: left; }
+.og-ranking-tabela th { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.og-ranking-tabela td.n { font-family: var(--font-mono); text-align: right; color: var(--gold); }
+.og-ranking-tabela th.n { text-align: right; }
+.og-ranking-tabela tr.eu td { background: rgba(240,193,75,0.08); }
+.og-ranking-pos { display: inline-grid; place-items: center; min-width: 1.7rem; height: 1.7rem; border-radius: 50%; background: rgba(255,255,255,0.06); font-weight: 800; font-size: 0.8rem; }
+.og-ranking-pos.p1 { background: linear-gradient(180deg, #ffe08a, #d9a520); color: #3b2a00; }
+.og-ranking-pos.p2 { background: linear-gradient(180deg, #eef2f7, #a9b4c4); color: #1d2533; }
+.og-ranking-pos.p3 { background: linear-gradient(180deg, #f2c29b, #b9733f); color: #2e1606; }
+.og-ranking-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; color: var(--muted); font-size: 0.82rem; margin: 0 0 0.8rem; }
+.og-ranking-vazio { color: var(--muted); padding: 1rem 0; }

@@ -30,16 +30,20 @@
     $('diceProfit').textContent = '+' + OG.fmt(Math.floor(aposta * mult()) - aposta);
   }
 
-  function rolar() {
+  async function rolar() {
     if (aRolar) return;
     const aposta = OG.readBet('diceBet'); if (!aposta) return;
     aRolar = true;
-    OG.adjust(-aposta); OG.sound('bet');
     $('dicePlay').disabled = true;
-    // 0.00 – 100.00
-    const r = Math.floor(OG.rand() * 10001) / 100;
-    const ganhou = acima ? r > alvo : r < alvo;
-    const m = mult();
+    let res;
+    try {
+      res = await OG.jogar('dados', 'iniciar', { aposta, alvo, acima });
+    } catch (e) {
+      aRolar = false; $('dicePlay').disabled = false;
+      return;
+    }
+    OG.sound('bet');
+    const { r, ganhou, mult: m } = res.view;
     const marcador = $('diceResult');
     marcador.classList.remove('win', 'lose', 'show');
     void marcador.offsetWidth;
@@ -47,15 +51,13 @@
     marcador.querySelector('span').textContent = r.toFixed(2);
     marcador.classList.add('show', ganhou ? 'win' : 'lose');
     setTimeout(() => {
+      OG.revelarSaldo();
+      const etiqueta = `${r.toFixed(2)} · ${res.view.acima ? '>' : '<'} ${res.view.alvo.toFixed(2)}`;
       if (ganhou) {
-        const ganho = Math.floor(aposta * m);
-        OG.adjust(ganho); OG.sound('win');
-        OG.winCard($('diceStage'), m, ganho);
-        OG.pushHistory('dice', aposta, ganho - aposta, `${r.toFixed(2)} · ${acima ? '>' : '<'} ${alvo.toFixed(2)}`);
-      } else {
-        OG.sound('lose');
-        OG.pushHistory('dice', aposta, -aposta, `${r.toFixed(2)} · ${acima ? '>' : '<'} ${alvo.toFixed(2)}`);
-      }
+        OG.sound('win');
+        OG.winCard($('diceStage'), m, res.credito);
+      } else OG.sound('lose');
+      OG.pushHistory('dice', aposta, res.credito - aposta, etiqueta);
       OG.pushRecent('diceRecent', r.toFixed(2), ganhou ? 'win' : 'lose');
       aRolar = false;
       $('dicePlay').disabled = false;
@@ -64,6 +66,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('diceSlider')) return;
+    OG.registarJogo({ emJogo: () => aRolar });
     $('diceSlider').addEventListener('input', (e) => { alvo = limitarAlvo(parseFloat(e.target.value)); pintar('slider'); OG.sound('tick'); });
     $('diceTarget').addEventListener('change', (e) => { alvo = limitarAlvo(parseFloat(e.target.value) || 50); pintar(); });
     $('diceChance').addEventListener('change', (e) => {

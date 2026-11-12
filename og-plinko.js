@@ -102,14 +102,26 @@
     bolas = bolas.filter((b) => !b.pago);
     if (bolas.length || brilho.length) raf = requestAnimationFrame(desenhar);
     else raf = 0;
-    bloquear(bolas.length > 0);
+    bloquear(bolas.length > 0 || pendentes > 0);
   }
 
-  function lancar() {
+  let pendentes = 0;
+  async function lancar() {
     const aposta = OG.readBet('plinkoBet'); if (!aposta) return;
-    OG.adjust(-aposta); OG.sound('bet');
-    // caminho: em cada linha, esquerda (0) ou direita (1)
-    const passos = Array.from({ length: linhas }, () => (OG.rand() < 0.5 ? 0 : 1));
+    const l = linhas, rk = risco;
+    pendentes++;
+    bloquear(true);
+    let res;
+    try {
+      res = await OG.jogar('plinko', 'iniciar', { aposta, linhas: l, risco: rk });
+    } catch (e) {
+      pendentes--;
+      return;
+    }
+    pendentes--;
+    if (l !== linhas) { OG.revelarSaldo(); return; }
+    OG.sound('bet');
+    const passos = res.view.passos;
     const xs = [geo.cx];
     const ks = [];
     let k = 0;
@@ -118,20 +130,21 @@
       k += passos[r];
       xs.push(geo.cx + (k - (r + 1) / 2) * geo.gap);
     }
-    bolas.push({ aposta, xs, ks, balde: k, t0: performance.now(), ultimo: -1, pago: false });
+    bolas.push({ aposta, xs, ks, balde: res.view.balde, mult: res.view.mult, ganho: res.credito, risco: rk, t0: performance.now(), ultimo: -1, pago: false });
     if (!raf) raf = requestAnimationFrame(desenhar);
   }
 
   function aterrar(b) {
-    const m = mults()[b.balde];
-    const ganho = Math.floor(b.aposta * m);
-    if (ganho) OG.adjust(ganho);
+    const m = b.mult;
+    const ganho = b.ganho;
+    if (!bolas.some((x) => x !== b && !x.pago)) OG.revelarSaldo();
+    else OG.renderBalance();
     const el = $('plinkoBuckets').querySelector(`[data-i="${b.balde}"]`);
     if (el) { el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit'); }
     OG.sound(m >= 1 ? (m >= 3 ? 'win' : 'gem') : 'tick');
     if (m >= 10) { OG.winCard($('plinkoStage'), m, ganho); if (m >= 100) OG.confetti($('plinkoStage')); }
     OG.pushRecent('plinkoRecent', m + 'x', m >= 1 ? 'win' : 'lose');
-    OG.pushHistory('plinko', b.aposta, ganho - b.aposta, `${m}x · ${linhas} linhas, risco ${risco}`);
+    OG.pushHistory('plinko', b.aposta, ganho - b.aposta, `${m}x · ${b.xs.length - 1} linhas, risco ${b.risco}`);
   }
 
   function bloquear(sim) {
@@ -141,6 +154,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('plinkoCanvas')) return;
+    OG.registarJogo({ emJogo: () => bolas.length > 0 || pendentes > 0 });
     construirBaldes(); resize();
     window.addEventListener('resize', resize);
     $('plinkoRows').addEventListener('change', (e) => { linhas = +e.target.value; construirBaldes(); resize(); });

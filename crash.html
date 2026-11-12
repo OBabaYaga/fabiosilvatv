@@ -28,7 +28,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css?v=38">
-    <link rel="stylesheet" href="og.css?v=2">
+    <link rel="stylesheet" href="og.css?v=3">
 </head>
 <body data-game="crash">
 <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
@@ -79,15 +79,17 @@
 </a>
 <section class="og-shell">
 <aside class="og-side">
-  <div class="og-balance"><span class="og-balance-l">Saldo</span><strong><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></strong><button class="og-mini" id="balanceReset" type="button" title="Repor 1.000 fichas"><i class="fas fa-rotate-right" aria-hidden="true"></i></button></div>
+<div class="og-modo" role="group" aria-label="Modo de jogo"><button type="button" data-modo="treino" aria-pressed="true"><i class="fas fa-dumbbell" aria-hidden="true"></i> Treino</button><button type="button" data-modo="ranking" aria-pressed="false"><i class="fas fa-trophy" aria-hidden="true"></i> Ranking semanal</button></div>
+  <div class="og-balance"><span class="og-balance-l">Fichas</span><strong><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></strong><button class="og-mini" id="balanceReset" type="button" title="Repor 1.000 fichas"><i class="fas fa-rotate-right" aria-hidden="true"></i></button></div>
+  <div class="og-rankbox" id="ogRankBox" hidden></div>
   <div class="og-field">
     <label class="og-label" for="crashBet">Montante da aposta</label>
     <div class="og-amount"><i class="fas fa-coins" aria-hidden="true"></i><input id="crashBet" type="number" min="1" step="1" value="10" inputmode="numeric"><button type="button" data-bet-op="half" data-target="crashBet">½</button><button type="button" data-bet-op="double" data-target="crashBet">2×</button><button type="button" data-bet-op="max" data-target="crashBet">Máx</button></div>
   </div>
-  <div class="og-field"><label class="og-label" for="crashAuto">Recolha automática</label><div class="og-input-suffix"><input id="crashAuto" type="number" min="1.01" step="0.01" value="2.00"><span>x</span></div></div>
+  <div class="og-field"><label class="og-label" for="crashAuto">Recolha automática</label><div class="og-input-suffix"><input id="crashAuto" type="number" min="1.01" step="0.01" value="2.00"><span>x</span></div><small class="og-hint" id="crashAutoNota" hidden>No ranking a recolha é sempre a automática.</small></div>
   <button class="og-play" id="crashPlay" type="button">Apostar</button>
   
-  <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas virtuais · sem dinheiro real</p>
+  <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas sem valor · não se trocam por prémios</p>
 </aside><div class="og-stage og-crash" id="crashStage"><div class="og-topbar"><div class="og-recent" id="crashRecent" aria-label="Resultados recentes"></div><button class="og-sound" type="button"></button></div>
   <div class="og-crash-area"><canvas id="crashCanvas"></canvas><div class="og-crash-center"><div class="og-crash-mult" id="crashMult">1.00x</div><div class="og-crash-status" id="crashStatus">Faz a tua aposta para lançar o foguete</div></div></div>
 </div>
@@ -131,9 +133,10 @@
 </aside>
 </div>
 <script src="script.js?v=36"></script>
-<script src="twitch-auth.js?v=36"></script>
-<script src="og-core.js?v=1"></script>
-<script src="og-crash.js?v=1"></script>
+<script src="twitch-auth.js?v=39"></script>
+<script src="og-motor.js?v=3"></script>
+<script src="og-core.js?v=3"></script>
+<script src="og-crash.js?v=3"></script>
 <button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
 <script src="rebrand.js?v=36"></script>
 </body>

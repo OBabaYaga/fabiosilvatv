@@ -15,24 +15,10 @@
   let aGirar = false;
   let anguloRoda = 0;
 
-  const cor = (n) => (n === 0 ? 'verde' : VERMELHOS.has(n) ? 'vermelho' : 'preto');
+  const cor = OGMotor.cor;
 
   // Que números cobre cada aposta e quanto paga (x vezes, além da aposta)
-  function cobre(chave) {
-    const [tipo, v] = chave.split(':');
-    const nums = [];
-    if (tipo === 'n') nums.push(+v);
-    else for (let n = 1; n <= 36; n++) {
-      if (tipo === 'duzia' && Math.ceil(n / 12) === +v) nums.push(n);
-      if (tipo === 'coluna' && ((n - 1) % 3) + 1 === +v) nums.push(n);
-      if (tipo === 'cor' && cor(n) === v) nums.push(n);
-      if (tipo === 'par' && (v === 'par' ? n % 2 === 0 : n % 2 === 1)) nums.push(n);
-      if (tipo === 'metade' && (v === '1' ? n <= 18 : n >= 19)) nums.push(n);
-    }
-    const paga = tipo === 'n' ? 35 : tipo === 'duzia' || tipo === 'coluna' ? 2 : 1;
-    return { nums, paga };
-  }
-
+  const cobre = OGMotor.cobre;
   // ---------- mesa ----------
   function construirMesa() {
     const cel = (chave, txt, cls) => `<button type="button" class="og-rl-cell ${cls || ''}" data-k="${chave}"><span>${txt}</span></button>`;
@@ -159,16 +145,23 @@
     desenharRoda(anguloRoda, null);
   }
 
-  function girar() {
+  async function girar() {
     const total = totalApostado();
     if (aGirar || !total) return;
     if (total > OG.getBalance()) { OG.toast('Não tens fichas suficientes.'); return; }
     aGirar = true;
-    OG.adjust(-total); OG.sound('bet');
-    ultimasApostas = { ...apostas };
     pintarFichas();
+    let res;
+    try {
+      res = await OG.jogar('roleta', 'iniciar', { apostas });
+    } catch (e) {
+      aGirar = false; pintarFichas();
+      return;
+    }
+    OG.sound('bet');
+    ultimasApostas = { ...apostas };
     limparResultado();
-    const resultado = OG.randInt(37);
+    const resultado = res.view.numero;
     const idx = RODA.indexOf(resultado);
     const a = (Math.PI * 2) / 37;
     // a roda roda para a direita; a bola para a esquerda e cai na casa
@@ -188,25 +181,21 @@
       desenharRoda(anguloRoda, bola, Math.max(0.7, raio));
       if (agora - ultimoTick > 60 + p * 180 && p < 0.97) { ultimoTick = agora; OG.sound('tick'); }
       if (p < 1) requestAnimationFrame(frame);
-      else terminar(resultado);
+      else terminar(resultado, res);
     })(t0);
   }
 
-  function terminar(n) {
-    let devolvido = 0;
-    const etiquetas = [];
-    Object.entries(apostas).forEach(([k, v]) => {
-      const { nums, paga } = cobre(k);
-      if (nums.includes(n)) { devolvido += v * (paga + 1); etiquetas.push(k); }
-    });
-    const total = totalApostado();
-    if (devolvido) OG.adjust(devolvido);
+  function terminar(n, res) {
+    const devolvido = res.credito;
+    const etiquetas = res.view.vencedoras;
+    const total = res.debito;
+    OG.revelarSaldo();
     const cel = $('rlBoard').querySelector(`[data-k="n:${n}"]`);
     if (cel) cel.classList.add('win-cell');
     etiquetas.forEach((k) => { const c = $('rlBoard').querySelector(`[data-k="${k}"]`); if (c) c.classList.add('win-cell'); });
-    const res = $('rlResult');
-    res.className = 'og-rl-result show ' + cor(n);
-    res.textContent = n;
+    const caixa = $('rlResult');
+    caixa.className = 'og-rl-result show ' + cor(n);
+    caixa.textContent = n;
     const liquido = devolvido - total;
     if (liquido > 0) { OG.sound('win'); OG.winCard($('rlStage'), devolvido / total, devolvido); if (devolvido / total >= 10) OG.confetti($('rlStage')); }
     else if (liquido < 0) OG.sound('lose');
@@ -219,6 +208,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('rlBoard')) return;
+    OG.registarJogo({ emJogo: () => aGirar, reset: limpar });
     construirMesa();
     $('rlChips').innerHTML = FICHAS.map((v) => `<button type="button" class="og-chip og-chip-btn${v === ficha ? ' sel' : ''}" data-v="${v}">${v}</button>`).join('');
     $('rlChips').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {

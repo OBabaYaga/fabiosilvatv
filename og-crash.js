@@ -11,11 +11,6 @@
   let aposta = 0, crashAt = 1, t0 = 0, recolhido = 0, raf = 0;
   let stars = [], particulas = [];
 
-  function sortearCrash() {
-    const r = OG.rand();
-    if (r < 0.03) return 1.0;
-    return Math.max(1.0, Math.floor((0.97 / (1 - r)) * 100) / 100);
-  }
   const multEm = (s) => Math.exp(K * s);
   const tempoPara = (m) => Math.log(m) / K;
 
@@ -110,20 +105,53 @@
   }
 
   // ---------- jogo ----------
+  // Treino: o browser sabe onde rebenta e podes recolher à mão.
+  // Ranking: o servidor resolve a ronda logo com a tua recolha automática
+  // (é por isso que ela é obrigatória) e o ecrã só mostra o voo.
+  let autoServidor = 0, creditoServidor = 0, aIniciar = false;
+
   function setUI() {
     const jogando = estado === 'running';
-    $('crashPlay').textContent = jogando ? (recolhido ? 'A aguardar…' : 'Recolher') : 'Apostar';
-    $('crashPlay').classList.toggle('og-play-cash', jogando && !recolhido);
-    $('crashPlay').disabled = jogando && !!recolhido;
-    OG.lockBet('crashBet', jogando);
-    $('crashAuto').disabled = jogando;
+    const ranking = OG.emRanking();
+    const play = $('crashPlay');
+    if (jogando && ranking) {
+      play.innerHTML = recolhido ? 'A aguardar…' : 'Recolha auto <small>' + OG.fmtMult(parseFloat($('crashAuto').value) || 0) + '</small>';
+      play.disabled = true;
+    } else {
+      play.textContent = jogando ? (recolhido ? 'A aguardar…' : 'Recolher') : 'Apostar';
+      play.disabled = (jogando && !!recolhido) || aIniciar;
+    }
+    play.classList.toggle('og-play-cash', jogando && !recolhido && !ranking);
+    OG.lockBet('crashBet', jogando || aIniciar);
+    $('crashAuto').disabled = jogando || aIniciar;
+    const nota = $('crashAutoNota');
+    if (nota) nota.hidden = !ranking;
   }
 
-  function iniciar() {
+  async function iniciar() {
+    if (aIniciar || estado === 'running') return;
     const v = OG.readBet('crashBet'); if (!v) return;
+    const ranking = OG.emRanking();
+    const auto = parseFloat($('crashAuto').value);
+    if (ranking && !(auto >= 1.01)) {
+      OG.toast('No ranking tens de pôr uma recolha automática (mínimo 1.01x).');
+      OG.shake($('crashAuto'));
+      return;
+    }
+    aIniciar = true; setUI();
+    let res;
+    try {
+      res = await OG.jogar('crash', 'iniciar', ranking ? { aposta: v, auto } : { aposta: v });
+    } catch (e) {
+      aIniciar = false; setUI();
+      return;
+    }
+    aIniciar = false;
     aposta = v; recolhido = 0; particulas = [];
-    OG.adjust(-aposta); OG.sound('bet');
-    crashAt = sortearCrash();
+    crashAt = res.view.crashAt;
+    autoServidor = ranking ? res.view.recolheu : 0;
+    creditoServidor = ranking ? res.credito : 0;
+    OG.sound('bet');
     estado = 'running'; t0 = performance.now();
     $('crashMult').className = 'og-crash-mult';
     $('crashStatus').textContent = 'Em voo…';
@@ -131,11 +159,9 @@
     loop();
   }
 
-  function recolher(mult) {
-    if (estado !== 'running' || recolhido) return;
-    recolhido = mult;
-    const ganho = Math.floor(aposta * mult);
-    OG.adjust(ganho); OG.sound('win');
+  function mostrarRecolha(mult, ganho) {
+    OG.revelarSaldo();
+    OG.sound('win');
     OG.winCard($('crashStage'), mult, ganho);
     OG.pushHistory('crash', aposta, ganho - aposta, 'Recolheu ' + OG.fmtMult(mult));
     $('crashStatus').textContent = 'Recolheste a ' + OG.fmtMult(mult) + ' (+' + OG.fmt(ganho - aposta) + ')';
@@ -143,30 +169,53 @@
     setUI();
   }
 
+  // só no Treino (no Ranking a recolha é a automática)
+  async function recolher(mult) {
+    if (estado !== 'running' || recolhido || OG.emRanking()) return;
+    recolhido = mult;
+    setUI();
+    try {
+      const res = await OG.jogar('crash', 'recolher', { mult });
+      mostrarRecolha(res.view.recolheu || mult, res.credito);
+    } catch (e) {
+      /* o aviso já apareceu */
+    }
+  }
+
   function loop() {
     const seg = (performance.now() - t0) / 1000;
     let m = multEm(seg);
-    const auto = parseFloat($('crashAuto').value);
-    if (!recolhido && auto >= 1.01 && m >= auto && auto <= crashAt) recolher(auto);
+    if (!recolhido) {
+      if (OG.emRanking()) {
+        if (autoServidor && m >= autoServidor) {
+          recolhido = autoServidor;
+          mostrarRecolha(autoServidor, creditoServidor);
+        }
+      } else {
+        const auto = parseFloat($('crashAuto').value);
+        if (auto >= 1.01 && m >= auto && auto <= crashAt) recolher(auto);
+      }
+    }
     if (m >= crashAt) {
       m = crashAt; estado = 'crashed';
       $('crashMult').textContent = OG.fmtMult(crashAt);
       $('crashMult').className = 'og-crash-mult boom';
       $('crashStatus').textContent = 'Rebentou a ' + OG.fmtMult(crashAt);
       OG.pushRecent('crashRecent', OG.fmtMult(crashAt), crashAt >= 2 ? 'win' : 'lose');
-      if (!recolhido) { OG.sound('boom'); OG.pushHistory('crash', aposta, -aposta, 'Rebentou a ' + OG.fmtMult(crashAt)); }
+      if (!recolhido) { OG.revelarSaldo(); OG.sound('boom'); OG.pushHistory('crash', aposta, -aposta, 'Rebentou a ' + OG.fmtMult(crashAt)); }
       explodir();
       estado = 'idle'; setUI();
       return;
     }
     $('crashMult').textContent = OG.fmtMult(m);
-    if (!recolhido) $('crashPlay').innerHTML = 'Recolher <small>' + OG.fmt(Math.floor(aposta * m)) + '</small>';
+    if (!recolhido && !OG.emRanking()) $('crashPlay').innerHTML = 'Recolher <small>' + OG.fmt(Math.floor(aposta * m)) + '</small>';
     desenhar(seg, false);
     raf = requestAnimationFrame(loop);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     if (!$('crashCanvas')) return;
+    OG.registarJogo({ emJogo: () => estado === 'running' || aIniciar, reset: setUI });
     resize(); window.addEventListener('resize', resize);
     $('crashPlay').addEventListener('click', () => {
       if (estado === 'running') recolher(Math.floor(multEm((performance.now() - t0) / 1000) * 100) / 100);

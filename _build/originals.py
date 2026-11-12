@@ -15,11 +15,17 @@ import re
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
-VER = "2"
+VER = "3"
+
+# Seletor Treino / Ranking + saldo + caixa do ranking (igual em todos os jogos)
+SALDO = '''<div class="og-modo" role="group" aria-label="Modo de jogo"><button type="button" data-modo="treino" aria-pressed="true"><i class="fas fa-dumbbell" aria-hidden="true"></i> Treino</button><button type="button" data-modo="ranking" aria-pressed="false"><i class="fas fa-trophy" aria-hidden="true"></i> Ranking semanal</button></div>
+  <div class="og-balance"><span class="og-balance-l">Fichas</span><strong><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></strong><button class="og-mini" id="balanceReset" type="button" title="Repor 1.000 fichas"><i class="fas fa-rotate-right" aria-hidden="true"></i></button></div>
+  <div class="og-rankbox" id="ogRankBox" hidden></div>'''
+
 
 def lado(bet_id, extra="", botao_id="", botao_txt="Apostar", depois=""):
     return f'''<aside class="og-side">
-  <div class="og-balance"><span class="og-balance-l">Saldo</span><strong><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></strong><button class="og-mini" id="balanceReset" type="button" title="Repor 1.000 fichas"><i class="fas fa-rotate-right" aria-hidden="true"></i></button></div>
+{SALDO}
   <div class="og-field">
     <label class="og-label" for="{bet_id}">Montante da aposta</label>
     <div class="og-amount"><i class="fas fa-coins" aria-hidden="true"></i><input id="{bet_id}" type="number" min="1" step="1" value="10" inputmode="numeric"><button type="button" data-bet-op="half" data-target="{bet_id}">½</button><button type="button" data-bet-op="double" data-target="{bet_id}">2×</button><button type="button" data-bet-op="max" data-target="{bet_id}">Máx</button></div>
@@ -27,7 +33,7 @@ def lado(bet_id, extra="", botao_id="", botao_txt="Apostar", depois=""):
   {extra}
   <button class="og-play" id="{botao_id}" type="button">{botao_txt}</button>
   {depois}
-  <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas virtuais · sem dinheiro real</p>
+  <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas sem valor · não se trocam por prémios</p>
 </aside>'''
 
 def topo(recent_id):
@@ -37,7 +43,7 @@ JOGOS = {
     "crash": dict(
         nome="Crash", icone="fa-rocket", hist="crash", script="og-crash.js",
         desc="Crash com fichas virtuais: o foguete sobe e o multiplicador com ele. Recolhe antes de rebentar.",
-        html=lado("crashBet", '''<div class="og-field"><label class="og-label" for="crashAuto">Recolha automática</label><div class="og-input-suffix"><input id="crashAuto" type="number" min="1.01" step="0.01" value="2.00"><span>x</span></div></div>''', "crashPlay")
+        html=lado("crashBet", '''<div class="og-field"><label class="og-label" for="crashAuto">Recolha automática</label><div class="og-input-suffix"><input id="crashAuto" type="number" min="1.01" step="0.01" value="2.00"><span>x</span></div><small class="og-hint" id="crashAutoNota" hidden>No ranking a recolha é sempre a automática.</small></div>''', "crashPlay")
         + '''<div class="og-stage og-crash" id="crashStage">''' + topo("crashRecent") + '''
   <div class="og-crash-area"><canvas id="crashCanvas"></canvas><div class="og-crash-center"><div class="og-crash-mult" id="crashMult">1.00x</div><div class="og-crash-status" id="crashStatus">Faz a tua aposta para lançar o foguete</div></div></div>
 </div>'''),
@@ -90,14 +96,14 @@ JOGOS = {
         nome="Roleta", icone="fa-life-ring", hist="roulette", script="og-roulette.js",
         desc="Roleta europeia com fichas virtuais: aposta em números, cores, dúzias e colunas.",
         html='''<aside class="og-side">
-  <div class="og-balance"><span class="og-balance-l">Saldo</span><strong><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance>1.000</span></strong><button class="og-mini" id="balanceReset" type="button" title="Repor 1.000 fichas"><i class="fas fa-rotate-right" aria-hidden="true"></i></button></div>
+  ''' + SALDO + '''
   <div class="og-field"><span class="og-label">Valor da ficha</span><div class="og-chips" id="rlChips"></div></div>
   <div class="og-field"><span class="og-label">Total apostado</span><div class="og-amount og-readonly"><i class="fas fa-coins" aria-hidden="true"></i><span id="rlTotal">0</span></div></div>
   <div class="og-bj-actions"><button class="og-btn2" id="rlUndo" type="button"><i class="fas fa-rotate-left" aria-hidden="true"></i> Desfazer</button><button class="og-btn2" id="rlClear" type="button"><i class="fas fa-trash" aria-hidden="true"></i> Limpar</button></div>
   <button class="og-btn2" id="rlRepeat" type="button"><i class="fas fa-repeat" aria-hidden="true"></i> Repetir última aposta</button>
   <button class="og-play" id="rlPlay" type="button">Girar</button>
   <p class="og-hint">Clica na mesa para pôr fichas. Botão direito tira as fichas de uma casa.</p>
-  <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas virtuais · sem dinheiro real</p>
+  <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas sem valor · não se trocam por prémios</p>
 </aside>
 <div class="og-stage og-rl" id="rlStage">''' + topo("rlRecent") + '''
   <div class="og-rl-top"><div class="og-rl-wheelwrap"><canvas id="rlWheel"></canvas><div class="og-rl-pointer"></div></div><div class="og-rl-result" id="rlResult"></div></div>
@@ -136,7 +142,7 @@ def gerar(slug, j, molde):
     s = re.sub(r'\s*<link rel="stylesheet" href="og\.css[^"]*">', '', s)
     s = re.sub(r'(<link rel="stylesheet" href="style\.css[^"]*">)', rf'\1\n    <link rel="stylesheet" href="og.css?v={VER}">', s, count=1)
     s = re.sub(r'<script src="(?:games|og-[a-z]+)\.js[^"]*"></script>\n?', '', s)
-    s = re.sub(r'(<script src="twitch-auth\.js[^"]*"></script>\n)', rf'\1<script src="og-core.js?v={VER}"></script>\n<script src="{j["script"]}?v={VER}"></script>\n', s, count=1)
+    s = re.sub(r'(<script src="twitch-auth\.js[^"]*"></script>\n)', rf'\1<script src="og-motor.js?v={VER}"></script>\n<script src="og-core.js?v={VER}"></script>\n<script src="{j["script"]}?v={VER}"></script>\n', s, count=1)
     (RAIZ / f"{slug}.html").write_text(s, encoding="utf-8")
     print("gerado", slug + ".html")
 

@@ -435,8 +435,13 @@ const TwitchAuth = (function () {
     applyGates();
   }
 
+  let avisarPronto;
+  const pronto = new Promise((r) => (avisarPronto = r));
+
   document.addEventListener('DOMContentLoaded', () => {
-    init().then(() => {
+    init().catch((e) => console.warn('[twitch-auth]', e)).then(() => {
+      avisarPronto(currentUser);
+      document.dispatchEvent(new CustomEvent('twitch:pronto', { detail: currentUser }));
       renderLeaderboard();
       const refreshBtn = document.getElementById('rankingRefresh');
       if (refreshBtn) {
@@ -449,6 +454,6 @@ const TwitchAuth = (function () {
     });
   });
 
-  return { login, logout, isLoggedIn: () => !!currentUser, getUser: () => currentUser };
+  return { login, logout, isLoggedIn: () => !!currentUser, getUser: () => currentUser, pronto };
 })();
 
