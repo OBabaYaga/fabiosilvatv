@@ -198,18 +198,7 @@ AGE_GATE = '''
   </div>
 </div>'''
 
-PROMO = '''
-<div id="promoPopup" class="promo-popup hidden" role="dialog" aria-modal="true" aria-label="Oferta em destaque">
-  <div class="promo-popup-content">
-    <button id="promoClose" class="promo-close" aria-label="Fechar"><i class="fas fa-times" aria-hidden="true"></i></button>
-    <span class="promo-badge"><i class="fas fa-fire" aria-hidden="true"></i> Oferta popular</span>
-    <a href="https://che.fluxbrox.com/redirect.aspx?pid=198342&amp;lpid=1845&amp;bid=1756" target="_blank" rel="noopener noreferrer sponsored" class="promo-logo-link"><span class="promo-logo">ROYAL XO</span></a>
-    <h3 class="promo-headline">100% até 4.000€ + 1.200 giros grátis</h3>
-    <p class="promo-subtext">Bónus nos 4 primeiros depósitos, Roda da Fortuna diária, torneios e casino ao vivo.</p>
-    <a href="https://che.fluxbrox.com/redirect.aspx?pid=198342&amp;lpid=1845&amp;bid=1756" target="_blank" rel="noopener noreferrer sponsored" class="btn-gold promo-cta">Reclamar bónus <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-    <p class="promo-fineprint"><i class="fas fa-clock" aria-hidden="true"></i> Oferta por tempo limitado · 18+ Joga com responsabilidade</p>
-  </div>
-</div>'''
+PROMO = ''  # popup promocional desligado (pedido do Fabio, nov. 2026)
 
 def head(path, title, desc, extra=""):
     url = f"{SITE}/{path}"
