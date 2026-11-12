@@ -488,3 +488,34 @@
   .og-rl-hot.esq { left: 18%; right: 18%; top: -9px; bottom: auto; width: auto; height: 14px; }
   .og-rl-boardwrap { overflow: visible; }
 }
+
+/* ---------- telemóvel: barra fixa em baixo com a aposta e os botões ---------- */
+.og-dock[hidden] { display: none !important; }
+@media (max-width: 980px) {
+  .og-dock {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.45rem 0.5rem; align-items: center;
+    padding: 0.55rem 0.7rem calc(0.55rem + env(safe-area-inset-bottom));
+    background: rgba(13, 22, 34, 0.97);
+    border-top: 1px solid var(--og-line-2);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
+  .og-dock-saldo { font: 800 0.9rem var(--font-mono); color: var(--gold); white-space: nowrap; padding: 0 0.2rem; }
+  .og-dock-saldo i { font-size: 0.75rem; }
+  .og-dock > .og-field-aposta { margin: 0; min-width: 0; }
+  .og-dock > .og-field-aposta .og-label { display: none; }
+  .og-dock > .og-field-aposta .og-amount input { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+  .og-dock > .og-bj-actions { grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.35rem; }
+  .og-dock > .og-bj-actions .og-btn2 { padding: 0.55rem 0.2rem; font-size: 0.8rem; }
+  .og-dock > .og-bj-actions kbd { display: none; }
+  .og-dock > .og-play { grid-column: 1 / -1; margin: 0; padding-top: 0.75rem; padding-bottom: 0.75rem; }
+  /* roleta: as fichas ocupam a linha toda */
+  .og-dock > .og-field-aposta:has(#rlChips) { grid-column: 2; }
+  .og-dock #rlChips { gap: 0.3rem; }
+  .og-dock #rlChips .og-chip-btn { font-size: 0.62rem; }
+  .og-dock #rlChips .og-chip-btn.sel { transform: scale(1.06); }
+  /* espaço para a barra não tapar o fim da página */
+  body.og-com-dock { padding-bottom: var(--og-dock-h, 120px); }
+  body.og-com-dock .footer { margin-bottom: 0.5rem; }
+}

@@ -510,7 +510,45 @@ const OG = (function () {
     });
   }
 
+  // ---------- telemóvel: barra fixa em baixo (aposta + botões) ----------
+  // Os mesmos elementos mudam de sítio (não são cópias), por isso os
+  // botões continuam a funcionar igual. Ao alargar o ecrã voltam ao lugar.
+  function initDock() {
+    const side = document.querySelector('.og-side');
+    if (!side || !window.matchMedia) return;
+    const mq = window.matchMedia('(max-width: 980px)');
+    const pecas = [...side.querySelectorAll(':scope > .og-field-aposta, :scope > .og-bj-actions:not(:has(#rlUndo)), :scope > .og-play')];
+    if (!pecas.length) return;
+    const lugares = pecas.map((el) => {
+      const marca = document.createComment('dock');
+      el.parentNode.insertBefore(marca, el);
+      return marca;
+    });
+    const dock = document.createElement('div');
+    dock.className = 'og-dock';
+    dock.innerHTML = '<div class="og-dock-saldo"><i class="fas fa-coins" aria-hidden="true"></i> <span data-balance></span></div>';
+    const altura = () => document.documentElement.style.setProperty('--og-dock-h', (dock.hidden ? 0 : dock.offsetHeight) + 'px');
+    function aplicar() {
+      if (mq.matches) {
+        pecas.forEach((el) => dock.appendChild(el));
+        if (!dock.parentNode) document.body.appendChild(dock);
+        dock.hidden = false;
+        document.body.classList.add('og-com-dock');
+      } else {
+        pecas.forEach((el, i) => lugares[i].parentNode.insertBefore(el, lugares[i].nextSibling));
+        dock.hidden = true;
+        document.body.classList.remove('og-com-dock');
+      }
+      renderBalance();
+      altura();
+    }
+    aplicar();
+    if (mq.addEventListener) mq.addEventListener('change', aplicar);
+    if (window.ResizeObserver) new ResizeObserver(altura).observe(dock);
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
+    initDock();
     document.querySelectorAll('.og-modo [data-modo]').forEach((b) => b.addEventListener('click', () => mudarModo(b.dataset.modo)));
     renderModo();
     renderBalance();
