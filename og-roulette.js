@@ -1,6 +1,7 @@
 // ===================================================================
 // Roleta europeia (um só zero). Pagamentos normais de casino:
-// número 35:1, dúzia/coluna 2:1, vermelho/preto/par/ímpar/1-18/19-36 1:1.
+// número 35:1, 2 números (cavalo) 17:1, 4 números (quadrado) 8:1,
+// dúzia/coluna 2:1, vermelho/preto/par/ímpar/1-18/19-36 1:1.
 // ===================================================================
 (function () {
   const $ = (id) => document.getElementById(id);
@@ -20,13 +21,26 @@
   // Que números cobre cada aposta e quanto paga (x vezes, além da aposta)
   const cobre = OGMotor.cobre;
   // ---------- mesa ----------
+  // Zonas entre números (apostas a 2 e a 4 números). Ficam por cima das
+  // linhas que separam as casas: lado direito = número + 3, cima = número + 1,
+  // canto de cima à direita = os 4 números, lado esquerdo da 1.ª coluna = com o 0.
+  function zonas(n, col, linha) {
+    const z = [];
+    const hot = (k, cls, t) => `<span class="og-rl-hot ${cls}" data-k="${k}" title="${t}"></span>`;
+    if (col < 11) z.push(hot(`split:${n}-${n + 3}`, 'dir', `${n} e ${n + 3} (paga 17:1)`));
+    if (linha < 3) z.push(hot(`split:${n}-${n + 1}`, 'cima', `${n} e ${n + 1} (paga 17:1)`));
+    if (col < 11 && linha < 3) z.push(hot(`canto:${n}`, 'canto', `${n}, ${n + 1}, ${n + 3} e ${n + 4} (paga 8:1)`));
+    if (col === 0) z.push(hot(`split:0-${n}`, 'esq', `0 e ${n} (paga 17:1)`));
+    return z.join('');
+  }
+
   function construirMesa() {
-    const cel = (chave, txt, cls) => `<button type="button" class="og-rl-cell ${cls || ''}" data-k="${chave}"><span>${txt}</span></button>`;
+    const cel = (chave, txt, cls, extra) => `<button type="button" class="og-rl-cell ${cls || ''}" data-k="${chave}"><span>${txt}</span>${extra || ''}</button>`;
     let numeros = '';
     for (let linha = 3; linha >= 1; linha--) {
       for (let col = 0; col < 12; col++) {
         const n = col * 3 + linha;
-        numeros += cel('n:' + n, n, cor(n));
+        numeros += cel('n:' + n, n, cor(n), zonas(n, col, linha));
       }
       numeros += cel('coluna:' + linha, '2:1', 'out col');
     }
@@ -35,24 +49,25 @@
       <div class="og-rl-nums">${numeros}</div>
       <div class="og-rl-dozens">${cel('duzia:1', '1 a 12', 'out')}${cel('duzia:2', '13 a 24', 'out')}${cel('duzia:3', '25 a 36', 'out')}</div>
       <div class="og-rl-outs">${cel('metade:1', '1 a 18', 'out')}${cel('par:par', 'Par', 'out')}${cel('cor:vermelho', '<i class="og-rl-diamond red"></i>', 'out')}${cel('cor:preto', '<i class="og-rl-diamond"></i>', 'out')}${cel('par:impar', 'Ímpar', 'out')}${cel('metade:2', '19 a 36', 'out')}</div>`;
-    $('rlBoard').querySelectorAll('.og-rl-cell').forEach((b) => {
-      b.addEventListener('click', () => colocar(b.dataset.k));
-      b.addEventListener('contextmenu', (e) => { e.preventDefault(); tirar(b.dataset.k); });
+    $('rlBoard').querySelectorAll('[data-k]').forEach((b) => {
+      b.addEventListener('click', (e) => { e.stopPropagation(); colocar(b.dataset.k); });
+      b.addEventListener('contextmenu', (e) => { e.preventDefault(); e.stopPropagation(); tirar(b.dataset.k); });
       b.addEventListener('mouseenter', () => realcar(b.dataset.k, true));
       b.addEventListener('mouseleave', () => realcar(b.dataset.k, false));
     });
   }
   function realcar(chave, sim) {
     if (chave.startsWith('n:')) return;
+    if (!cobre(chave)) return;
     cobre(chave).nums.forEach((n) => { const c = $('rlBoard').querySelector(`[data-k="n:${n}"]`); if (c) c.classList.toggle('hover', sim); });
   }
   function totalApostado() {
     return Object.values(apostas).reduce((s, v) => s + v, 0);
   }
   function pintarFichas() {
-    $('rlBoard').querySelectorAll('.og-rl-cell').forEach((b) => {
+    $('rlBoard').querySelectorAll('[data-k]').forEach((b) => {
       const v = apostas[b.dataset.k];
-      let f = b.querySelector('.og-chip');
+      let f = b.querySelector(':scope > .og-chip');
       if (v) {
         if (!f) { f = document.createElement('em'); f.className = 'og-chip'; b.appendChild(f); }
         f.textContent = v >= 1000 ? Math.round(v / 100) / 10 + 'k' : v;

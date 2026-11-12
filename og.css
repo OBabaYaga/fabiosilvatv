@@ -315,6 +315,16 @@
 .og-chip[data-v="25"] { --chip: #11a85a; } .og-chip[data-v="100"] { --chip: #1b1f27; } .og-chip[data-v="500"] { --chip: #8b4dff; }
 .og-chip-btn { aspect-ratio: 1; width: 100%; cursor: pointer; transition: transform 0.15s; }
 .og-chip-btn.sel { transform: translateY(-4px) scale(1.08); box-shadow: 0 0 0 3px var(--gold), 0 6px 12px rgba(0,0,0,0.5); }
+.og-rl-nums .og-rl-cell { overflow: visible; }
+/* zonas entre números: 2 números (lados) e 4 números (cantos) */
+.og-rl-hot { position: absolute; z-index: 4; cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+.og-rl-hot.dir { top: 18%; bottom: 18%; right: -9px; width: 14px; }
+.og-rl-hot.esq { top: 18%; bottom: 18%; left: -9px; width: 14px; }
+.og-rl-hot.cima { left: 18%; right: 18%; top: -9px; height: 14px; }
+.og-rl-hot.canto { top: -10px; right: -10px; width: 16px; height: 16px; z-index: 5; border-radius: 50%; }
+.og-rl-hot:hover { background: rgba(240, 193, 75, 0.55); box-shadow: 0 0 0 2px var(--gold); }
+.og-rl-hot .og-chip { width: 1.35rem !important; height: 1.35rem !important; font-size: 0.5rem !important; }
+.og-rl-hot.win-cell { background: rgba(240, 193, 75, 0.7); }
 .og-rl-cell .og-chip { position: absolute; width: 1.7rem; height: 1.7rem; font-size: 0.6rem; z-index: 3; pointer-events: none; animation: ogReveal 0.25s; }
 
 /* ---------- Slot ---------- */

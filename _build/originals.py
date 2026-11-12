@@ -15,7 +15,7 @@ import re
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
-VER = "4"
+VER = "5"
 
 # Seletor Treino / Ranking + saldo + caixa do ranking (igual em todos os jogos)
 SALDO = '''<div class="og-modo" role="group" aria-label="Modo de jogo"><button type="button" data-modo="treino" aria-pressed="true"><i class="fas fa-dumbbell" aria-hidden="true"></i> Treino</button><button type="button" data-modo="ranking" aria-pressed="false"><i class="fas fa-trophy" aria-hidden="true"></i> Ranking</button></div>
@@ -102,7 +102,7 @@ JOGOS = {
   <div class="og-bj-actions"><button class="og-btn2" id="rlUndo" type="button"><i class="fas fa-rotate-left" aria-hidden="true"></i> Desfazer</button><button class="og-btn2" id="rlClear" type="button"><i class="fas fa-trash" aria-hidden="true"></i> Limpar</button></div>
   <button class="og-btn2" id="rlRepeat" type="button"><i class="fas fa-repeat" aria-hidden="true"></i> Repetir última aposta</button>
   <button class="og-play" id="rlPlay" type="button">Girar</button>
-  <p class="og-hint">Clica na mesa para pôr fichas. Botão direito tira as fichas de uma casa.</p>
+  <p class="og-hint">Clica num número para apostar nele. Clica na linha entre dois números para apostar nos dois (17:1) ou no cruzamento de quatro para apostar nos quatro (8:1). Botão direito tira as fichas.</p>
   <p class="og-fair"><i class="fas fa-shield-halved" aria-hidden="true"></i> Fichas sem valor · não se trocam por prémios</p>
 </aside>
 <div class="og-stage og-rl" id="rlStage">''' + topo("rlRecent") + '''
