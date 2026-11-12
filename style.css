@@ -2889,8 +2889,11 @@ body { background: var(--bg); }
   transform: none !important;
   transition: none !important;
 }
-/* A faixa de marcas deixa de deslizar: mostra as 5 marcas paradas */
-.brand-marquee { -webkit-mask-image: none; mask-image: none; overflow-x: auto; scrollbar-width: none; }
-.brand-marquee::-webkit-scrollbar { display: none; }
-.brand-marquee-track { animation: none !important; transform: none !important; width: auto; justify-content: center; margin: 0 auto; }
-.brand-marquee .brand-chip[aria-hidden="true"] { display: none !important; }
+/* A faixa de marcas desliza devagar da direita para a esquerda
+   (as imagens em si ficam paradas) */
+.brand-marquee-track { animation: brand-marquee 70s linear infinite !important; }
+@media (prefers-reduced-motion: reduce) {
+  .brand-marquee-track { animation-duration: 140s !important; }
+}
+/* Sem etiquetas (Novo, Hot, Free Spins, Cripto…) por cima das imagens das marcas */
+.gm-badges { display: none !important; }
