@@ -2877,3 +2877,20 @@ body { background: var(--bg); }
 @media (max-width: 899px) {
   .app, .app.has-chat, .app.chat-collapsed { grid-template-columns: minmax(0, 1fr) !important; }
 }
+
+/* ===================================================================== */
+/* IMAGENS ESTÁTICAS — sem movimento nenhum (pedido do Fabio, nov. 2026) */
+/* ===================================================================== */
+.gm-art::before,
+.gm-art::after,
+.brand-marquee .brand-chip::before,
+.gm-card:hover .gm-art::after {
+  animation: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+/* A faixa de marcas deixa de deslizar: mostra as 5 marcas paradas */
+.brand-marquee { -webkit-mask-image: none; mask-image: none; overflow-x: auto; scrollbar-width: none; }
+.brand-marquee::-webkit-scrollbar { display: none; }
+.brand-marquee-track { animation: none !important; transform: none !important; width: auto; justify-content: center; margin: 0 auto; }
+.brand-marquee .brand-chip[aria-hidden="true"] { display: none !important; }
