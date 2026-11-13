@@ -6,8 +6,20 @@
 const TWITCH_CHANNEL = 'fabiosilva_tv';
 const STREAM_CHECK_INTERVAL = 60 * 1000;      // 60 s (a DecAPI bloqueia pedidos abusivos)
 const FOLLOWER_CHECK_INTERVAL = 5 * 60 * 1000; // 5 min
-const PROMO_DELAY = 5000;                      // popup só 5 s depois de entrar
+const PROMO_DELAY = 500;                       // popup logo a seguir à verificação de idade
 const RESPONSIBLE_GAMBLING_URL = 'https://www.jogoresponsavel.pt/';
+
+// Popup atual: Coldbet — 100 free spins sem depósito (imagem do Fabio).
+// Para trocar a promoção basta mudar estes valores; para desligar,
+// põe PROMO_ATIVO = false.
+const PROMO_ATIVO = true;
+const PROMO = {
+  link: 'https://coldb3.com/FABIOTV',
+  imagem: 'assets/promo/coldbet-fs.jpg?v=1',
+  alt: 'Coldbet: 100 free spins sem depósito no Le Fisherman, wager x20, código EUSOUAAGUA',
+  codigo: 'EUSOUAAGUA',
+};
+
 
 // -------------------------------------------------------------------
 // Verificação de idade
@@ -66,8 +78,33 @@ const RESPONSIBLE_GAMBLING_URL = 'https://www.jogoresponsavel.pt/';
 // -------------------------------------------------------------------
 // Popup promocional (uma vez por sessão, com atraso)
 // -------------------------------------------------------------------
+function criarPromoPopup() {
+  if (!PROMO_ATIVO) return null;
+  const el = document.createElement('div');
+  el.className = 'promo-popup promo-img hidden';
+  el.id = 'promoPopup';
+  el.setAttribute('role', 'dialog');
+  el.setAttribute('aria-modal', 'true');
+  el.setAttribute('aria-label', PROMO.alt);
+  el.innerHTML =
+    '<div class="promo-img-box">' +
+      '<button class="promo-close" id="promoClose" type="button" aria-label="Fechar"><i class="fas fa-xmark" aria-hidden="true"></i></button>' +
+      '<a class="promo-img-link" href="' + PROMO.link + '" target="_blank" rel="noopener noreferrer sponsored">' +
+        '<img src="' + PROMO.imagem + '" alt="' + PROMO.alt + '" width="760" height="1013"></a>' +
+      (PROMO.codigo ? '<button class="promo-copy" type="button"><i class="far fa-copy" aria-hidden="true"></i> Copiar código <b>' + PROMO.codigo + '</b></button>' : '') +
+      '<p class="promo-fine">+18 · T&amp;C aplicáveis · Joga com responsabilidade</p>' +
+    '</div>';
+  document.body.appendChild(el);
+  const copiar = el.querySelector('.promo-copy');
+  if (copiar) copiar.addEventListener('click', () => {
+    const feito = () => { copiar.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> Código copiado!'; };
+    try { navigator.clipboard.writeText(PROMO.codigo).then(feito, feito); } catch (e) { feito(); }
+  });
+  return el;
+}
+
 function schedulePromoPopup() {
-  const promoPopup = document.getElementById('promoPopup');
+  const promoPopup = document.getElementById('promoPopup') || criarPromoPopup();
   if (!promoPopup) return;
 
   const SESSION_KEY = 'obaba_promo_shown';
@@ -89,6 +126,8 @@ function schedulePromoPopup() {
     function onKey(e) { if (e.key === 'Escape') closePromo(); }
 
     if (promoClose) promoClose.addEventListener('click', closePromo);
+    const promoLink = promoPopup.querySelector('.promo-img-link');
+    if (promoLink) promoLink.addEventListener('click', () => setTimeout(closePromo, 100));
     promoPopup.addEventListener('click', (e) => { if (e.target === promoPopup) closePromo(); });
     document.addEventListener('keydown', onKey);
   }, PROMO_DELAY);

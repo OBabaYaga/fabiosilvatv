@@ -2897,3 +2897,17 @@ body { background: var(--bg); }
 }
 /* Sem etiquetas (Novo, Hot, Free Spins, Cripto…) por cima das imagens das marcas */
 .gm-badges { display: none !important; }
+
+/* ===================================================================== */
+/* POPUP COM IMAGEM (promo Coldbet, nov. 2026)                            */
+/* ===================================================================== */
+.promo-popup.promo-img { z-index: 9998; }
+.promo-img-box { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; animation: modalIn 0.35s ease; max-width: min(440px, 92vw); }
+.promo-img-link { display: block; border-radius: 22px; overflow: hidden; box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(40, 160, 255, 0.25); line-height: 0; }
+.promo-img-link img { display: block; width: 100%; height: auto; max-height: calc(100vh - 150px); object-fit: contain; transition: transform 0.2s; }
+.promo-img-link:hover img { transform: scale(1.015); }
+.promo-img-box .promo-close { top: -0.6rem; right: -0.6rem; z-index: 2; width: 2.3rem; height: 2.3rem; background: rgba(10, 20, 35, 0.9); border: 1px solid var(--border); font-size: 1rem; }
+.promo-copy { border: 1px solid rgba(77, 163, 255, 0.5); background: rgba(77, 163, 255, 0.12); color: var(--text); font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.1rem; border-radius: 999px; cursor: pointer; }
+.promo-copy b { color: var(--gold); letter-spacing: 0.04em; }
+.promo-copy:hover { background: rgba(77, 163, 255, 0.22); }
+.promo-fine { margin: 0; font-size: 0.7rem; color: var(--muted); }
