@@ -6,7 +6,7 @@
 const TWITCH_CHANNEL = 'fabiosilva_tv';
 const STREAM_CHECK_INTERVAL = 60 * 1000;      // 60 s (a DecAPI bloqueia pedidos abusivos)
 const FOLLOWER_CHECK_INTERVAL = 5 * 60 * 1000; // 5 min
-const PROMO_DELAY = 500;                       // popup logo a seguir à verificação de idade
+const PROMO_DELAY = 1200;                      // popup pouco depois da verificação de idade
 const RESPONSIBLE_GAMBLING_URL = 'https://www.jogoresponsavel.pt/';
 
 // Popup atual: Coldbet — 100 free spins sem depósito (imagem do Fabio).
@@ -128,7 +128,8 @@ function schedulePromoPopup() {
     if (promoClose) promoClose.addEventListener('click', closePromo);
     const promoLink = promoPopup.querySelector('.promo-img-link');
     if (promoLink) promoLink.addEventListener('click', () => setTimeout(closePromo, 100));
-    promoPopup.addEventListener('click', (e) => { if (e.target === promoPopup) closePromo(); });
+    // Só fecha no ✕, no Esc ou ao abrir o link (clicar fora já não fecha,
+    // para não desaparecer com um clique acidental logo a seguir à idade).
     document.addEventListener('keydown', onKey);
   }, PROMO_DELAY);
 }
