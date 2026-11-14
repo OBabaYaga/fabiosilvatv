@@ -453,3 +453,72 @@ if (document.readyState === 'loading') {
 } else {
   initializeApp();
 }
+
+// ===================================================================
+// Estatísticas do site (sem cookies) — conta visitas e cliques nos
+// links de parceria. Vê-se em Loja → Gestão → Estatísticas do site.
+// Para não contar as tuas próprias visitas, liga a opção lá na página.
+// ===================================================================
+(function () {
+  const STATS_API = (window.FSTV_API || 'https://fabiosilvatv-api.vercel.app') + '/api/stats';
+  let naoContar = false;
+  try { naoContar = localStorage.getItem('fstv_nao_contar') === '1'; } catch (e) {}
+  if (naoContar || /^(localhost|127\.)/.test(location.hostname) || navigator.webdriver) return;
+
+  function enviar(dados) {
+    const corpo = JSON.stringify(dados);
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon(STATS_API, corpo)) return;
+    } catch (e) {}
+    try { fetch(STATS_API, { method: 'POST', body: corpo, keepalive: true, mode: 'no-cors' }); } catch (e) {}
+  }
+
+  // marca de cada link de parceria (pelo endereço do link)
+  const PARCEIROS = [
+    [/coldb3\.com/i, 'coldbet'],
+    [/captainspartners\.com|captainsbet/i, 'captainsbet'],
+    [/pid=190723\b|22bit/i, '22bit'],
+    [/pid=150609\b|betlabel/i, 'betlabel'],
+    [/pid=198342\b|royalxo/i, 'royalxo'],
+    [/pid=155521\b|safecasino/i, 'safecasino'],
+  ];
+  function marcaDe(href) {
+    for (const [re, m] of PARCEIROS) if (re.test(href)) return m;
+    return null;
+  }
+  function paginaAtual() {
+    const p = location.pathname.toLowerCase();
+    if (p === '/' || /\/index\.html$/.test(p)) return 'inicio';
+    if (/\/casinos\.html$/.test(p)) return 'casinos';
+    return 'outra';
+  }
+
+  // visita (n = quantas páginas já abriu nesta sessão; a origem só conta na 1.ª)
+  let n = 1;
+  try {
+    n = (parseInt(sessionStorage.getItem('fstv_pags') || '0', 10) || 0) + 1;
+    sessionStorage.setItem('fstv_pags', String(n));
+  } catch (e) {}
+  enviar({ t: 'v', p: location.pathname, n: n, r: n === 1 ? document.referrer : '' });
+
+  // cliques nos links de parceria (rato, toque e botão do meio)
+  function aoClicar(e) {
+    if (e.type === 'auxclick' && e.button !== 1) return;
+    const a = e.target && e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    const href = a.href || '';
+    let marca = marcaDe(href);
+    if (!marca) {
+      if (!/\bsponsored\b/.test(a.rel || '')) return;
+      marca = 'outro';
+    }
+    let sitio = 'outro';
+    if (a.classList.contains('promo-img-link') || a.closest('.promo-popup')) sitio = 'popup';
+    else if (a.classList.contains('tc-link')) sitio = 'termos';
+    else if (a.closest('.offer-foot')) sitio = 'detalhes';
+    else if (a.closest('.gm-actions') || a.classList.contains('gm-claim')) sitio = 'cartao';
+    enviar({ t: 'c', m: marca, s: paginaAtual() + ':' + sitio, p: location.pathname });
+  }
+  document.addEventListener('click', aoClicar, true);
+  document.addEventListener('auxclick', aoClicar, true);
+})();

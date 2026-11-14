@@ -27,7 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=43">
+    <link rel="stylesheet" href="style.css?v=44">
 </head>
 <body>
 <div class="backdrop" id="backdrop"></div>
@@ -71,7 +71,9 @@
 <p>O chat mostrado no Site é o chat da Twitch do canal, incorporado diretamente da Twitch. As mensagens são tratadas pela Twitch de acordo com a sua política de privacidade; não as guardamos.</p>
 <h3>2.4 Armazenamento local</h3>
 <p>Guardamos no teu browser (localStorage / sessionStorage) a confirmação de idade, se já viste o popup promocional nesta sessão, o saldo de fichas virtuais dos minijogos, o estado do chat e a sessão Twitch. Nenhum destes dados é enviado para nós. Detalhes na <a href="cookies.html">Política de Cookies</a>.</p>
-<h3>2.5 Contacto</h3>
+<h3>2.5 Estatísticas de visitas (sem cookies)</h3>
+<p>Para sabermos quantas pessoas visitam o Site, que páginas são mais vistas, de onde chegam (por exemplo, Twitch ou Instagram) e quantos cliques recebem os links de parceria, cada página aberta envia à nossa API (alojada na Vercel, com a base de dados na Upstash) o endereço da página, o site de onde vieste e, quando clicas num link de parceria, a marca e o sítio do clique. Para contar pessoas diferentes sem cookies, a API calcula um código anónimo a partir do teu endereço IP e do browser, misturado com um segredo que muda em cada dia, mês e ano. <strong>O endereço IP não é guardado</strong>, o código não permite identificar-te nem seguir-te de um dia para o outro, e só guardamos totais agregados (por exemplo, "120 visitantes hoje"). Os totais diários são apagados ao fim de cerca de 13 meses. Base legal: o nosso interesse legítimo em perceber como o Site é usado.</p>
+<h3>2.6 Contacto</h3>
 <p>Se nos enviares um email, tratamos os dados incluídos apenas para responder ao teu pedido e guardamos a conversa pelo tempo necessário para o efeito. Base legal: o nosso interesse legítimo em responder-te.</p>
 
 <h2>3. Serviços de terceiros</h2>
@@ -81,10 +83,11 @@
 <li><strong>DecAPI</strong> (estado da stream e número de seguidores);</li>
 <li><strong>StreamElements</strong> (pontos, ranking e loja);</li>
 <li><strong>Google Fonts</strong> (tipos de letra) e <strong>cdnjs / Cloudflare</strong> (ícones);</li>
-<li><strong>GitHub Pages</strong> (alojamento do Site).</li>
+<li><strong>GitHub Pages</strong> (alojamento do Site);</li>
+<li><strong>Vercel</strong> e <strong>Upstash</strong> (a nossa API: loja, minijogos e estatísticas de visitas).</li>
 </ul>
 <p>Cada um destes serviços pode registar o teu endereço IP e dados técnicos do browser de acordo com a sua própria política de privacidade. Alguns destes fornecedores estão fora da União Europeia; nesses casos aplicam-se as garantias previstas no RGPD (por exemplo, cláusulas contratuais-tipo ou decisões de adequação).</p>
-<p>Este site <strong>não utiliza</strong> Google Analytics, pixels de publicidade, cookies de rastreio nem redes de anúncios.</p>
+<p>Este site <strong>não utiliza</strong> Google Analytics, pixels de publicidade, cookies de rastreio nem redes de anúncios. As estatísticas de visitas são feitas por nós, sem cookies (ver 2.5).</p>
 
 <h2>4. Links de afiliado</h2>
 <p>Os links para casinos e casas de apostas são links de afiliado. Quando clicas, és enviado para o site do operador, que pode usar cookies e recolher dados segundo a sua própria política. Se te registares através desses links, podemos receber uma comissão. Os operadores podem comunicar-nos dados agregados (número de registos, comissões), mas <strong>não recebemos os teus dados pessoais</strong> por parte dos operadores.</p>
@@ -130,7 +133,7 @@
 </footer>
 </div>
 </div>
-<script src="script.js?v=38"></script>
+<script src="script.js?v=39"></script>
 <script src="twitch-auth.js?v=39"></script>
 <button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
 <script src="rebrand.js?v=36"></script>

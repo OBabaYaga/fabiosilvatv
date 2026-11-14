@@ -27,7 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=43">
+    <link rel="stylesheet" href="style.css?v=44">
 </head>
 <body>
 <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
@@ -110,6 +110,24 @@
 <button type="submit" class="btn-ghost loja-reset-btn"><i class="fas fa-rotate-left" aria-hidden="true"></i> Pôr a zero</button>
 </form>
 </section>
+<section class="panel loja-admin st-painel" id="siteStats" hidden>
+<div class="panel-head"><div><h2 class="panel-title"><i class="fas fa-chart-column" aria-hidden="true"></i> Estatísticas do site</h2><p class="panel-sub">Só tu vês esta secção. Sem cookies: cada pessoa conta uma vez por dia, mês e ano.</p></div><button type="button" class="btn-ghost st-atualizar" id="stAtualizar"><i class="fas fa-rotate" aria-hidden="true"></i> Atualizar</button></div>
+<div class="st-kpis" id="stKpis"></div>
+<h3 class="loja-admin-titulo">Últimos 30 dias</h3>
+<div class="st-legenda"><span><i class="st-cor st-cor-v"></i>Visitantes</span><span><i class="st-cor st-cor-c"></i>Cliques em parceiros</span></div>
+<div class="st-grafico" id="stGrafico"></div>
+<div class="st-nav"><button type="button" class="btn-ghost" id="stMesAnt" aria-label="Mês anterior"><i class="fas fa-chevron-left" aria-hidden="true"></i></button><strong id="stMesNome"></strong><button type="button" class="btn-ghost" id="stMesSeg" aria-label="Mês seguinte"><i class="fas fa-chevron-right" aria-hidden="true"></i></button><div class="st-vista" role="tablist"><button type="button" class="ativo" data-vista="mes">Mês</button><button type="button" data-vista="ano">Ano</button></div></div>
+<h3 class="loja-admin-titulo">Cliques nos links de parceria</h3>
+<div class="st-marcas" id="stMarcas"></div>
+<div class="st-duas">
+<div><h3 class="loja-admin-titulo">Páginas mais vistas</h3><div class="st-lista" id="stPaginas"></div></div>
+<div><h3 class="loja-admin-titulo">De onde vêm as pessoas</h3><div class="st-lista" id="stOrigens"></div></div>
+</div>
+<h3 class="loja-admin-titulo">Mês a mês — <span id="stAnoNome"></span></h3>
+<div class="st-tabela-wrap"><table class="st-tabela" id="stMeses"></table></div>
+<label class="loja-check st-eu"><input type="checkbox" id="stNaoContar"> Não contar as minhas visitas e cliques neste browser (liga em cada telemóvel/PC que usas)</label>
+<p class="st-nota" id="stNota"></p>
+</section>
 </main>
 <footer class="footer">
   <div class="footer-top">
@@ -138,9 +156,10 @@
   <iframe id="chatFrame" title="Chat da Twitch do fabiosilva_tv" loading="lazy" data-channel="fabiosilva_tv"></iframe>
 </aside>
 </div>
-<script src="script.js?v=38"></script>
+<script src="script.js?v=39"></script>
 <script src="twitch-auth.js?v=39"></script>
 <script src="loja.js?v=3"></script>
+<script src="estatisticas.js?v=1"></script>
 <button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
 <script src="rebrand.js?v=36"></script>
 </body>

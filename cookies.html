@@ -27,7 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=43">
+    <link rel="stylesheet" href="style.css?v=44">
 </head>
 <body>
 <div class="backdrop" id="backdrop"></div>
@@ -71,6 +71,7 @@
 <tr><td>obaba_credits</td><td>localStorage</td><td>Saldo de fichas virtuais dos minijogos.</td><td>Até limpares os dados do site</td></tr>
 <tr><td>obaba_chat_collapsed</td><td>localStorage</td><td>Lembrar se recolheste o painel do chat.</td><td>Até limpares os dados do site</td></tr>
 <tr><td>obaba_twitch_token, obaba_twitch_login, obaba_twitch_avatar</td><td>localStorage</td><td>Manter a tua sessão Twitch no Site depois de entrares.</td><td>Até fazeres "Sair" ou o token expirar</td></tr>
+<tr><td>fstv_pags</td><td>sessionStorage</td><td>Contar quantas páginas abriste nesta visita, para as estatísticas saberem de onde chegaste só na primeira página. Não sai do teu browser como identificador.</td><td>Até fechares o browser</td></tr>
 <tr><td>obaba_twitch_state, obaba_twitch_return_to</td><td>sessionStorage</td><td>Segurança do login (proteção anti-CSRF) e regresso à página onde estavas.</td><td>Até concluíres o login</td></tr>
 </tbody>
 </table>
@@ -118,7 +119,7 @@
 </footer>
 </div>
 </div>
-<script src="script.js?v=38"></script>
+<script src="script.js?v=39"></script>
 <script src="twitch-auth.js?v=39"></script>
 <button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
 <script src="rebrand.js?v=36"></script>
