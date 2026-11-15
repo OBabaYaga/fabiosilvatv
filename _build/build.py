@@ -107,6 +107,7 @@ NAV = [
     ("principal", "Principal", [
         ("index.html", "fa-house", "Início", ""),
         ("casinos.html", "fa-gift", "Casinos", ""),
+        ("manager.html", "fa-futbol", "FS Manager", ""),
         ("comunidade.html", "fa-users", "Comunidade", ""),
         ("loja.html", "fa-cart-shopping", "Loja", ""),
     ]),
@@ -117,7 +118,6 @@ NAV = [
     ("tools", "Ferramentas", [
         ("bonus-hunt.html", "fa-crosshairs", "Bonus Hunt", ""),
         ("jogos.html", "fa-gamepad", "Minijogos", ""),
-        ("manager.html", "fa-futbol", "FS Manager", ""),
         ("contacto.html", "fa-envelope", "Contacto", ""),
     ]),
 ]

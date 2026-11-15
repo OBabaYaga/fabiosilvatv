@@ -1,0 +1,18 @@
+{
+  "name": "FabioSilva_TV",
+  "short_name": "FabioSilva_TV",
+  "description": "Lives do Fábio na Twitch, ofertas de casinos, loja de pontos, minijogos e o FS Manager.",
+  "id": "./",
+  "start_url": "./?origem=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080c13",
+  "theme_color": "#040d1c",
+  "lang": "pt-PT",
+  "icons": [
+    { "src": "assets/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/app/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
