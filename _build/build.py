@@ -117,6 +117,7 @@ NAV = [
     ("tools", "Ferramentas", [
         ("bonus-hunt.html", "fa-crosshairs", "Bonus Hunt", ""),
         ("jogos.html", "fa-gamepad", "Minijogos", ""),
+        ("manager.html", "fa-futbol", "FS Manager", ""),
         ("contacto.html", "fa-envelope", "Contacto", ""),
     ]),
 ]
