@@ -1,6 +1,6 @@
 // ===================================================================
 // FabioSilva_TV — Estatísticas do site (painel só do streamer)
-// Aparece na página da Loja, por baixo da Gestão da loja, quando entras
+// Aparece na página Estatísticas (estatisticas.html), só quando entras
 // com a conta Twitch do canal. Os dados vêm de /api/stats.
 // ===================================================================
 (function () {
@@ -12,7 +12,7 @@
     '/index.html': 'Início', '/casinos.html': 'Casinos', '/loja.html': 'Loja', '/jogos.html': 'Minijogos', '/ranking.html': 'Ranking',
     '/bonus-hunt.html': 'Bonus Hunt', '/comunidade.html': 'Comunidade', '/contacto.html': 'Contacto', '/termos.html': 'Termos',
     '/privacidade.html': 'Privacidade', '/cookies.html': 'Cookies', '/blackjack.html': 'Blackjack', '/crash.html': 'Crash',
-    '/dados.html': 'Dados', '/minas.html': 'Minas', '/plinko.html': 'Plinko', '/roleta.html': 'Roleta', '/slots.html': 'Slots', '/404.html': 'Página não encontrada',
+    '/dados.html': 'Dados', '/minas.html': 'Minas', '/plinko.html': 'Plinko', '/roleta.html': 'Roleta', '/slots.html': 'Slots', '/404.html': 'Página não encontrada', '/manager.html': 'FS Manager', '/controlador.html': 'Controlador', '/estatisticas.html': 'Estatísticas',
   };
   const SITIOS = {
     'inicio:cartao': 'Início · botão do cartão', 'inicio:detalhes': 'Início · detalhes da oferta', 'inicio:termos': 'Início · termos',

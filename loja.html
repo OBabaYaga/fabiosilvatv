@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=45">
+    <link rel="stylesheet" href="style.css?v=46">
 </head>
 <body>
 <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
@@ -49,7 +49,7 @@
 <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
   <a class="sidebar-brand" href="index.html"><img class="marca-logo" src="assets/logo-fabio.png" alt="FabioSilva_TV"></a>
   <div class="atalhos"><a class="atalho destaque" href="casinos.html"><small>Reclama</small><strong>Ofertas</strong><i class="fas fa-gift" aria-hidden="true"></i></a><div class="linha2"><a class="atalho loja" href="loja.html"><small>Pontos</small><strong>Loja</strong><i class="fas fa-cart-shopping" aria-hidden="true"></i></a><a class="atalho rank" href="ranking.html"><small>Semana</small><strong>Ranking</strong><i class="fas fa-trophy" aria-hidden="true"></i></a></div></div>
-  <nav><div class="sidebar-group">Principal</div><a class="sidebar-link" href="index.html"><i class="fas fa-house" aria-hidden="true"></i>Início</a><a class="sidebar-link" href="casinos.html"><i class="fas fa-gift" aria-hidden="true"></i>Casinos</a><a class="sidebar-link" href="manager.html"><i class="fas fa-futbol" aria-hidden="true"></i>FS Manager<span class="pill novo">NOVO</span></a><a class="sidebar-link" href="comunidade.html"><i class="fas fa-users" aria-hidden="true"></i>Comunidade</a><a class="sidebar-link active" href="loja.html"><i class="fas fa-cart-shopping" aria-hidden="true"></i>Loja</a><div class="sidebar-group">Live</div><a class="sidebar-link" href="index.html#live"><i class="fas fa-tower-broadcast" aria-hidden="true"></i>Live Hub<span class="pill live" id="navLivePill" hidden>LIVE</span></a><a class="sidebar-link" href="ranking.html"><i class="fas fa-trophy" aria-hidden="true"></i>Ranking</a><div class="sidebar-group">Ferramentas</div><a class="sidebar-link" href="bonus-hunt.html"><i class="fas fa-crosshairs" aria-hidden="true"></i>Bonus Hunt</a><a class="sidebar-link" href="jogos.html"><i class="fas fa-gamepad" aria-hidden="true"></i>Minijogos</a><a class="sidebar-link" href="contacto.html"><i class="fas fa-envelope" aria-hidden="true"></i>Contacto</a></nav>
+  <nav><div class="sidebar-group">Principal</div><a class="sidebar-link" href="index.html"><i class="fas fa-house" aria-hidden="true"></i>Início</a><a class="sidebar-link" href="casinos.html"><i class="fas fa-gift" aria-hidden="true"></i>Casinos</a><a class="sidebar-link" href="manager.html"><i class="fas fa-futbol" aria-hidden="true"></i>FS Manager<span class="pill novo">NOVO</span></a><a class="sidebar-link" href="comunidade.html"><i class="fas fa-users" aria-hidden="true"></i>Comunidade</a><a class="sidebar-link active" href="loja.html"><i class="fas fa-cart-shopping" aria-hidden="true"></i>Loja</a><div class="sidebar-group">Live</div><a class="sidebar-link" href="index.html#live"><i class="fas fa-tower-broadcast" aria-hidden="true"></i>Live Hub<span class="pill live" id="navLivePill" hidden>LIVE</span></a><a class="sidebar-link" href="ranking.html"><i class="fas fa-trophy" aria-hidden="true"></i>Ranking</a><div class="sidebar-group">Ferramentas</div><a class="sidebar-link" href="bonus-hunt.html"><i class="fas fa-crosshairs" aria-hidden="true"></i>Bonus Hunt</a><a class="sidebar-link" href="jogos.html"><i class="fas fa-gamepad" aria-hidden="true"></i>Minijogos</a><a class="sidebar-link" href="contacto.html"><i class="fas fa-envelope" aria-hidden="true"></i>Contacto</a><div class="sidebar-group admin-so" hidden>Streamer</div><a class="sidebar-link admin-so" hidden href="controlador.html"><i class="fas fa-sliders" aria-hidden="true"></i>Controlador</a><a class="sidebar-link admin-so" hidden href="estatisticas.html"><i class="fas fa-chart-column" aria-hidden="true"></i>Estatísticas</a></nav>
   <div class="sidebar-socials"><a href="https://www.twitch.tv/fabiosilva_tv" target="_blank" rel="noopener noreferrer" aria-label="Twitch"><i class="fab fa-twitch" aria-hidden="true"></i></a><a href="https://discord.gg/fDWqsxheRb" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="fab fa-discord" aria-hidden="true"></i></a><a href="https://www.instagram.com/fabiosilva_tv75/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a><a href="https://t.me/+IZ6rt8kCZixmNzY0" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram" aria-hidden="true"></i></a></div>
 </aside>
 <div class="main">
@@ -76,59 +76,7 @@
 <div class="panel-head"><div><h2 class="panel-title">Os meus pedidos</h2><p class="panel-sub">Os pedidos ficam pendentes até serem entregues. Se forem recusados, os pontos voltam ao teu saldo.</p></div></div>
 <ul class="loja-pedidos" id="lojaMeusPedidosLista"></ul>
 </section>
-<section class="panel loja-admin" id="lojaAdmin" hidden>
-<div class="panel-head"><div><h2 class="panel-title"><i class="fas fa-screwdriver-wrench" aria-hidden="true"></i> Gestão da loja</h2><p class="panel-sub">Só tu vês esta secção.</p></div><span class="loja-badge" id="lojaAdminPendentes"></span></div>
-<h3 class="loja-admin-titulo">Pedidos</h3>
-<div class="loja-filtros"><button class="loja-filtro" data-filtro="pendente" type="button">Pendentes</button><button class="loja-filtro" data-filtro="entregue" type="button">Entregues</button><button class="loja-filtro" data-filtro="recusado" type="button">Recusados</button><button class="loja-filtro" data-filtro="todos" type="button">Todos</button></div>
-<ul class="loja-pedidos" id="lojaAdminPedidos"></ul>
-<h3 class="loja-admin-titulo">Prémios</h3>
-<div id="lojaAdminProdutos"></div>
-<form class="loja-admin-produto novo" id="lojaNovoProduto">
-<div class="loja-admin-grid">
-<label class="loja-campo largo"><span>Novo prémio</span><input name="nome" maxlength="80" placeholder="Ex: Voucher Amazon 10 €" required></label>
-<label class="loja-campo"><span>Preço (pontos)</span><input name="preco" type="number" min="1" required></label>
-<label class="loja-campo"><span>Stock</span><input name="stock" type="number" min="0" value="0"></label>
-<label class="loja-campo"><span>Máx./pessoa/mês</span><input name="limitePorMes" type="number" min="0" value="0"></label>
-<label class="loja-campo largo"><span>Descrição</span><input name="descricao" maxlength="300"></label>
-<label class="loja-campo largo"><span>Imagem (ex: assets/loja/nome.jpg ou https://…)</span><input name="imagem" maxlength="300"></label>
-<label class="loja-campo"><span>O viewer indica</span><select name="tipo"><option value="nenhum">Nada</option><option value="deposito">Casino + ID da conta</option><option value="email">Email</option><option value="texto">Texto livre</option></select></label>
-<label class="loja-check"><input type="checkbox" name="ativo" checked> Visível na loja</label>
-</div>
-<div class="loja-admin-acoes"><button type="submit" class="btn-gold"><i class="fas fa-plus" aria-hidden="true"></i> Adicionar prémio</button></div>
-</form>
-<h3 class="loja-admin-titulo">Ajustar saldo de um viewer</h3>
-<form class="loja-ajuste" id="lojaAjuste">
-<label class="loja-campo"><span>Utilizador da Twitch</span><input name="username" required placeholder="ex: fabiosilva_tv"></label>
-<label class="loja-campo"><span>Quantidade (+ ou −)</span><input name="quantidade" type="number" required placeholder="ex: 500 ou -500"></label>
-<button type="submit" class="btn-gold"><i class="fas fa-wallet" aria-hidden="true"></i> Aplicar</button>
-</form>
-<h3 class="loja-admin-titulo">Pôr pontos a zero (reset)</h3>
-<form class="loja-reset" id="lojaReset">
-<p class="loja-reset-aviso"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Afeta <strong>todos</strong> os viewers e não se pode desfazer. Os pontos da StreamElements e os pedidos já feitos não mudam.</p>
-<label class="loja-check"><input type="checkbox" name="saldos" checked> Saldo da loja de todos (fica 0; só conta o que ganharem a ver a live daqui para a frente)</label>
-<label class="loja-check"><input type="checkbox" name="fichas" checked> Fichas dos minijogos (todos voltam às 1.000 e o ranking fica vazio)</label>
-<label class="loja-campo"><span>Escreve RESET para confirmar</span><input name="confirmar" autocomplete="off" placeholder="RESET"></label>
-<button type="submit" class="btn-ghost loja-reset-btn"><i class="fas fa-rotate-left" aria-hidden="true"></i> Pôr a zero</button>
-</form>
-</section>
-<section class="panel loja-admin st-painel" id="siteStats" hidden>
-<div class="panel-head"><div><h2 class="panel-title"><i class="fas fa-chart-column" aria-hidden="true"></i> Estatísticas do site</h2><p class="panel-sub">Só tu vês esta secção. Sem cookies: cada pessoa conta uma vez por dia, mês e ano.</p></div><button type="button" class="btn-ghost st-atualizar" id="stAtualizar"><i class="fas fa-rotate" aria-hidden="true"></i> Atualizar</button></div>
-<div class="st-kpis" id="stKpis"></div>
-<h3 class="loja-admin-titulo">Últimos 30 dias</h3>
-<div class="st-legenda"><span><i class="st-cor st-cor-v"></i>Visitantes</span><span><i class="st-cor st-cor-c"></i>Cliques em parceiros</span></div>
-<div class="st-grafico" id="stGrafico"></div>
-<div class="st-nav"><button type="button" class="btn-ghost" id="stMesAnt" aria-label="Mês anterior"><i class="fas fa-chevron-left" aria-hidden="true"></i></button><strong id="stMesNome"></strong><button type="button" class="btn-ghost" id="stMesSeg" aria-label="Mês seguinte"><i class="fas fa-chevron-right" aria-hidden="true"></i></button><div class="st-vista" role="tablist"><button type="button" class="ativo" data-vista="mes">Mês</button><button type="button" data-vista="ano">Ano</button></div></div>
-<h3 class="loja-admin-titulo">Cliques nos links de parceria</h3>
-<div class="st-marcas" id="stMarcas"></div>
-<div class="st-duas">
-<div><h3 class="loja-admin-titulo">Páginas mais vistas</h3><div class="st-lista" id="stPaginas"></div></div>
-<div><h3 class="loja-admin-titulo">De onde vêm as pessoas</h3><div class="st-lista" id="stOrigens"></div></div>
-</div>
-<h3 class="loja-admin-titulo">Mês a mês — <span id="stAnoNome"></span></h3>
-<div class="st-tabela-wrap"><table class="st-tabela" id="stMeses"></table></div>
-<label class="loja-check st-eu"><input type="checkbox" id="stNaoContar"> Não contar as minhas visitas e cliques neste browser (liga em cada telemóvel/PC que usas)</label>
-<p class="st-nota" id="stNota"></p>
-</section>
+
 </main>
 <footer class="footer">
   <div class="footer-top">
@@ -157,11 +105,10 @@
   <iframe id="chatFrame" title="Chat da Twitch do fabiosilva_tv" loading="lazy" data-channel="fabiosilva_tv"></iframe>
 </aside>
 </div>
-<script src="script.js?v=39"></script>
+<script src="script.js?v=40"></script>
 <script src="twitch-auth.js?v=39"></script>
 <script src="notificacoes.js?v=1"></script>
-<script src="loja.js?v=3"></script>
-<script src="estatisticas.js?v=1"></script>
+<script src="loja.js?v=4"></script>
 <button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
 <script src="rebrand.js?v=36"></script>
 </body>

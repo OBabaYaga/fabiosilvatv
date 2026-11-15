@@ -7,7 +7,7 @@
 //   browser deixa) e um botão fixo no menu lateral.
 // - No iPhone/iPad, as notificações só funcionam com o site instalado no
 //   ecrã principal — nesse caso explicamos como instalar.
-// - Na Loja (só o streamer) mostra o painel "Notificações da app" com
+// - No Controlador (só o streamer) mostra o painel "Notificações da app" com
 //   "Ligar aviso de live" e "Enviar notificação de teste".
 // ===================================================================
 

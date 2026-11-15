@@ -480,7 +480,7 @@
       produtos = pub.produtos || [];
       casinos = pub.casinos || [];
     } catch (e) {
-      $('lojaProdutos').innerHTML = '<p class="loja-vazio">A loja não está disponível neste momento. Tenta daqui a pouco.</p>';
+      if ($('lojaProdutos')) $('lojaProdutos').innerHTML = '<p class="loja-vazio">A loja não está disponível neste momento. Tenta daqui a pouco.</p>';
       return;
     }
     estado = null;
@@ -500,7 +500,8 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    if (!$('lojaProdutos')) return;
+    // página da Loja (prémios) ou Controlador (só a gestão)
+    if (!$('lojaProdutos') && !$('lojaAdmin')) return;
     ligarAdminFixos();
     carregar();
     document.addEventListener('keydown', (e) => e.key === 'Escape' && fecharModal());

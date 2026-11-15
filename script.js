@@ -522,3 +522,18 @@ if (document.readyState === 'loading') {
   document.addEventListener('click', aoClicar, true);
   document.addEventListener('auxclick', aoClicar, true);
 })();
+
+// -------------------------------------------------------------------
+// Menu "Streamer" (Controlador / Estatísticas): só aparece para o Fábio.
+// É só para esconder os links; os dados são protegidos pela API.
+// -------------------------------------------------------------------
+(function menuStreamer() {
+  const ADMINS = ['fabiosilva_tv'];
+  document.addEventListener('twitch:pronto', (e) => {
+    const u = e.detail;
+    const admin = !!(u && ADMINS.includes(String(u.login || '').toLowerCase()));
+    document.querySelectorAll('.admin-so').forEach((el) => { el.hidden = !admin; });
+    const gate = document.getElementById('adminGate');
+    if (gate) gate.hidden = admin;
+  });
+})();

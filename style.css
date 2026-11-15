@@ -3137,6 +3137,13 @@ body { background: var(--bg); }
 }
 
 @media (max-width: 640px) {
+  .push-cartao {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+  }
+}
+
 /* ----- App FabioSilva_TV: descarregar ----- */
 .app-menu-btn i { color: #22c55e; }
 .app-dl { align-items: center; overflow-y: auto; }
@@ -3155,3 +3162,8 @@ body { background: var(--bg); }
 
 .push-cartao { bottom: 5.4rem; }
 .sidebar-link .pill.novo { margin-left: auto; background: var(--gradient-gold); color: #03101c; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.06em; padding: 0.15rem 0.45rem; border-radius: 999px; }
+
+/* Links e avisos só do streamer (Controlador / Estatísticas) */
+.admin-so[hidden], .admin-gate[hidden] { display: none !important; }
+.admin-gate p { margin: 0; color: var(--text-soft); display: flex; gap: 0.6rem; align-items: center; }
+.admin-gate i { color: var(--gold); }
