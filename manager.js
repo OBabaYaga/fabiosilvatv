@@ -301,6 +301,11 @@
       const par = m.fix[c.div][p.r].find((x) => x[0] === cid || x[1] === cid);
       return { tipo: 'L', r: p.r, h: par[0], a: par[1] };
     }
+    if (p.t === 'E') {
+      const eu = minhaEuro(m, cid);
+      const vivo = !!(eu && !eu.tc.campeao && p.r >= eu.tc.inicio && eu.tc.vivos.includes(cid));
+      return { tipo: 'E', r: p.r, vivo, joga: !!eu, cp: eu ? eu.cp : null, rn: eu ? TM.nomeRonda(eu.tc) : '' };
+    }
     const tc = minhaTaca(m, m.clubes[cid]);
     const joga = tc && !tc.campeao && p.r >= tc.inicio;
     return { tipo: 'T', r: p.r, vivo: !!(joga && tc.vivos.includes(cid)), joga, rn: tc ? TM.nomeRonda(tc) : '' };
@@ -309,6 +314,14 @@
     const p = m.cal[k == null ? m.passo : k];
     if (!p) return '';
     if (p.t === 'L') return 'Jornada ' + (p.r + 1);
+    if (p.t === 'E') {
+      const algumE = Object.values(m.euro || {}).some((t) => !t.campeao && p.r >= t.inicio);
+      if (!algumE) return nomePasso(m, (k == null ? m.passo : k) + 1);
+      const ce = S.fonte && S.fonte.meu && S.fonte.mundo === m ? S.fonte.meu() : null;
+      const eu = ce ? minhaEuro(m, ce.id) : null;
+      if (eu && !eu.tc.campeao && p.r >= eu.tc.inicio && eu.tc.vivos.includes(ce.id)) return eu.tc.nome + ' — ' + TM.nomeRonda(eu.tc);
+      return 'Europa (Campeões e Liga Europa)';
+    }
     // ronda de Taça em que ninguém joga (ex.: só há taças mais curtas): mostra o passo seguinte
     const algum = Object.values(m.tacas || {}).some((t) => !t.campeao && p.r >= t.inicio);
     if (!algum) return nomePasso(m, (k == null ? m.passo : k) + 1);
@@ -325,6 +338,21 @@
   function ndComPais(m, d) {
     const i = TM.infoDiv(m, d);
     return (multi(m) ? (TM.PAISES[i.p] || {}).band + ' ' : '') + nd(m, d);
+  }
+  // a prova europeia em que o clube está (ou esteve) esta época
+  function minhaEuro(m, cid) {
+    for (const cp in m.euro || {}) {
+      const tc = m.euro[cp];
+      if (tc.vivos.includes(cid) || (tc.isentos || []).includes(cid) || tc.jogos.some((x) => x.h === cid || x.a === cid)) return { cp, tc };
+    }
+    return null;
+  }
+  function provaTaca(m, k) {
+    return (m.euro && m.euro[k]) || m.tacas[k] || null;
+  }
+  function nomeProva(m, k) {
+    if (m.euro && m.euro[k]) return m.euro[k].nome;
+    return 'Taça' + (multi(m) && TM.PAISES[k] ? ' de ' + TM.PAISES[k].nome : '');
   }
   function minhaTaca(m, c) {
     return (m.tacas && m.tacas[(c && c.pais) || 'PT']) || null;
@@ -362,7 +390,7 @@
   function renderInicio() {
     const pais = S.paisInicio;
     const textoBase =
-      '<ul class="tr-dicas"><li>⚽ Jogos simulados minuto a minuto, com substituições e tática.</li><li>💰 Leilões, compras, vendas, bilheteira, estádio e banco.</li><li>🏆 Divisões, Taça, melhor marcador e carreira de treinador.</li></ul>';
+      '<ul class="tr-dicas"><li>⚽ Jogos simulados minuto a minuto, com substituições e tática.</li><li>💰 Leilões, compras, vendas, bilheteira, estádio e banco.</li><li>🏆 Divisões, Taça, melhor marcador e carreira de treinador.</li><li>⭐ Liga dos Campeões e Liga Europa contra clubes de Espanha, Itália, Inglaterra e Portugal.</li></ul>';
     if (!pais) {
       app().innerHTML =
         '<div class="tr-inicio"><div class="tr-inicio-txt"><h2>Começa a tua carreira</h2>' +
@@ -374,7 +402,8 @@
     }
     const sem = (Date.now() ^ (Math.random() * 1e9)) >>> 0;
     S.semente = S.semente || sem;
-    const preview = TM.criarMundo(S.semente, { paises: [pais] });
+    // a carreira tem as 4 ligas (o teu país primeiro), para haver provas europeias
+    const preview = TM.criarMundo(S.semente, { paises: [pais].concat(Object.keys(TM.PAISES).filter((p) => p !== pais)) });
     const rng = TM.criarRng(S.semente ^ 0x9e3779b9);
     const ds = TM.divsDoPais(preview, pais);
     const ultima = ds[ds.length - 1];
@@ -421,7 +450,7 @@
     ['equipa', 'fa-shirt', 'Equipa'],
     ['jogo', 'fa-futbol', 'Jornada'],
     ['tabelas', 'fa-list-ol', 'Tabelas'],
-    ['taca', 'fa-trophy', 'Taça'],
+    ['taca', 'fa-trophy', 'Taças'],
     ['mercado', 'fa-right-left', 'Mercado'],
     ['financas', 'fa-coins', 'Finanças'],
     ['noticias', 'fa-newspaper', 'Notícias'],
@@ -612,16 +641,23 @@
       prox =
         '<div class="tr-prox"><div class="tr-prox-eq">' + emblema(m.clubes[pj.h], 'g') + '<b>' + esc(nomeClube(m, pj.h)) + '</b></div><div class="tr-prox-vs">VS<small>' + esc(nomePasso(m)) + '</small></div><div class="tr-prox-eq">' + emblema(m.clubes[pj.a], 'g') + '<b>' + esc(nomeClube(m, pj.a)) + '</b></div></div>' +
         '<p class="tr-prox-info">' + esc(ca.n) + ': força média ' + Math.round(fm.reduce((s, x) => s + x, 0) / fm.length) + ', ' + (tA ? tA.p + ' pontos, forma ' + (tA.forma || '—').split('').map((x) => '<span class="tr-f ' + x + '">' + x + '</span>').join('') : '') + (ca.hum && ca.hum !== EU ? ' · treinado por <b>' + esc(ca.hum) + '</b>' : '') + '</p>';
+    } else if (pj.tipo === 'E') {
+      prox = '<div class="tr-prox taca euro"><i class="fas fa-star"></i><div><b>' + esc(nomePasso(m)) + '</b><br>' + (pj.vivo ? 'Estás em prova na ' + esc(m.euro[pj.cp].nome) + '! O adversário sai no sorteio (de outro país, sempre que possível).' : pj.joga ? 'Já foste eliminado — a ronda joga-se na mesma.' : 'O teu clube não está nas provas europeias. Acaba nos 6 primeiros da 1.ª divisão para lá chegares.') + '</div></div>';
     } else {
       prox = '<div class="tr-prox taca"><i class="fas fa-trophy"></i><div><b>' + esc(nomePasso(m)) + '</b><br>' + (pj.vivo ? 'Estás em prova. O adversário sai no sorteio.' : 'Já foste eliminado — a ronda joga-se na mesma.') + '</div></div>';
     }
     const u = m.ultimos;
     let ult = '';
     if (u && u.jogos && u.jogos.length) {
-      const meus = u.t === 'L' ? u.jogos.filter((x) => x.dv === c.div) : u.jogos.filter((x) => (x.pa || 'PT') === c.pais);
-      ult = '<h3 class="tr-h3">Resultados — ' + (u.t === 'L' ? 'Jornada ' + (u.r + 1) : 'Taça') + '</h3><div class="tr-res">' + meus.map((x) => linhaRes(m, x, c.id)).join('') + '</div>';
+      const meus = u.t === 'L' ? u.jogos.filter((x) => x.dv === c.div) : u.t === 'E' ? u.jogos : u.jogos.filter((x) => (x.pa || 'PT') === c.pais);
+      if (u.t === 'E') {
+        ult = Object.keys(TM.EURO).map((cp) => {
+          const js = meus.filter((x) => x.cp === cp);
+          return js.length ? '<h3 class="tr-h3">' + esc(TM.EURO[cp].nome) + ' — ' + esc(js[0].rn || '') + '</h3><div class="tr-res">' + js.map((x) => linhaRes(m, x, c.id)).join('') + '</div>' : '';
+        }).join('');
+      } else ult = '<h3 class="tr-h3">Resultados — ' + (u.t === 'L' ? 'Jornada ' + (u.r + 1) : 'Taça') + '</h3><div class="tr-res">' + meus.map((x) => linhaRes(m, x, c.id)).join('') + '</div>';
       if (u.t === 'L') ult += '<details class="tr-det"><summary>Outras divisões</summary><div class="tr-res">' + u.jogos.filter((x) => x.dv !== c.div).map((x) => linhaRes(m, x, c.id)).join('') + '</div></details>';
-      else if (multi(m)) ult += '<details class="tr-det"><summary>Taças dos outros países</summary><div class="tr-res">' + u.jogos.filter((x) => (x.pa || 'PT') !== c.pais).map((x) => linhaRes(m, x, c.id)).join('') + '</div></details>';
+      else if (u.t === 'T' && multi(m)) ult += '<details class="tr-det"><summary>Taças dos outros países</summary><div class="tr-res">' + u.jogos.filter((x) => (x.pa || 'PT') !== c.pais).map((x) => linhaRes(m, x, c.id)).join('') + '</div></details>';
     }
     return '<div class="tr-jornada">' + prox + (fonte.podeJogar ? '<button class="tr-btn-jogar grande" data-acao="jogar"><i class="fas fa-play"></i> Jogar ' + esc(nomePasso(m)) + '</button>' : '') + ult + '</div>';
   }
@@ -666,11 +702,24 @@
   function vTaca(fonte) {
     const m = fonte.mundo;
     const c = fonte.meu();
-    const pais = S.pTaca && m.tacas[S.pTaca] ? S.pTaca : c.pais || 'PT';
-    const tc = m.tacas[pais];
-    let html = multi(m) ? '<div class="tr-divsel">' + m.paises.map((p) => '<button class="tr-chip' + (p === pais ? ' ativo' : '') + '" data-acao="pais-taca" data-p="' + p + '">' + TM.PAISES[p].band + ' ' + esc(TM.PAISES[p].nome) + '</button>').join('') + '</div>' : '';
+    const chaves = (multi(m) ? m.paises.slice() : [c.pais || 'PT']).concat(Object.keys(m.euro || {}));
+    const eu = minhaEuro(m, c.id);
+    const pais = S.pTaca && provaTaca(m, S.pTaca) ? S.pTaca : c.pais || 'PT';
+    const tc = provaTaca(m, pais);
+    const ehEuro = !!(m.euro && m.euro[pais]);
+    let html = chaves.length > 1 ? '<div class="tr-divsel">' + chaves.map((p) => '<button class="tr-chip' + (p === pais ? ' ativo' : '') + (m.euro && m.euro[p] ? ' euro' : '') + '" data-acao="pais-taca" data-p="' + p + '">' + (m.euro && m.euro[p] ? '⭐ ' + esc(m.euro[p].nome) : TM.PAISES[p].band + ' ' + esc(multi(m) ? TM.PAISES[p].nome : 'Taça')) + '</button>').join('') + '</div>' : '';
     const emProva = !tc.campeao && tc.vivos.concat(tc.isentos || []).includes(c.id);
-    html += '<div class="tr-taca-topo"><i class="fas fa-trophy"></i><div><b>Taça' + (multi(m) ? ' de ' + esc(TM.PAISES[pais].nome) : '') + ' ' + epocaTxt(m) + '</b><br>' + (tc.campeao ? 'Vencedor: <b>' + esc(nomeClube(m, tc.campeao)) + '</b>' : 'Próxima ronda: ' + esc(TM.nomeRonda(tc)) + ' · ' + (tc.vivos.length + (tc.isentos || []).length) + ' clubes em prova') + (emProva ? ' · <b class="ok">o teu clube continua em prova</b>' : '') + '</div></div>';
+    html += '<div class="tr-taca-topo' + (ehEuro ? ' euro' : '') + '"><i class="fas fa-' + (ehEuro ? 'star' : 'trophy') + '"></i><div><b>' + esc(nomeProva(m, pais)) + ' ' + epocaTxt(m) + '</b><br>' + (tc.campeao ? 'Vencedor: <b>' + esc(nomeClube(m, tc.campeao)) + '</b>' : 'Próxima ronda: ' + esc(TM.nomeRonda(tc)) + ' · ' + (tc.vivos.length + (tc.isentos || []).length) + ' clubes em prova') + (emProva ? ' · <b class="ok">o teu clube continua em prova</b>' : '') + '</div></div>';
+    if (ehEuro) {
+      const E = TM.EURO[pais];
+      html += '<p class="tr-ajuda">' + (pais === 'CL' ? 'Os 4 primeiros' : 'O 5.º e o 6.º') + ' da 1.ª divisão de cada país na época anterior. Eliminatórias a uma mão (final em campo neutro), com penáltis se houver empate. Cada jogo vale ' + eur(E.jogo) + ' a cada clube e o vencedor leva ' + eur(E.premio) + '.</p>';
+      if (!tc.jogos.length) {
+        const todos = tc.vivos.concat(tc.isentos || []);
+        html += '<h3 class="tr-h3">Clubes apurados</h3><div class="tr-res">' + todos.map((id) => '<div class="tr-res-l' + (id === c.id ? ' meu' : '') + '"><span class="h">' + (TM.PAISES[m.clubes[id].pais] || {}).band + ' ' + esc(nomeClube(m, id)) + '</span></div>').join('') + '</div>';
+      }
+    } else if (multi(m) && m.euro && !eu) {
+      html += '<p class="tr-ajuda">⭐ Acaba nos 4 primeiros da 1.ª divisão para ires à Liga dos Campeões, ou em 5.º/6.º para a Liga Europa.</p>';
+    }
     const rondas = [];
     for (const x of tc.jogos) if (!rondas.includes(x.r)) rondas.push(x.r);
     rondas.sort((a, b) => b - a);
@@ -678,11 +727,10 @@
       const js = tc.jogos.filter((x) => x.r === r);
       html += '<h3 class="tr-h3">' + esc(js[0].rn || TM.RONDAS_TACA[r] || '') + '</h3><div class="tr-res">' + js.map((x) => linhaRes(m, Object.assign({}, x), c.id).replace('data-acao="ver-jogo"', 'data-acao="nada"')).join('') + '</div>';
     }
-    const hist = m.historia.filter((h) => (h.tacas || {})[pais]).slice(0, 8);
-    if (hist.length) html += '<h3 class="tr-h3">Vencedores anteriores</h3><ul class="tr-lista">' + hist.map((h) => '<li>' + h.ano + '/' + String(h.ano + 1).slice(2) + ': <b>' + esc(nomeClube(m, h.tacas[pais])) + '</b></li>').join('') + '</ul>';
+    const hist = m.historia.filter((h) => (ehEuro ? h.euro || {} : h.tacas || {})[pais]).slice(0, 8);
+    if (hist.length) html += '<h3 class="tr-h3">Vencedores anteriores</h3><ul class="tr-lista">' + hist.map((h) => '<li>' + h.ano + '/' + String(h.ano + 1).slice(2) + ': <b>' + esc(nomeClube(m, (ehEuro ? h.euro : h.tacas)[pais])) + '</b></li>').join('') + '</ul>';
     return html;
   }
-
 
   // ---------------------- Mercado ----------------------
   function vMercado(fonte) {
@@ -1139,6 +1187,7 @@
       (subiu ? '<p class="tr-grande ok">⬆️ Subiste à ' + esc(nd(m, c.div)) + '!</p>' : desceu ? '<p class="tr-grande neg">⬇️ Desceste à ' + esc(nd(m, c.div)) + '.</p>' : '') +
       '<ul class="tr-lista">' + f.campeoes.map((id, d) => '<li>🏆 ' + esc(ndComPais(m, d)) + ': <b>' + esc(nomeClube(m, id)) + '</b></li>').join('') +
       Object.entries(f.tacas || {}).filter(([, id]) => id).map(([p, id]) => '<li>🏆 Taça' + (multi(m) ? ' de ' + esc(TM.PAISES[p].nome) : '') + ': <b>' + esc(nomeClube(m, id)) + '</b></li>').join('') +
+      Object.entries(f.euro || {}).filter(([, id]) => id).map(([cp, id]) => '<li>⭐ ' + esc(TM.EURO[cp].nome) + ': <b>' + esc(nomeClube(m, id)) + '</b></li>').join('') +
       (f.artilheiro ? '<li>👟 Melhor marcador: <b>' + esc(f.artilheiro.n) + '</b> (' + esc(nomeClube(m, f.artilheiro.cl)) + ', ' + f.artilheiro.gol + ' golos)</li>' : '') +
       '</ul><p class="tr-nota">Os jogadores ficaram um ano mais velhos, alguns reformaram-se e subiram juniores. Vê as Notícias.</p></div>'
     );
@@ -1216,7 +1265,7 @@
   function modalCriarLiga() {
     modal('<h3><i class="fas fa-trophy"></i> Criar a tua liga</h3><p>Crias uma liga só tua e convidas os amigos com um link. Cada um treina um clube e as jornadas jogam-se para todos às horas que escolheres.</p>' +
       '<label class="tr-fld">Nome da liga<input id="trNomeLiga" maxlength="32" placeholder="Ex.: Liga dos Amigos"></label>' +
-      '<div class="tr-fld">Países<div class="tr-paises-esc">' + Object.entries(TM.PAISES).map(([k, P]) => '<label><input type="checkbox" class="tr-pais-liga" value="' + k + '"' + (k === 'PT' ? ' checked disabled' : '') + '> ' + P.band + ' ' + esc(P.nome) + '</label>').join('') + '</div><small>Portugal está sempre. Toda a gente começa na divisão mais baixa de Portugal.</small></div>' +
+      '<div class="tr-fld">Países<div class="tr-paises-esc">' + Object.entries(TM.PAISES).map(([k, P]) => '<label><input type="checkbox" class="tr-pais-liga" value="' + k + '"' + (k === 'PT' ? ' checked disabled' : '') + '> ' + P.band + ' ' + esc(P.nome) + '</label>').join('') + '</div><small>Portugal está sempre. Toda a gente começa na divisão mais baixa de Portugal. Com 2 ou mais países há Liga dos Campeões e Liga Europa.</small></div>' +
       '<div class="tr-fld">Horas das jornadas (hora de Lisboa)' + horasHtml([21]) + '<small>Uma jornada por cada hora escolhida, todos os dias. Como dono, também podes jogar a próxima jornada quando quiseres.</small></div>' +
       '<button class="tr-btn-jogar" data-acao="criar-liga-ok"><i class="fas fa-check"></i> Criar liga</button>', { largo: true });
     setTimeout(() => { const i = $('#trNomeLiga'); if (i) i.focus(); }, 50);
