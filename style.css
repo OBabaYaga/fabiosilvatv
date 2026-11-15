@@ -3167,3 +3167,25 @@ body { background: var(--bg); }
 .admin-so[hidden], .admin-gate[hidden] { display: none !important; }
 .admin-gate p { margin: 0; color: var(--text-soft); display: flex; gap: 0.6rem; align-items: center; }
 .admin-gate i { color: var(--gold); }
+
+/* ===== Marcas em destaque (Coldbet e CaptainsBet): faixa, brilho e botão dourado ===== */
+.gm-destaque { position: relative; border: none !important; isolation: isolate; padding: 2px !important; box-shadow: 0 0 0 1px rgba(245, 197, 66, 0.35), 0 18px 48px rgba(240, 180, 41, 0.18); }
+.gm-destaque::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: 28px; background: conic-gradient(from var(--gm-ang, 0deg), #f5d178, #dca62c, #fff2b0, #b9740f, #f5d178); animation: gmGirar 4s linear infinite; }
+.gm-destaque::after { content: ''; position: absolute; inset: 2px; z-index: -1; border-radius: 26px; background: rgba(6, 10, 18, 0.96); }
+.gm-destaque.gm-fogo::before { background: conic-gradient(from var(--gm-ang, 0deg), #ff8a3d, #ff3d5a, #ffd166, #ff6a00, #ff8a3d); }
+.gm-destaque.gm-fogo { box-shadow: 0 0 0 1px rgba(255, 106, 61, 0.35), 0 18px 48px rgba(255, 80, 60, 0.18); }
+@property --gm-ang { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes gmGirar { to { --gm-ang: 360deg; } }
+.gm-destaque .gm-art { border-radius: 26px 26px 0 0; }
+.gm-faixa { position: absolute; top: 0; left: 0; z-index: 4; width: 118px; height: 118px; overflow: hidden; pointer-events: none; }
+.gm-faixa span { position: absolute; top: 26px; left: -36px; width: 170px; transform: rotate(-45deg); text-align: center; padding: 7px 0; font-weight: 900; font-size: 0.78rem; letter-spacing: 0.14em; color: #2a1800; background: linear-gradient(90deg, #b9740f, #f5d178 30%, #fff2b0 50%, #f5d178 70%, #b9740f); background-size: 200% 100%; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45); animation: gmBrilho 3s linear infinite; }
+.gm-fogo .gm-faixa span { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.35); background: linear-gradient(90deg, #c2191f, #ff3d5a 30%, #ff8a3d 50%, #ff3d5a 70%, #c2191f); background-size: 200% 100%; }
+@keyframes gmBrilho { to { background-position: -200% 0; } }
+.gm-selo { display: inline-flex; align-items: center; gap: 0.3rem; margin-bottom: 0.45rem; padding: 0.28rem 0.7rem; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.02em; background: var(--gradient-gold); color: #2a1800; box-shadow: 0 4px 14px rgba(240, 180, 41, 0.35); }
+.gm-fogo .gm-selo { background: linear-gradient(135deg, #ff8a3d, #ff3d5a); color: #fff; box-shadow: 0 4px 14px rgba(255, 70, 70, 0.35); }
+.gm-destaque .gm-claim { position: relative; overflow: hidden; background: var(--gradient-gold); color: #2a1800; box-shadow: 0 8px 22px rgba(240, 180, 41, 0.35); animation: gmPulsar 2.4s ease-in-out infinite; }
+.gm-destaque.gm-fogo .gm-claim { background: linear-gradient(135deg, #ff8a3d, #ff3d5a); color: #fff; box-shadow: 0 8px 22px rgba(255, 70, 70, 0.35); }
+.gm-destaque .gm-claim::after { content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent); transform: skewX(-20deg); animation: gmReflexo 3s ease-in-out infinite; }
+@keyframes gmPulsar { 50% { transform: scale(1.025); } }
+@keyframes gmReflexo { 0%, 55% { left: -60%; } 100% { left: 130%; } }
+@media (prefers-reduced-motion: reduce) { .gm-destaque::before, .gm-faixa span, .gm-destaque .gm-claim, .gm-destaque .gm-claim::after { animation: none; } }
