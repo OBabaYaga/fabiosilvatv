@@ -69,7 +69,7 @@ def regras(nodes, ind=''):
     return out
 
 saida = ['/* GERADO por _build/tema_vice.py — nao editar a mao. Extras do tema em tema-vice-extra.css */']
-for f in ('style.css', 'manager.css'):
+for f in ('style.css', 'manager.css', 'banca.css'):
     css = open(os.path.join(RAIZ, f), encoding='utf-8').read()
     saida.append('/* ---- ' + f + ' ---- */')
     saida += regras(tinycss2.parse_stylesheet(css, skip_comments=True, skip_whitespace=True))

@@ -251,6 +251,12 @@ if (searchInput) {
   if (searchForm && offerCards.length) searchForm.addEventListener('submit', (e) => e.preventDefault());
   if (query) applyOfferFilters();
 }
+// ?f=sports abre a lista já filtrada (ex.: link "Onde apostar" da Gestão de Banca)
+(() => {
+  const f = new URLSearchParams(window.location.search).get('f');
+  const b = f && filterBtns && [...filterBtns].find((x) => x.dataset.filter === f);
+  if (b) b.click();
+})();
 
 document.querySelectorAll('.more-btn').forEach((btn) => btn.addEventListener('click', () => {
   const card = btn.closest('.offer-card');

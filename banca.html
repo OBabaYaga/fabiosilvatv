@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-PT" class="tema-vice">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Banca — calculadora para apostas desportivas</title>
+    <meta name="description" content="Calculadora gratuita para gerir a banca nas apostas desportivas: plano de stakes por unidades, risco de cada aposta pela odd, critério de Kelly, múltiplas, margem da casa, simulador de risco e diário de apostas. 18+">
+    <link rel="canonical" href="https://fabiosilvatv.com/banca.html">
+    <meta name="theme-color" content="#080c13">
+    <meta name="rating" content="adult">
+    <link rel="icon" href="assets/favicon-64.png" type="image/png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="FabioSilva_TV">
+    <meta property="og:locale" content="pt_PT">
+    <meta property="og:title" content="Gestão de Banca — calculadora para apostas desportivas">
+    <meta property="og:description" content="Calculadora gratuita para gerir a banca nas apostas desportivas: plano de stakes por unidades, risco de cada aposta pela odd, critério de Kelly, múltiplas, margem da casa, simulador de risco e diário de apostas. 18+">
+    <meta property="og:url" content="https://fabiosilvatv.com/banca.html">
+    <meta property="og:image" content="https://fabiosilvatv.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Gestão de Banca — calculadora para apostas desportivas">
+    <meta name="twitter:description" content="Calculadora gratuita para gerir a banca nas apostas desportivas: plano de stakes por unidades, risco de cada aposta pela odd, critério de Kelly, múltiplas, margem da casa, simulador de risco e diário de apostas. 18+">
+    <meta name="twitter:image" content="https://fabiosilvatv.com/assets/og-image.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=47">
+    <link rel="stylesheet" href="banca.css?v=1">
+    <link rel="stylesheet" href="tema-vice.css?v=1">
+    <link rel="stylesheet" href="tema-vice-extra.css?v=1">
+</head>
+<body>
+<div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
+  <div class="age-gate-content">
+    <div class="age-gate-icon"><i class="fas fa-user-shield" aria-hidden="true"></i></div>
+    <h2 class="age-gate-title" id="ageGateTitle">Verificação de idade</h2>
+    <p class="age-gate-text">Este site contém conteúdo relacionado com jogos de fortuna e azar e destina-se apenas a maiores de 18 anos.</p>
+    <p class="age-gate-question">Confirmas que tens 18 anos ou mais?</p>
+    <div class="age-gate-buttons">
+      <button id="ageConfirm" class="age-btn age-btn-confirm">Sim, tenho +18</button>
+      <button id="ageDeny" class="age-btn age-btn-deny">Não, sou menor</button>
+    </div>
+    <p class="age-gate-warning"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Joga com responsabilidade</p>
+  </div>
+</div>
+<div class="backdrop" id="backdrop"></div>
+<div class="app has-chat" id="app">
+<aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+  <a class="sidebar-brand" href="index.html"><img class="marca-logo" src="assets/logo-fabio.png" alt="FabioSilva_TV"></a>
+  <div class="atalhos"><a class="atalho destaque" href="casinos.html"><small>Reclama</small><strong>Ofertas</strong><i class="fas fa-gift" aria-hidden="true"></i></a><div class="linha2"><a class="atalho loja" href="loja.html"><small>Pontos</small><strong>Loja</strong><i class="fas fa-cart-shopping" aria-hidden="true"></i></a><a class="atalho rank" href="ranking.html"><small>Semana</small><strong>Ranking</strong><i class="fas fa-trophy" aria-hidden="true"></i></a></div></div>
+  <nav><div class="sidebar-group">Principal</div><a class="sidebar-link" href="index.html"><i class="fas fa-house" aria-hidden="true"></i>Início</a><a class="sidebar-link" href="casinos.html"><i class="fas fa-gift" aria-hidden="true"></i>Casinos</a><a class="sidebar-link" href="manager.html"><i class="fas fa-futbol" aria-hidden="true"></i>FS Manager<span class="pill novo">NOVO</span></a><a class="sidebar-link" href="comunidade.html"><i class="fas fa-users" aria-hidden="true"></i>Comunidade</a><a class="sidebar-link" href="loja.html"><i class="fas fa-cart-shopping" aria-hidden="true"></i>Loja</a><div class="sidebar-group">Live</div><a class="sidebar-link" href="index.html#live"><i class="fas fa-tower-broadcast" aria-hidden="true"></i>Live Hub<span class="pill live" id="navLivePill" hidden>LIVE</span></a><a class="sidebar-link" href="ranking.html"><i class="fas fa-trophy" aria-hidden="true"></i>Ranking</a><div class="sidebar-group">Ferramentas</div><a class="sidebar-link" href="bonus-hunt.html"><i class="fas fa-crosshairs" aria-hidden="true"></i>Bonus Hunt</a><a class="sidebar-link active" href="banca.html"><i class="fas fa-calculator" aria-hidden="true"></i>Gestão de Banca<span class="pill novo">NOVO</span></a><a class="sidebar-link" href="jogos.html"><i class="fas fa-gamepad" aria-hidden="true"></i>Minijogos</a><a class="sidebar-link" href="contacto.html"><i class="fas fa-envelope" aria-hidden="true"></i>Contacto</a><div class="sidebar-group admin-so" hidden>Streamer</div><a class="sidebar-link admin-so" hidden href="controlador.html"><i class="fas fa-sliders" aria-hidden="true"></i>Controlador</a><a class="sidebar-link admin-so" hidden href="estatisticas.html"><i class="fas fa-chart-column" aria-hidden="true"></i>Estatísticas</a></nav>
+  <div class="sidebar-socials"><a href="https://www.twitch.tv/fabiosilva_tv" target="_blank" rel="noopener noreferrer" aria-label="Twitch"><i class="fab fa-twitch" aria-hidden="true"></i></a><a href="https://discord.gg/fDWqsxheRb" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="fab fa-discord" aria-hidden="true"></i></a><a href="https://www.instagram.com/fabiosilva_tv75/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a><a href="https://t.me/+IZ6rt8kCZixmNzY0" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram" aria-hidden="true"></i></a></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar"><i class="fas fa-bars" aria-hidden="true"></i></button>
+  <div class="crumb"><small>Estás em</small><strong>Gestão de Banca</strong></div>
+  <form class="search" role="search" action="casinos.html" method="get"><i class="fas fa-magnifying-glass" aria-hidden="true"></i><input type="search" name="q" id="siteSearch" placeholder="Pesquisar casinos, ofertas, códigos..." autocomplete="off" aria-label="Pesquisar"></form>
+  <div class="topbar-actions">
+    <div class="nav-auth" id="navAuth"></div>
+    <button class="chat-toggle" id="chatToggle" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
+  </div>
+</header>
+<main id="content">
+<section class="panel page-hero">
+  <div class="icon gold"><i class="fas fa-calculator" aria-hidden="true"></i></div>
+  <div><h1>Gestão de Banca</h1><p>A calculadora para quem aposta em desporto: define quanto vale cada unidade, vê o risco de cada aposta pela odd e pelo valor, e regista tudo para saberes se estás mesmo a ganhar.</p></div>
+</section>
+
+<div class="bc-alerta" id="bcStop" hidden>
+  <i class="fas fa-hand" aria-hidden="true"></i>
+  <div><strong>Chegaste ao teu limite de perdas de hoje.</strong>
+    <small>Foi o limite que tu próprio definiste no plano. Pára por hoje — amanhã a banca continua cá.</small></div>
+</div>
+
+<nav class="bc-tabs" role="tablist" aria-label="Ferramentas da banca">
+  <button type="button" role="tab" data-tab="plano" class="ativo"><i class="fas fa-wallet" aria-hidden="true"></i>Plano</button>
+  <button type="button" role="tab" data-tab="aposta"><i class="fas fa-scale-balanced" aria-hidden="true"></i>Aposta</button>
+  <button type="button" role="tab" data-tab="multipla"><i class="fas fa-layer-group" aria-hidden="true"></i>Múltipla</button>
+  <button type="button" role="tab" data-tab="margem"><i class="fas fa-percent" aria-hidden="true"></i>Margem</button>
+  <button type="button" role="tab" data-tab="simulador"><i class="fas fa-chart-line" aria-hidden="true"></i>Simulador</button>
+  <button type="button" role="tab" data-tab="diario"><i class="fas fa-book" aria-hidden="true"></i>Diário</button>
+</nav>
+
+<!-- PLANO -->
+<section class="panel bc-sec" data-sec="plano">
+  <div class="panel-head"><div><h2 class="panel-title">O teu plano de banca</h2>
+    <p class="panel-sub">A banca é o dinheiro que separas só para apostar — dinheiro que podes perder sem afetar a tua vida. Fica guardado neste browser.</p></div></div>
+  <div class="bc-grid">
+    <label class="bc-campo"><span>Banca inicial</span><div class="bc-in"><input type="text" inputmode="decimal" id="pBanca" value="500"><em>€</em></div></label>
+    <div class="bc-campo"><span>Perfil de risco</span>
+      <div class="bc-perfis" id="pPerfis">
+        <button type="button" data-p="1">Conservador<small>1% por unidade</small></button>
+        <button type="button" data-p="2">Moderado<small>2% por unidade</small></button>
+        <button type="button" data-p="3">Agressivo<small>3% por unidade</small></button>
+      </div></div>
+    <label class="bc-campo"><span>Unidade <b id="pPctTxt">2%</b> da banca</span><input type="range" id="pPct" min="0.5" max="5" step="0.5" value="2"></label>
+    <label class="bc-campo"><span>Limite de perdas por dia</span><div class="bc-in"><input type="text" inputmode="decimal" id="pStop" value="10"><em>% da banca</em></div></label>
+  </div>
+  <div class="bc-kpis">
+    <div><small>Banca atual</small><strong id="kBanca">—</strong><em id="kBancaVar"></em></div>
+    <div><small>1 unidade</small><strong id="kUnidade">—</strong></div>
+    <div><small>Aposta máxima (3u)</small><strong id="kMax">—</strong></div>
+    <div><small>Limite de perdas hoje</small><strong id="kStop">—</strong><em id="kStopHoje"></em></div>
+  </div>
+  <h3 class="bc-sub">Quanto apostar consoante a odd</h3>
+  <p class="bc-nota">Quanto mais alta a odd, menos vezes ganhas — por isso a aposta deve ser mais pequena. Valores calculados a partir da banca atual.</p>
+  <div class="bc-tabela-wrap"><table class="bc-tabela" id="pTabela">
+    <thead><tr><th>Odd</th><th>Probabilidade implícita</th><th>Unidades</th><th>Aposta</th><th>Risco</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- APOSTA -->
+<section class="panel bc-sec" data-sec="aposta" hidden>
+  <div class="panel-head"><div><h2 class="panel-title">Analisar uma aposta</h2>
+    <p class="panel-sub">Mete a odd e quanto queres apostar. Se tiveres uma opinião sobre a probabilidade real, o critério de Kelly diz-te quanto faz sentido apostar.</p></div></div>
+  <div class="bc-grid">
+    <label class="bc-campo"><span>Odd</span><div class="bc-in"><input type="text" inputmode="decimal" id="aOdd" value="1.85"></div></label>
+    <label class="bc-campo"><span>Valor a apostar</span><div class="bc-in"><input type="text" inputmode="decimal" id="aStake" value=""><em>€</em></div></label>
+    <label class="bc-campo"><span>A tua probabilidade <small>(opcional)</small></span><div class="bc-in"><input type="text" inputmode="decimal" id="aProb" placeholder="ex: 60"><em>%</em></div></label>
+  </div>
+  <div class="bc-risco" id="aRisco"></div>
+  <div class="bc-kpis">
+    <div><small>Se ganhares recebes</small><strong id="aRet">—</strong></div>
+    <div><small>Lucro</small><strong id="aLucro">—</strong></div>
+    <div><small>Probabilidade implícita</small><strong id="aImp">—</strong></div>
+    <div><small>Da tua banca</small><strong id="aPctB">—</strong><em id="aUn"></em></div>
+  </div>
+  <div class="bc-kelly" id="aKelly" hidden>
+    <h3 class="bc-sub">Critério de Kelly</h3>
+    <div class="bc-kpis">
+      <div><small>Valor esperado</small><strong id="kEV">—</strong><em>por cada 10€ apostados</em></div>
+      <div><small>Kelly completo</small><strong id="kFull">—</strong></div>
+      <div><small>¼ de Kelly <span class="bc-tag">recomendado</span></small><strong id="kQuarto">—</strong></div>
+    </div>
+    <p class="bc-nota" id="kTxt"></p>
+  </div>
+</section>
+
+<!-- MULTIPLA -->
+<section class="panel bc-sec" data-sec="multipla" hidden>
+  <div class="panel-head"><div><h2 class="panel-title">Múltipla (acumulada)</h2>
+    <p class="panel-sub">Na múltipla as odds multiplicam-se — mas o risco também. Basta uma seleção falhar para perderes tudo.</p></div>
+    <button type="button" class="btn-ghost" id="mAdd"><i class="fas fa-plus" aria-hidden="true"></i> Seleção</button></div>
+  <div class="bc-multi" id="mLista"></div>
+  <div class="bc-grid"><label class="bc-campo"><span>Valor a apostar</span><div class="bc-in"><input type="text" inputmode="decimal" id="mStake" value="5"><em>€</em></div></label></div>
+  <div class="bc-kpis">
+    <div><small>Odd total</small><strong id="mOdd">—</strong></div>
+    <div><small>Se ganhares recebes</small><strong id="mRet">—</strong></div>
+    <div><small>Hipótese de acertar tudo</small><strong id="mProb">—</strong><em id="mVezes"></em></div>
+    <div><small>Da tua banca</small><strong id="mPct">—</strong></div>
+  </div>
+  <p class="bc-nota" id="mTxt"></p>
+</section>
+
+<!-- MARGEM -->
+<section class="panel bc-sec" data-sec="margem" hidden>
+  <div class="panel-head"><div><h2 class="panel-title">Margem da casa</h2>
+    <p class="panel-sub">Mete as odds de todos os resultados de um mercado (ex.: 1, X e 2). Vês quanto a casa fica de margem e quais seriam as odds justas.</p></div>
+    <div class="bc-seg" id="gTipo"><button type="button" data-n="2">2 resultados</button><button type="button" data-n="3" class="ativo">1 X 2</button></div></div>
+  <div class="bc-grid" id="gOdds"></div>
+  <div class="bc-kpis"><div><small>Margem da casa</small><strong id="gMargem">—</strong><em id="gMargemTxt"></em></div></div>
+  <div class="bc-tabela-wrap"><table class="bc-tabela" id="gTabela"><thead><tr><th>Resultado</th><th>Odd da casa</th><th>Probabilidade justa</th><th>Odd justa</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- SIMULADOR -->
+<section class="panel bc-sec" data-sec="simulador" hidden>
+  <div class="panel-head"><div><h2 class="panel-title">Simulador de risco</h2>
+    <p class="panel-sub">Simula 2.000 sequências de apostas para veres o que pode acontecer à banca — mesmo quando acertas mais do que falhas, as sequências más existem.</p></div>
+    <button type="button" class="btn-gold" id="sCorrer"><i class="fas fa-play" aria-hidden="true"></i> Simular</button></div>
+  <div class="bc-grid">
+    <label class="bc-campo"><span>Odd média</span><div class="bc-in"><input type="text" inputmode="decimal" id="sOdd" value="1.90"></div></label>
+    <label class="bc-campo"><span>Taxa de acerto</span><div class="bc-in"><input type="text" inputmode="decimal" id="sAc" value="52"><em>%</em></div></label>
+    <label class="bc-campo"><span>Número de apostas</span><div class="bc-in"><input type="text" inputmode="numeric" id="sN" value="200"></div></label>
+    <label class="bc-campo"><span>Aposta por jogo</span><div class="bc-in"><input type="text" inputmode="decimal" id="sPct" value="2"><em>% da banca</em></div></label>
+  </div>
+  <p class="bc-nota" id="sEV"></p>
+  <canvas id="sGraf" class="bc-graf" data-r="0.36" aria-label="Gráfico da evolução da banca em 40 simulações"></canvas>
+  <div class="bc-kpis">
+    <div><small>Acabam a perder</small><strong id="sPerde">—</strong></div>
+    <div><small>Perdem metade da banca pelo caminho</small><strong id="sMetade">—</strong></div>
+    <div><small>Banca no caso típico</small><strong id="sMed">—</strong></div>
+    <div><small>Pior 5% / melhor 5%</small><strong id="sExt">—</strong></div>
+  </div>
+</section>
+
+<!-- DIARIO -->
+<section class="panel bc-sec" data-sec="diario" hidden>
+  <div class="panel-head"><div><h2 class="panel-title">Diário de apostas</h2>
+    <p class="panel-sub">Regista cada aposta. A banca atual, o lucro e o ROI atualizam sozinhos. Fica só neste browser.</p></div>
+    <div class="bc-acoes"><button type="button" class="btn-ghost" id="dCsv"><i class="fas fa-file-arrow-down" aria-hidden="true"></i> CSV</button><button type="button" class="btn-ghost" id="dLimpar"><i class="fas fa-trash" aria-hidden="true"></i> Apagar tudo</button></div></div>
+  <form class="bc-novo" id="dForm">
+    <input type="date" id="dData" aria-label="Data">
+    <input type="text" id="dEvento" placeholder="Jogo / mercado (ex: Benfica vence)" maxlength="80" aria-label="Jogo ou mercado">
+    <input type="text" inputmode="decimal" id="dOdd" placeholder="Odd" aria-label="Odd">
+    <input type="text" inputmode="decimal" id="dStake" placeholder="Valor €" aria-label="Valor apostado">
+    <button type="submit" class="btn-gold"><i class="fas fa-plus" aria-hidden="true"></i> Registar</button>
+  </form>
+  <div class="bc-kpis">
+    <div><small>Lucro</small><strong id="dLucro">—</strong></div>
+    <div><small>ROI</small><strong id="dRoi">—</strong><em>lucro ÷ total apostado</em></div>
+    <div><small>Acertos</small><strong id="dAc">—</strong><em id="dAcN"></em></div>
+    <div><small>Pior sequência</small><strong id="dSeq">—</strong><em>derrotas seguidas</em></div>
+  </div>
+  <canvas id="dGraf" class="bc-graf" data-r="0.26" aria-label="Gráfico da evolução da banca"></canvas>
+  <div class="bc-tabela-wrap"><table class="bc-tabela bc-diario" id="dTabela"><thead><tr><th>Data</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Resultado</th><th>Lucro</th><th></th></tr></thead><tbody></tbody></table></div>
+  <p class="bc-vazio" id="dVazio">Ainda não registaste nenhuma aposta.</p>
+</section>
+
+<a class="partner-banner" href="casinos.html?f=sports">
+  <span class="pb-icon"><i class="fas fa-futbol" aria-hidden="true"></i></span>
+  <span class="pb-text"><strong>Onde apostar</strong><small>Casas de apostas parceiras do FabioSilva_TV, com bónus exclusivos</small></span>
+  <span class="btn-gold">Ver parceiros <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+  <span class="pb-age">18+</span>
+</a>
+
+<section class="panel">
+  <div class="panel-head"><div><h2 class="panel-title">Regras de ouro</h2></div></div>
+  <div class="steps">
+    <div class="step"><i class="fas fa-wallet" aria-hidden="true"></i><div><strong>Banca separada</strong><span>Só apostas o dinheiro da banca. Nunca metes mais para recuperar perdas.</span></div></div>
+    <div class="step"><i class="fas fa-ruler" aria-hidden="true"></i><div><strong>Apostas pequenas</strong><span>1 a 3% da banca por aposta. Assim uma má semana não te tira do jogo.</span></div></div>
+    <div class="step"><i class="fas fa-hand" aria-hidden="true"></i><div><strong>Limite diário</strong><span>Quando chegas ao limite de perdas do dia, paras. Sem exceções.</span></div></div>
+    <div class="step"><i class="fas fa-book" aria-hidden="true"></i><div><strong>Regista tudo</strong><span>Sem registo não sabes se ganhas ou perdes. O ROI não mente.</span></div></div>
+  </div>
+  <p class="schedule-note">Esta calculadora ajuda a controlar o risco, mas nenhuma estratégia garante lucro — a longo prazo as casas têm margem a seu favor. Aqui não se aposta nada e os dados ficam só no teu browser. 18+ Joga com responsabilidade. Precisas de ajuda? Linha Vida <a href="tel:1414">1414</a>.</p>
+</section>
+<div class="game-toast" id="bcToast" role="status" aria-live="polite"></div>
+</main>
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand"><img src="assets/logo-160.png" alt=""><div><div class="footer-brand-name">FabioSilva_TV</div><div class="footer-brand-tagline">Casino Streamer · Twitch</div></div></div>
+    <div class="footer-social"><a href="https://www.twitch.tv/fabiosilva_tv" target="_blank" rel="noopener noreferrer" aria-label="Twitch"><i class="fab fa-twitch" aria-hidden="true"></i></a><a href="https://discord.gg/fDWqsxheRb" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="fab fa-discord" aria-hidden="true"></i></a><a href="https://www.instagram.com/fabiosilva_tv75/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a><a href="https://t.me/+IZ6rt8kCZixmNzY0" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram" aria-hidden="true"></i></a></div>
+  </div>
+  <div class="gambling-logos">
+    <span class="age-warning" title="Apenas para maiores de 18 anos">18+</span>
+    <a href="https://www.jogoresponsavel.pt/" target="_blank" rel="noopener noreferrer">Jogo Responsável (SRIJ)</a>
+    <a href="https://www.sicad.pt/" target="_blank" rel="noopener noreferrer">SICAD · Linha Vida 1414</a>
+    <a href="https://www.begambleaware.org/" target="_blank" rel="noopener noreferrer">BeGambleAware</a>
+  </div>
+  <div>
+    <div class="warning-header"><i class="fas fa-triangle-exclamation" aria-hidden="true"></i> Aviso importante</div>
+    <p class="warning-text">Este site apresenta e compara ofertas de bónus de vários operadores de jogo. Destina-se exclusivamente a adultos, em países onde a utilização dos operadores apresentados é legalmente permitida. Não organizamos jogos de fortuna e azar nem aceitamos apostas. A informação é verificada com cuidado, mas sem garantia de estar completa, exata ou atualizada. O jogo é entretenimento, não uma fonte de rendimento, e pode criar dependência. Se sentes que estás a perder o controlo, procura ajuda em <a href="https://www.jogoresponsavel.pt/" target="_blank" rel="noopener noreferrer">jogoresponsavel.pt</a> ou na Linha Vida <a href="tel:1414">1414</a>.</p>
+    <p class="warning-text affiliate-disclosure"><strong>Transparência:</strong> os links para casinos são links de afiliado. Se te registares através deles, o FabioSilva_TV pode receber uma comissão, sem custo adicional para ti. Confirma sempre se o operador está autorizado no teu país antes de jogares.</p>
+  </div>
+  <div class="footer-bottom">
+    <p>© <span id="year">2026</span> FabioSilva_TV · Joga com responsabilidade. 18+</p>
+    <div class="footer-links"><a href="termos.html">Termos e Condições</a><a href="privacidade.html">Política de Privacidade</a><a href="cookies.html">Política de Cookies</a><a href="contacto.html">Contacto</a></div>
+  </div>
+</footer>
+</div>
+<aside class="chat" id="chat" aria-label="Chat da comunidade">
+  <div class="chat-head"><i class="fas fa-comment" aria-hidden="true"></i><span>Chat da comunidade <em class="live" id="chatLive">● OFFLINE</em></span><button class="chat-collapse" id="chatCollapse" aria-label="Recolher chat"><i class="fas fa-chevron-right" aria-hidden="true"></i></button></div>
+  <iframe id="chatFrame" title="Chat da Twitch do fabiosilva_tv" loading="lazy" data-channel="fabiosilva_tv"></iframe>
+</aside>
+</div>
+<script src="script.js?v=41"></script>
+<script src="twitch-auth.js?v=39"></script>
+<script src="notificacoes.js?v=1"></script>
+<script src="banca.js?v=1"></script>
+<button class="chat-bolha" id="chatBolha" type="button" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
+<script src="rebrand.js?v=36"></script>
+</body>
+</html>
