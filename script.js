@@ -499,6 +499,7 @@ if (document.readyState === 'loading') {
 
   // marca de cada link de parceria (pelo endereço do link)
   const PARCEIROS = [
+    [/playslotpartners\.com|dbbet/i, 'dbbet'],
     [/coldb3\.com/i, 'coldbet'],
     [/captainspartners\.com|captainsbet/i, 'captainsbet'],
     [/pid=190723\b|22bit/i, '22bit'],

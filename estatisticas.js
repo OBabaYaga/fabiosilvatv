@@ -19,7 +19,7 @@
     'inicio:popup': 'Popup', 'casinos:cartao': 'Casinos · botão do cartão', 'casinos:detalhes': 'Casinos · detalhes da oferta',
     'casinos:termos': 'Casinos · termos', 'casinos:popup': 'Popup', 'outra:popup': 'Popup', 'outra:cartao': 'Outra página', 'outra:outro': 'Outro sítio',
   };
-  const CORES = { coldbet: '#3fc3f0', captainsbet: '#f0c14b', '22bit': '#ff5f5f', betlabel: '#7ee03c', royalxo: '#d9a24a', safecasino: '#4da3ff', outro: '#93a7c0' };
+  const CORES = { dbbet: '#ff2e63', coldbet: '#3fc3f0', captainsbet: '#f0c14b', '22bit': '#ff5f5f', betlabel: '#7ee03c', royalxo: '#d9a24a', safecasino: '#4da3ff', outro: '#93a7c0' };
 
   const $ = (id) => document.getElementById(id);
   const fmt = (n) => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -107,7 +107,7 @@
     const fonte = vista === 'mes' ? d.mes : d.ano;
 
     // cliques por marca, com o sítio onde clicaram
-    const ordem = ['coldbet', 'captainsbet', '22bit', 'betlabel', 'royalxo', 'safecasino', 'outro'];
+    const ordem = ['dbbet', 'coldbet', 'captainsbet', '22bit', 'betlabel', 'royalxo', 'safecasino', 'outro'];
     const maxM = Math.max(1, ...Object.values(fonte.porMarca || {}));
     const linhas = ordem.filter((m) => m !== 'outro' || fonte.porMarca.outro).map((m) => {
       const v = fonte.porMarca[m] || 0;
