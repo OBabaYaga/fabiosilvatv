@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-PT" class="tema-vice">
+<html lang="pt-PT" class="tema-vice marca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FabioSilva_TV — Casino Streamer</title>
     <meta name="description" content="Lives de casino na Twitch, ofertas exclusivas dos patrocínios oficiais, minijogos com fichas virtuais, ranking da comunidade e loja de pontos. 18+ Joga com responsabilidade.">
     <link rel="canonical" href="https://fabiosilvatv.com/index.html">
-    <meta name="theme-color" content="#040d1c">
+    <meta name="theme-color" content="#170a20">
     <meta name="rating" content="adult">
     <link rel="icon" href="assets/favicon-64.png" type="image/png">
     <link rel="manifest" href="manifest.webmanifest">
@@ -26,11 +26,11 @@
     <meta name="twitter:image" content="https://fabiosilvatv.com/assets/og-image.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css?v=47">
     <link rel="stylesheet" href="tema-vice.css?v=1">
-    <link rel="stylesheet" href="tema-vice-extra.css?v=1">
+    <link rel="stylesheet" href="vice.css?v=1">
 </head>
 <body>
 <div id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle">
@@ -64,14 +64,19 @@
     <button class="chat-toggle" id="chatToggle" aria-label="Abrir chat da comunidade"><i class="fas fa-comments" aria-hidden="true"></i></button>
   </div>
 </header>
-<main id="content"><section class="panel hero" id="live">
-  <div class="hero-content">
-    <div class="live-badge" id="liveBadge"><span class="live-dot"></span><span id="liveText">OFFLINE</span></div>
-    <h1 class="hero-title">As melhores <span class="gradient-text">lives &amp; ofertas</span></h1>
-    <p class="hero-description">Junta-te à comunidade do FabioSilva_TV: lives de casino na Twitch, giveaways, minijogos e as ofertas exclusivas dos patrocínios oficiais.</p>
+<main id="content"><section class="horizonte" id="live" aria-labelledby="titulo-site">
+  <div class="ceu">
+  <div class="sol" aria-hidden="true"></div>
+  <img class="palmas esq" src="assets/tema/palmas.svg" alt="" aria-hidden="true">
+  <img class="palmas dir" src="assets/tema/palmas-dir.svg" alt="" aria-hidden="true">
+  <div class="horizonte-texto">
+    <h1 class="horizonte-logo" id="titulo-site"><img src="assets/logo-fabio.png" alt="FabioSilva_TV" width="544" height="120"></h1>
+    <p class="estado-live" id="liveBadge"><span class="live-dot"></span><span id="liveText">Offline</span><span class="proxima" id="proximaLive"></span></p>
+    <p class="horizonte-frase">Slots ao vivo na Twitch, com a comunidade a jogar comigo.</p>
+    <p class="horizonte-desc">Os bónus dos casinos parceiros, minijogos com fichas, um ranking semanal e uma loja onde os pontos que ganhas a ver a live valem prémios.</p>
     <div class="hero-actions">
-      <a class="btn-twitch" href="https://www.twitch.tv/fabiosilva_tv" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitch" aria-hidden="true"></i> Ver na Twitch</a>
-      <a class="btn-ghost" href="casinos.html"><i class="fas fa-gift" aria-hidden="true"></i> Ver ofertas</a>
+      <a class="btn-twitch" href="https://www.twitch.tv/fabiosilva_tv" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitch" aria-hidden="true"></i> Seguir na Twitch</a>
+      <a class="btn-ghost" href="#offers">Ver ofertas</a>
     </div>
   </div>
   <div class="stream-panel">
@@ -81,22 +86,26 @@
         <div class="offline-card" id="offlineCard">
           <img src="assets/logo.png" alt="" class="offline-card-image">
           <div class="offline-indicator"><span class="offline-dot"></span><span>Stream offline</span></div>
-          <p class="offline-text">A stream começa em breve. Segue-me na Twitch para seres avisado!</p>
+          <p class="offline-text">Segue na Twitch para receberes um aviso quando a live começar.</p>
         </div>
       </div>
     </div>
   </div>
-</section><section class="ticker-grid hero-ticker" aria-label="Estatísticas">
-  <div class="ticker-item"><i class="fas fa-users" aria-hidden="true"></i><div><span class="ticker-value" id="followerCount" aria-live="polite">+--</span><span class="ticker-label">Followers</span></div></div>
-  <div class="ticker-item"><i class="fas fa-trophy" aria-hidden="true"></i><div><span class="ticker-value">+2.932€</span><span class="ticker-label">Maior vitória</span></div></div>
-  <div class="ticker-item"><i class="fas fa-comments" aria-hidden="true"></i><div><span class="ticker-value" data-target="100">+100</span><span class="ticker-label">Discord</span></div></div>
-  <div class="ticker-item"><i class="fas fa-clock" aria-hidden="true"></i><div><span class="ticker-value" data-target="1300">+1.300</span><span class="ticker-label">Horas ao vivo</span></div></div>
+  </div>
+  <div class="chao">
+  <dl class="numeros" aria-label="A comunidade em números">
+    <div><dt>seguidores na Twitch</dt><dd id="followerCount" aria-live="polite">+--</dd></div>
+    <div class="dinheiro"><dt>maior vitória em live</dt><dd>2.932€</dd></div>
+    <div><dt>membros no Discord</dt><dd>+100</dd></div>
+    <div><dt>horas em direto</dt><dd>+1.300</dd></div>
+  </dl>
+  </div>
 </section><section class="panel" id="offers">
   <div class="panel-head">
-    <div><h2 class="panel-title">Ofertas em destaque</h2><p class="panel-sub">As parcerias oficiais do FabioSilva_TV, com os bónus e códigos em vigor.</p></div>
-    <a class="btn-outline-green" href="casinos.html">Ver todas as ofertas <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+    <div><h2 class="panel-title">Ofertas em destaque</h2><p class="panel-sub">Os casinos com quem trabalho, com os bónus e códigos em vigor.</p></div>
+    <a class="btn-outline-green" href="casinos.html">Ver todas as ofertas</a>
   </div>
-  <div class="offers-grid featured carrossel c-ofertas">
+  <div class="offers-grid featured c-ofertas">
 <article class="offer-card gm-card gm-destaque gm-fogo" data-cats="welcome fs sports fs" data-name="captainsbet" id="offer-captainsbet">
   <div class="gm-art" style="--art-img: url('assets/brands/art-captainsbet.jpg?v=2')">
     <div class="gm-faixa" aria-hidden="true"><span>TOP 1</span></div>
@@ -115,10 +124,10 @@
       <div class="gm-perk"><i class="fas fa-star" aria-hidden="true"></i><span>Free spins</span><em></em><b>50</b></div>
     </div>
     <div class="gm-actions">
-      <a class="gm-claim" href="https://captainspartners.com/processing/click?btag=22821_33956" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a>
+      <a class="gm-claim" href="https://captainspartners.com/processing/click?btag=22821_33956" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a>
       <button class="gm-more more-btn" type="button" aria-expanded="false" aria-label="Mais informação sobre CaptainsBet"><svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M4 0H6V10H4V0Z" fill="currentColor"/><path d="M0 6V4H10V6H0Z" fill="currentColor"/></svg></button>
     </div>
-    <span class="gm-fine">+18 · T&amp;C aplicáveis · Joga com responsabilidade</span>
+    <span class="gm-fine">Só para maiores de 18. Aplicam-se os T&amp;C do casino.</span>
   </div>
   <div class="offer-more">
     <div class="pay-row" aria-label="Métodos de pagamento"><span title="Cartão"><i class="far fa-credit-card" aria-hidden="true"></i><span class="sr-only">Cartão</span></span><span title="Transferência bancária"><i class="fas fa-building-columns" aria-hidden="true"></i><span class="sr-only">Transferência</span></span><span title="Skrill / carteiras"><i class="fas fa-wallet" aria-hidden="true"></i><span class="sr-only">Carteira</span></span></div>
@@ -130,7 +139,7 @@
     <ul class="dep-list"><li><b>1º</b><span>100% até 250€ + 50 giros</span><span>min. 5€ · 40x</span></li></ul>
     <ul class="perks"><li><i class="fas fa-check" aria-hidden="true"></i>Bónus de boas-vindas + 50 Giros Grátis</li><li><i class="fas fa-check" aria-hidden="true"></i>Casino ao vivo powered by Evolution Gaming</li><li><i class="fas fa-check" aria-hidden="true"></i>Sportsbook com mais de 50 categorias</li><li><i class="fas fa-check" aria-hidden="true"></i>Programa de fidelidade com 7 níveis</li><li><i class="fas fa-check" aria-hidden="true"></i>Levantamentos rápidos</li></ul>
     <p class="schedule-note">Casino ao vivo com a Evolution Gaming e sportsbook com mais de 50 categorias, incluindo futebol, basquetebol e eSports.</p>
-    <div class="offer-foot"><a class="gm-claim" href="https://captainspartners.com/processing/click?btag=22821_33956" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a><a class="tc-link" href="https://captainspartners.com/processing/click?btag=22821_33956" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
+    <div class="offer-foot"><a class="gm-claim" href="https://captainspartners.com/processing/click?btag=22821_33956" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a><a class="tc-link" href="https://captainspartners.com/processing/click?btag=22821_33956" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
   </div>
 </article>
 <article class="offer-card gm-card" data-cats="welcome fs sports new crypto" data-name="coldbet" id="offer-coldbet">
@@ -150,10 +159,10 @@
       <div class="gm-perk"><i class="fas fa-star" aria-hidden="true"></i><span>Free spins</span><em></em><b>150</b></div>
     </div>
     <div class="gm-actions">
-      <a class="gm-claim" href="https://coldb3.com/FABIOTV" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a>
+      <a class="gm-claim" href="https://coldb3.com/FABIOTV" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a>
       <button class="gm-more more-btn" type="button" aria-expanded="false" aria-label="Mais informação sobre Coldbet"><svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M4 0H6V10H4V0Z" fill="currentColor"/><path d="M0 6V4H10V6H0Z" fill="currentColor"/></svg></button>
     </div>
-    <span class="gm-fine">+18 · T&amp;C aplicáveis · Joga com responsabilidade</span>
+    <span class="gm-fine">Só para maiores de 18. Aplicam-se os T&amp;C do casino.</span>
   </div>
   <div class="offer-more">
     <div class="pay-row" aria-label="Métodos de pagamento"><span title="Cartão"><i class="far fa-credit-card" aria-hidden="true"></i><span class="sr-only">Cartão</span></span><span title="Skrill / carteiras"><i class="fas fa-wallet" aria-hidden="true"></i><span class="sr-only">Carteira</span></span><span title="Bitcoin"><i class="fab fa-bitcoin" aria-hidden="true"></i><span class="sr-only">Bitcoin</span></span></div>
@@ -165,7 +174,7 @@
     <ul class="dep-list"><li><b>Grátis</b><span>100 giros sem depósito no Le Fisherman (código EUSOUAAGUA)</span><span>wager x20</span></li><li><b>Casino</b><span>Pacote de boas-vindas até 1.500€ + 150 giros grátis</span><span>casino + games</span></li><li><b>Desporto</b><span>Bónus de 1º depósito até 100€</span><span>apostas</span></li></ul>
     <ul class="perks"><li><i class="fas fa-check" aria-hidden="true"></i>100 giros grátis sem depósito com o código EUSOUAAGUA</li><li><i class="fas fa-check" aria-hidden="true"></i>Pacote de casino até 1.500€ + 150 giros grátis</li><li><i class="fas fa-check" aria-hidden="true"></i>Bónus de desporto no 1º depósito até 100€</li><li><i class="fas fa-check" aria-hidden="true"></i>+8.000 jogos de mais de 140 fornecedores</li><li><i class="fas fa-check" aria-hidden="true"></i>Apostas desportivas em mais de 45 modalidades</li><li><i class="fas fa-check" aria-hidden="true"></i>Programa VIP com cashback sem requisitos de aposta</li><li><i class="fas fa-check" aria-hidden="true"></i>Levantamentos rápidos, cripto incluída</li></ul>
     <p class="schedule-note">Casino e apostas desportivas lançado em 2025, com mais de 8.000 jogos, casino ao vivo e levantamentos em minutos. Condições e requisitos de aposta: ver T&amp;C no site da marca.</p>
-    <div class="offer-foot"><a class="gm-claim" href="https://coldb3.com/FABIOTV" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a><a class="tc-link" href="https://coldb3.com/FABIOTV" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
+    <div class="offer-foot"><a class="gm-claim" href="https://coldb3.com/FABIOTV" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a><a class="tc-link" href="https://coldb3.com/FABIOTV" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
   </div>
 </article>
 <article class="offer-card gm-card" data-cats="welcome crypto fs sports new crypto" data-name="22bit" id="offer-22bit">
@@ -185,10 +194,10 @@
       <div class="gm-perk"><i class="fas fa-star" aria-hidden="true"></i><span>Free spins</span><em></em><b>Domingos</b></div>
     </div>
     <div class="gm-actions">
-      <a class="gm-claim" href="https://che.fluxbrox.com/redirect.aspx?pid=190723&amp;lpid=1735&amp;bid=1717" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a>
+      <a class="gm-claim" href="https://che.fluxbrox.com/redirect.aspx?pid=190723&amp;lpid=1735&amp;bid=1717" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a>
       <button class="gm-more more-btn" type="button" aria-expanded="false" aria-label="Mais informação sobre 22bit"><svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M4 0H6V10H4V0Z" fill="currentColor"/><path d="M0 6V4H10V6H0Z" fill="currentColor"/></svg></button>
     </div>
-    <span class="gm-fine">+18 · T&amp;C aplicáveis · Joga com responsabilidade</span>
+    <span class="gm-fine">Só para maiores de 18. Aplicam-se os T&amp;C do casino.</span>
   </div>
   <div class="offer-more">
     <div class="pay-row" aria-label="Métodos de pagamento"><span title="Bitcoin"><i class="fab fa-bitcoin" aria-hidden="true"></i><span class="sr-only">Bitcoin</span></span><span title="USDT / cripto"><i class="fas fa-coins" aria-hidden="true"></i><span class="sr-only">USDT</span></span></div>
@@ -200,7 +209,7 @@
     <ul class="dep-list"><li><b>1º</b><span>100% até 5.000 USDT</span><span></span></li><li><b>2º</b><span>50% até 3.500 USDT</span><span></span></li><li><b>3º</b><span>25% até 5.000 USDT</span><span></span></li><li><b>4º</b><span>25% até 3.500 USDT</span><span></span></li><li><b>Dom</b><span>Giros grátis</span><span>semanal</span></li></ul>
     <ul class="perks"><li><i class="fas fa-check" aria-hidden="true"></i>Pacote de boas-vindas em 4 depósitos</li><li><i class="fas fa-check" aria-hidden="true"></i>Levantamentos cripto instantâneos e sem limite</li><li><i class="fas fa-check" aria-hidden="true"></i>+9.000 jogos e apostas desportivas</li><li><i class="fas fa-check" aria-hidden="true"></i>Programa VIP com até 11% de cashback</li><li><i class="fas fa-check" aria-hidden="true"></i>Suporte 24/7 e pagamentos anónimos</li></ul>
     <p class="schedule-note">Casino cripto de nova geração com mais de 9.000 jogos, levantamentos instantâneos sem limites e programa VIP com 8 níveis.</p>
-    <div class="offer-foot"><a class="gm-claim" href="https://che.fluxbrox.com/redirect.aspx?pid=190723&amp;lpid=1735&amp;bid=1717" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a><a class="tc-link" href="https://che.fluxbrox.com/redirect.aspx?pid=190723&amp;lpid=1735&amp;bid=1717" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
+    <div class="offer-foot"><a class="gm-claim" href="https://che.fluxbrox.com/redirect.aspx?pid=190723&amp;lpid=1735&amp;bid=1717" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a><a class="tc-link" href="https://che.fluxbrox.com/redirect.aspx?pid=190723&amp;lpid=1735&amp;bid=1717" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
   </div>
 </article>
 <article class="offer-card gm-card" data-cats="welcome fs sports hot" data-name="betlabel" id="offer-betlabel">
@@ -220,10 +229,10 @@
       <div class="gm-perk"><i class="fas fa-star" aria-hidden="true"></i><span>Free spins</span><em></em><b>150</b></div>
     </div>
     <div class="gm-actions">
-      <a class="gm-claim" href="https://moy.auraodin.com/redirect.aspx?pid=150609&amp;lpid=1119&amp;bid=1650" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a>
+      <a class="gm-claim" href="https://moy.auraodin.com/redirect.aspx?pid=150609&amp;lpid=1119&amp;bid=1650" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a>
       <button class="gm-more more-btn" type="button" aria-expanded="false" aria-label="Mais informação sobre Betlabel"><svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M4 0H6V10H4V0Z" fill="currentColor"/><path d="M0 6V4H10V6H0Z" fill="currentColor"/></svg></button>
     </div>
-    <span class="gm-fine">+18 · T&amp;C aplicáveis · Joga com responsabilidade</span>
+    <span class="gm-fine">Só para maiores de 18. Aplicam-se os T&amp;C do casino.</span>
   </div>
   <div class="offer-more">
     <div class="pay-row" aria-label="Métodos de pagamento"><span title="Cartão"><i class="far fa-credit-card" aria-hidden="true"></i><span class="sr-only">Cartão</span></span><span title="Transferência bancária"><i class="fas fa-building-columns" aria-hidden="true"></i><span class="sr-only">Transferência</span></span><span title="Bitcoin"><i class="fab fa-bitcoin" aria-hidden="true"></i><span class="sr-only">Bitcoin</span></span></div>
@@ -235,7 +244,7 @@
     <ul class="dep-list"><li><b>1º</b><span>100% até 300€ + 30 giros</span><span>min. 10€</span></li><li><b>2º</b><span>50% até 350€ + 35 giros</span><span>min. 15€</span></li><li><b>3º</b><span>25% até 400€ + 40 giros</span><span>min. 15€</span></li><li><b>4º</b><span>25% até 450€ + 45 giros</span><span>min. 15€</span></li><li><b>Qua</b><span>Bónus de recarga</span><span>semanal</span></li></ul>
     <ul class="perks"><li><i class="fas fa-check" aria-hidden="true"></i>Bónus repartido pelos 4 primeiros depósitos</li><li><i class="fas fa-check" aria-hidden="true"></i>+9.000 jogos de casino e apostas desportivas</li><li><i class="fas fa-check" aria-hidden="true"></i>Levantamentos rápidos sem comissões</li><li><i class="fas fa-check" aria-hidden="true"></i>Bónus de recarga todas as quartas-feiras</li><li><i class="fas fa-check" aria-hidden="true"></i>Suporte multilingue 24/7</li></ul>
     <p class="schedule-note">Casino e apostas desportivas num só lugar, com mais de 9.000 jogos, 0% de comissão nos levantamentos e suporte 24/7 em português. Bónus não disponíveis para contas cripto (ver T&C).</p>
-    <div class="offer-foot"><a class="gm-claim" href="https://moy.auraodin.com/redirect.aspx?pid=150609&amp;lpid=1119&amp;bid=1650" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a><a class="tc-link" href="https://moy.auraodin.com/redirect.aspx?pid=150609&amp;lpid=1119&amp;bid=1650" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
+    <div class="offer-foot"><a class="gm-claim" href="https://moy.auraodin.com/redirect.aspx?pid=150609&amp;lpid=1119&amp;bid=1650" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a><a class="tc-link" href="https://moy.auraodin.com/redirect.aspx?pid=150609&amp;lpid=1119&amp;bid=1650" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
   </div>
 </article>
 <article class="offer-card gm-card" data-cats="welcome fs new hot new fs hot" data-name="royal xo" id="offer-royalxo">
@@ -255,10 +264,10 @@
       <div class="gm-perk"><i class="fas fa-star" aria-hidden="true"></i><span>Free spins</span><em></em><b>1.200</b></div>
     </div>
     <div class="gm-actions">
-      <a class="gm-claim" href="https://che.fluxbrox.com/redirect.aspx?pid=198342&amp;lpid=1845&amp;bid=1756" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a>
+      <a class="gm-claim" href="https://che.fluxbrox.com/redirect.aspx?pid=198342&amp;lpid=1845&amp;bid=1756" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a>
       <button class="gm-more more-btn" type="button" aria-expanded="false" aria-label="Mais informação sobre Royal XO"><svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M4 0H6V10H4V0Z" fill="currentColor"/><path d="M0 6V4H10V6H0Z" fill="currentColor"/></svg></button>
     </div>
-    <span class="gm-fine">+18 · T&amp;C aplicáveis · Joga com responsabilidade</span>
+    <span class="gm-fine">Só para maiores de 18. Aplicam-se os T&amp;C do casino.</span>
   </div>
   <div class="offer-more">
     <div class="pay-row" aria-label="Métodos de pagamento"><span title="Cartão"><i class="far fa-credit-card" aria-hidden="true"></i><span class="sr-only">Cartão</span></span><span title="Transferência bancária"><i class="fas fa-building-columns" aria-hidden="true"></i><span class="sr-only">Transferência</span></span><span title="Bitcoin"><i class="fab fa-bitcoin" aria-hidden="true"></i><span class="sr-only">Bitcoin</span></span></div>
@@ -270,7 +279,7 @@
     <ul class="dep-list"><li><b>1º</b><span>100% até 1.000€ + 300 giros + bónus game</span><span>min. 10€</span></li><li><b>2º</b><span>100% até 1.000€ + 300 giros</span><span></span></li><li><b>3º</b><span>100% até 1.000€ + 300 giros</span><span></span></li><li><b>4º</b><span>100% até 1.000€ + 300 giros</span><span></span></li><li><b>Seg</b><span>Recarga 100% até 100€</span><span>semanal</span></li><li><b>Qua/Sex</b><span>Recarga 100% até 100€ + 50 giros</span><span>semanal</span></li></ul>
     <ul class="perks"><li><i class="fas fa-check" aria-hidden="true"></i>Bónus repartido pelos 4 primeiros depósitos</li><li><i class="fas fa-check" aria-hidden="true"></i>Roda da Fortuna diária</li><li><i class="fas fa-check" aria-hidden="true"></i>Torneios, missões e programa VIP</li><li><i class="fas fa-check" aria-hidden="true"></i>Casino ao vivo e apostas desportivas</li><li><i class="fas fa-check" aria-hidden="true"></i>Recargas semanais à segunda, quarta e sexta</li></ul>
     <p class="schedule-note">Casino online com bónus de boas-vindas em 4 depósitos, roda da fortuna diária, torneios e casino ao vivo. Requisito de aposta: ver T&C no site da marca.</p>
-    <div class="offer-foot"><a class="gm-claim" href="https://che.fluxbrox.com/redirect.aspx?pid=198342&amp;lpid=1845&amp;bid=1756" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a><a class="tc-link" href="https://che.fluxbrox.com/redirect.aspx?pid=198342&amp;lpid=1845&amp;bid=1756" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
+    <div class="offer-foot"><a class="gm-claim" href="https://che.fluxbrox.com/redirect.aspx?pid=198342&amp;lpid=1845&amp;bid=1756" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a><a class="tc-link" href="https://che.fluxbrox.com/redirect.aspx?pid=198342&amp;lpid=1845&amp;bid=1756" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
   </div>
 </article>
 <article class="offer-card gm-card" data-cats="welcome fs hot fs" data-name="safecasino" id="offer-safecasino">
@@ -290,10 +299,10 @@
       <div class="gm-perk"><i class="fas fa-star" aria-hidden="true"></i><span>Free spins</span><em></em><b>1.200</b></div>
     </div>
     <div class="gm-actions">
-      <a class="gm-claim" href="https://moy.auraodin.com/redirect.aspx?pid=155521&amp;lpid=1687&amp;bid=1719" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a>
+      <a class="gm-claim" href="https://moy.auraodin.com/redirect.aspx?pid=155521&amp;lpid=1687&amp;bid=1719" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a>
       <button class="gm-more more-btn" type="button" aria-expanded="false" aria-label="Mais informação sobre SafeCasino"><svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M4 0H6V10H4V0Z" fill="currentColor"/><path d="M0 6V4H10V6H0Z" fill="currentColor"/></svg></button>
     </div>
-    <span class="gm-fine">+18 · T&amp;C aplicáveis · Joga com responsabilidade</span>
+    <span class="gm-fine">Só para maiores de 18. Aplicam-se os T&amp;C do casino.</span>
   </div>
   <div class="offer-more">
     <div class="pay-row" aria-label="Métodos de pagamento"><span title="Cartão"><i class="far fa-credit-card" aria-hidden="true"></i><span class="sr-only">Cartão</span></span><span title="Transferência bancária"><i class="fas fa-building-columns" aria-hidden="true"></i><span class="sr-only">Transferência</span></span><span title="Bitcoin"><i class="fab fa-bitcoin" aria-hidden="true"></i><span class="sr-only">Bitcoin</span></span><span title="Skrill / carteiras"><i class="fas fa-wallet" aria-hidden="true"></i><span class="sr-only">Carteira</span></span></div>
@@ -305,37 +314,37 @@
     <ul class="dep-list"><li><b>1º</b><span>100% até 1.000€ + 300 giros</span><span>min. 10€</span></li><li><b>2º</b><span>100% até 1.000€ + 300 giros</span><span></span></li><li><b>3º</b><span>100% até 1.000€ + 300 giros</span><span></span></li><li><b>4º</b><span>100% até 1.000€ + 300 giros</span><span></span></li><li><b>3x</b><span>Recarga 100%</span><span>por semana</span></li></ul>
     <ul class="perks"><li><i class="fas fa-check" aria-hidden="true"></i>Bónus repartido pelos 4 primeiros depósitos</li><li><i class="fas fa-check" aria-hidden="true"></i>+7.000 jogos de mais de 120 fornecedores</li><li><i class="fas fa-check" aria-hidden="true"></i>Roda da Fortuna em cada depósito</li><li><i class="fas fa-check" aria-hidden="true"></i>Recarga de 100% até 3 vezes por semana</li><li><i class="fas fa-check" aria-hidden="true"></i>Levantamentos rápidos</li></ul>
     <p class="schedule-note">Um dos maiores catálogos de jogos do mercado, com mais de 120 fornecedores, roda da sorte diária e programa VIP com 50 níveis. Requisito de aposta 40x (ver T&C).</p>
-    <div class="offer-foot"><a class="gm-claim" href="https://moy.auraodin.com/redirect.aspx?pid=155521&amp;lpid=1687&amp;bid=1719" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a><a class="tc-link" href="https://moy.auraodin.com/redirect.aspx?pid=155521&amp;lpid=1687&amp;bid=1719" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
+    <div class="offer-foot"><a class="gm-claim" href="https://moy.auraodin.com/redirect.aspx?pid=155521&amp;lpid=1687&amp;bid=1719" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a><a class="tc-link" href="https://moy.auraodin.com/redirect.aspx?pid=155521&amp;lpid=1687&amp;bid=1719" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
   </div>
 </article></div>
   <div class="brand-marquee" role="region" aria-label="Marcas parceiras"><div class="brand-marquee-track"><a class="brand-chip" href="casinos.html#offer-captainsbet" title="CaptainsBet" style="--art-img: url('assets/brands/art-captainsbet.jpg?v=2')"><img src="assets/brands/captainsbet-wordmark.png" alt="CaptainsBet"></a><a class="brand-chip" href="casinos.html#offer-coldbet" title="Coldbet" style="--art-img: url('assets/brands/art-coldbet.jpg?v=1')"><img src="assets/brands/coldbet-logo.png" alt="Coldbet"></a><a class="brand-chip" href="casinos.html#offer-22bit" title="22bit" style="--art-img: url('assets/brands/art-22bit.jpg?v=2')"><img src="assets/brands/22bit.svg" alt="22bit"></a><a class="brand-chip" href="casinos.html#offer-betlabel" title="Betlabel" style="--art-img: url('assets/brands/art-betlabel.jpg?v=2')"><img src="assets/brands/betlabel.svg" alt="Betlabel"></a><a class="brand-chip" href="casinos.html#offer-royalxo" title="Royal XO" style="--art-img: url('assets/brands/art-royalxo.jpg?v=2')"><img src="assets/brands/royalxo-logo.png" alt="Royal XO"></a><a class="brand-chip" href="casinos.html#offer-safecasino" title="SafeCasino" style="--art-img: url('assets/brands/art-safecasino.jpg?v=2')"><img src="assets/brands/safecasino-logo.png" alt="SafeCasino"></a><a aria-hidden="true" tabindex="-1" class="brand-chip" href="casinos.html#offer-coldbet" title="Coldbet" style="--art-img: url('assets/brands/art-coldbet.jpg?v=1')"><img src="assets/brands/coldbet-logo.png" alt="Coldbet"></a><a class="brand-chip" href="casinos.html#offer-captainsbet" title="CaptainsBet" style="--art-img: url('assets/brands/art-captainsbet.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/captainsbet-wordmark.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-22bit" title="22bit" style="--art-img: url('assets/brands/art-22bit.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/22bit.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-betlabel" title="Betlabel" style="--art-img: url('assets/brands/art-betlabel.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/betlabel.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-royalxo" title="Royal XO" style="--art-img: url('assets/brands/art-royalxo.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/royalxo-logo.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-safecasino" title="SafeCasino" style="--art-img: url('assets/brands/art-safecasino.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/safecasino-logo.png" alt=""></a><a aria-hidden="true" tabindex="-1" class="brand-chip" href="casinos.html#offer-coldbet" title="Coldbet" style="--art-img: url('assets/brands/art-coldbet.jpg?v=1')"><img src="assets/brands/coldbet-logo.png" alt="Coldbet"></a><a class="brand-chip" href="casinos.html#offer-captainsbet" title="CaptainsBet" style="--art-img: url('assets/brands/art-captainsbet.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/captainsbet-wordmark.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-22bit" title="22bit" style="--art-img: url('assets/brands/art-22bit.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/22bit.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-betlabel" title="Betlabel" style="--art-img: url('assets/brands/art-betlabel.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/betlabel.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-royalxo" title="Royal XO" style="--art-img: url('assets/brands/art-royalxo.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/royalxo-logo.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-safecasino" title="SafeCasino" style="--art-img: url('assets/brands/art-safecasino.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/safecasino-logo.png" alt=""></a><a aria-hidden="true" tabindex="-1" class="brand-chip" href="casinos.html#offer-coldbet" title="Coldbet" style="--art-img: url('assets/brands/art-coldbet.jpg?v=1')"><img src="assets/brands/coldbet-logo.png" alt="Coldbet"></a><a class="brand-chip" href="casinos.html#offer-captainsbet" title="CaptainsBet" style="--art-img: url('assets/brands/art-captainsbet.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/captainsbet-wordmark.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-22bit" title="22bit" style="--art-img: url('assets/brands/art-22bit.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/22bit.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-betlabel" title="Betlabel" style="--art-img: url('assets/brands/art-betlabel.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/betlabel.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-royalxo" title="Royal XO" style="--art-img: url('assets/brands/art-royalxo.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/royalxo-logo.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-safecasino" title="SafeCasino" style="--art-img: url('assets/brands/art-safecasino.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/safecasino-logo.png" alt=""></a><a aria-hidden="true" tabindex="-1" class="brand-chip" href="casinos.html#offer-coldbet" title="Coldbet" style="--art-img: url('assets/brands/art-coldbet.jpg?v=1')"><img src="assets/brands/coldbet-logo.png" alt="Coldbet"></a><a class="brand-chip" href="casinos.html#offer-captainsbet" title="CaptainsBet" style="--art-img: url('assets/brands/art-captainsbet.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/captainsbet-wordmark.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-22bit" title="22bit" style="--art-img: url('assets/brands/art-22bit.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/22bit.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-betlabel" title="Betlabel" style="--art-img: url('assets/brands/art-betlabel.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/betlabel.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-royalxo" title="Royal XO" style="--art-img: url('assets/brands/art-royalxo.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/royalxo-logo.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-safecasino" title="SafeCasino" style="--art-img: url('assets/brands/art-safecasino.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/safecasino-logo.png" alt=""></a><a aria-hidden="true" tabindex="-1" class="brand-chip" href="casinos.html#offer-coldbet" title="Coldbet" style="--art-img: url('assets/brands/art-coldbet.jpg?v=1')"><img src="assets/brands/coldbet-logo.png" alt="Coldbet"></a><a class="brand-chip" href="casinos.html#offer-captainsbet" title="CaptainsBet" style="--art-img: url('assets/brands/art-captainsbet.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/captainsbet-wordmark.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-22bit" title="22bit" style="--art-img: url('assets/brands/art-22bit.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/22bit.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-betlabel" title="Betlabel" style="--art-img: url('assets/brands/art-betlabel.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/betlabel.svg" alt=""></a><a class="brand-chip" href="casinos.html#offer-royalxo" title="Royal XO" style="--art-img: url('assets/brands/art-royalxo.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/royalxo-logo.png" alt=""></a><a class="brand-chip" href="casinos.html#offer-safecasino" title="SafeCasino" style="--art-img: url('assets/brands/art-safecasino.jpg?v=2')" aria-hidden="true" tabindex="-1"><img src="assets/brands/safecasino-logo.png" alt=""></a></div></div>
 </section><section class="panel" id="schedule">
   <div class="panel-head">
-    <div><h2 class="panel-title">Horário das lives</h2><p class="panel-sub" id="scheduleSub">Horas no teu fuso horário · sujeito a alterações</p></div>
-    <a class="link-green" href="https://www.twitch.tv/fabiosilva_tv/schedule" target="_blank" rel="noopener noreferrer">Ver na Twitch <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+    <div><h2 class="panel-title">Horário das lives</h2><p class="panel-sub" id="scheduleSub">Horas no teu fuso horário. O horário pode mudar.</p></div>
+    <a class="link-green" href="https://www.twitch.tv/fabiosilva_tv/schedule" target="_blank" rel="noopener noreferrer">Agenda na Twitch</a>
   </div>
-  <div class="schedule-grid carrossel c-dias" id="scheduleGrid"></div>
-  <p class="schedule-note">Horário sujeito a alterações. Segue na Twitch para receberes notificação quando a live começar.</p>
+  <div class="schedule-grid c-dias" id="scheduleGrid"></div>
+  
 </section><section class="panel" id="shop">
   <div class="panel-head">
-    <div><h2 class="panel-title">Da loja</h2><p class="panel-sub">Gasta os teus pontos em vantagens e prémios.</p></div>
-    <a class="link-green" href="loja.html">Ver a loja <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+    <div><h2 class="panel-title">Loja de pontos</h2><p class="panel-sub">Os pontos que ganhas a ver a live trocam-se aqui por vantagens e prémios.</p></div>
+    <a class="link-green" href="loja.html">Abrir a loja</a>
   </div>
-  <div class="shop-grid carrossel c-loja">
+  <div class="shop-grid c-loja">
     <a class="shop-item" href="https://streamelements.com/fabiosilva_tv/store" target="_blank" rel="noopener noreferrer"><i class="fas fa-ticket" aria-hidden="true"></i><strong>Entrada em sorteio</strong><span>Pontos</span></a>
     <a class="shop-item" href="https://streamelements.com/fabiosilva_tv/store" target="_blank" rel="noopener noreferrer"><i class="fas fa-share-nodes" aria-hidden="true"></i><strong>Bonus share</strong><span>Pontos</span></a>
     <a class="shop-item" href="https://streamelements.com/fabiosilva_tv/store" target="_blank" rel="noopener noreferrer"><i class="fas fa-music" aria-hidden="true"></i><strong>Pedido de música</strong><span>Pontos</span></a>
     <a class="shop-item" href="https://streamelements.com/fabiosilva_tv/store" target="_blank" rel="noopener noreferrer"><i class="fas fa-crown" aria-hidden="true"></i><strong>VIP no chat</strong><span>Pontos</span></a>
   </div>
 </section><section class="panel" id="social">
-  <div class="panel-head"><div><h2 class="panel-title">Ganha. Joga. Vence.</h2><p class="panel-sub">Como funciona a comunidade.</p></div></div>
+  <div class="panel-head"><div><h2 class="panel-title">Como ganhas pontos</h2></div></div>
   <div class="steps">
     <div class="step"><i class="fas fa-tv" aria-hidden="true"></i><div><strong>Vê a stream</strong><span>Ganhas pontos automaticamente enquanto estás na live.</span></div></div>
     <div class="step"><i class="fas fa-gamepad" aria-hidden="true"></i><div><strong>Joga e vota</strong><span>Usa os pontos nos minijogos e nas votações do chat.</span></div></div>
     <div class="step"><i class="fas fa-gift" aria-hidden="true"></i><div><strong>Resgata prémios</strong><span>Troca pontos por vantagens e drops na loja.</span></div></div>
   </div>
 </section>
-<a class="promo-strip" href="casinos.html#offer-royalxo"><span class="brand">ROYAL XO</span> 100% até 4.000€ + 1.200 giros grátis · T&amp;C aplicáveis · +18 <span class="code">Ver oferta</span></a>
+<a class="promo-strip" href="casinos.html#offer-royalxo"><span class="brand">Royal XO</span> 100% até 4.000€ e 1.200 giros grátis. Só +18, aplicam-se T&amp;C. <span class="code">Ver oferta</span></a>
 
 
 
@@ -351,7 +360,7 @@
 </main>
 <footer class="footer">
   <div class="footer-top">
-    <div class="footer-brand"><img src="assets/logo-160.png" alt=""><div><div class="footer-brand-name">FabioSilva_TV</div><div class="footer-brand-tagline">Casino Streamer · Twitch</div></div></div>
+    <div class="footer-brand"><img src="assets/logo-160.png" alt=""><div><div class="footer-brand-name">FabioSilva_TV</div><div class="footer-brand-tagline">Streamer de casino na Twitch</div></div></div>
     <div class="footer-social"><a href="https://www.twitch.tv/fabiosilva_tv" target="_blank" rel="noopener noreferrer" aria-label="Twitch"><i class="fab fa-twitch" aria-hidden="true"></i></a><a href="https://discord.gg/fDWqsxheRb" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="fab fa-discord" aria-hidden="true"></i></a><a href="https://www.instagram.com/fabiosilva_tv75/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a><a href="https://t.me/+IZ6rt8kCZixmNzY0" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram" aria-hidden="true"></i></a></div>
   </div>
   <div class="gambling-logos">

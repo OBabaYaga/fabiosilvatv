@@ -1,0 +1,520 @@
+/* =====================================================================
+   FabioSilva_TV — sistema de design "Vice" (novembro 2026)
+   Igual às overlays da stream: ameixa-noite, rosa néon, pôr do sol.
+   Carrega DEPOIS do style.css. As regras usam html.marca para ganharem
+   às antigas sem !important.
+   ===================================================================== */
+
+html.marca {
+  /* paleta */
+  --noite: #170a20;          /* fundo */
+  --noite-2: #1f0e2a;        /* superfície */
+  --ameixa: #2a1436;         /* cartões */
+  --ameixa-2: #361a44;       /* cartões elevados, hover */
+  --rosa: #ff4fa3;           /* ações, ao vivo */
+  --rosa-escuro: #d92f82;
+  --sol: #ffb547;            /* dinheiro: bónus, vitórias */
+  --mar: #29d8ff;            /* informação, ligações */
+  --texto: #fff2f8;
+  --texto-2: #e6c9d9;
+  --apagado: #b892aa;
+  --linha: rgba(255, 79, 163, 0.16);
+  --linha-forte: rgba(255, 79, 163, 0.34);
+
+  /* tipografia */
+  --f-titulo: 'Rajdhani', 'Arial Narrow', sans-serif;
+  --f-texto: 'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* raios: cartões > botões > pílulas */
+  --r-cartao: 16px;
+  --r-botao: 10px;
+
+  /* as variáveis antigas passam a apontar para a marca, para as páginas
+     que ainda não foram redesenhadas ficarem coerentes */
+  --bg: var(--noite);
+  --bg-deep: #12071a;
+  --card: var(--ameixa);
+  --card-2: var(--ameixa-2);
+  --card-3: #43204f;
+  --border: var(--linha-forte);
+  --border-soft: var(--linha);
+  --text: var(--texto);
+  --text-soft: var(--texto-2);
+  --muted: var(--apagado);
+  --primary: var(--rosa);
+  --primary-2: #ff7dc0;
+  --azul: var(--rosa);
+  --azul-2: var(--rosa-escuro);
+  --blue: var(--rosa);
+  --gold: var(--sol);
+  --gold-2: #f09a2a;
+  --green: #4ee0a0;
+  --twitch: var(--rosa);
+  --twitch-2: var(--rosa-escuro);
+  --gradient-twitch: linear-gradient(180deg, #ff62ae, var(--rosa-escuro));
+  --gradient-gold: linear-gradient(180deg, #ffc76a, #f09a2a);
+  --gradient-card: var(--ameixa);
+  --gradient-primary: var(--ameixa);
+  --gradient-painel: var(--noite-2);
+  --shadow-card: 0 18px 40px -24px rgba(0, 0, 0, 0.8);
+  --shadow-elevated: 0 24px 60px -28px rgba(0, 0, 0, 0.9);
+  --font: var(--f-texto);
+  --font-display: var(--f-titulo);
+  --font-mono: var(--f-titulo);
+  --radius: var(--r-botao);
+  --radius-lg: var(--r-cartao);
+  color-scheme: dark;
+}
+
+/* ---------- base ---------- */
+html.marca body {
+  font-family: var(--f-texto);
+  background: var(--noite);
+  color: var(--texto);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+/* o pôr do sol deixou de estar no fundo do site inteiro: vive no topo da página inicial */
+html.marca body::before, html.marca body::after { content: none; display: none; }
+
+html.marca h1, html.marca h2, html.marca h3, html.marca h4 { font-family: var(--f-titulo); letter-spacing: 0; }
+html.marca :focus-visible { outline: 2px solid var(--mar); outline-offset: 3px; border-radius: 6px; }
+html.marca ::selection { background: var(--rosa); color: #1a0010; }
+
+/* ---------- moldura da app ---------- */
+html.marca .app { gap: 0; padding: 0; }
+html.marca .main { gap: 0; padding: 0 clamp(1rem, 2.4vw, 2.25rem) 2rem; }
+
+html.marca .sidebar {
+  top: 0; height: 100vh; border-radius: 0; border: 0;
+  border-right: 1px solid var(--linha);
+  background: var(--noite-2); box-shadow: none;
+  padding: 1.4rem 0.85rem 1rem;
+}
+html.marca .sidebar-brand { padding: 0.25rem 0.5rem 1.25rem; border-bottom: 0; }
+html.marca .sidebar-brand .marca-logo { max-width: 180px; height: auto; filter: drop-shadow(0 0 14px rgba(255, 79, 163, 0.45)); }
+
+/* atalhos do topo do menu: uma lista curta, sem cartões */
+html.marca .atalhos { display: grid; gap: 0.4rem; margin: 0 0 1.1rem; }
+html.marca .atalhos .linha2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+html.marca .atalho {
+  position: relative; display: flex; flex-direction: column; justify-content: center;
+  min-height: 0; padding: 0.6rem 0.8rem; border-radius: var(--r-botao);
+  background: var(--ameixa); border: 1px solid transparent; box-shadow: none;
+  overflow: hidden;
+}
+html.marca .atalho small {
+  font-size: 0.72rem; text-transform: none; letter-spacing: 0; color: var(--apagado); font-weight: 500;
+}
+html.marca .atalho strong { font-family: var(--f-titulo); font-size: 1.15rem; font-weight: 700; line-height: 1.1; color: var(--texto); }
+html.marca .atalho i { position: absolute; right: 0.7rem; top: 50%; transform: translateY(-50%); font-size: 1rem; opacity: 0.55; color: var(--texto-2); }
+html.marca .atalho.destaque { background: linear-gradient(100deg, var(--rosa-escuro), var(--rosa)); }
+html.marca .atalho.destaque small { color: rgba(255, 255, 255, 0.82); }
+html.marca .atalho.destaque i { color: #fff; opacity: 0.9; }
+html.marca .atalho:hover { border-color: var(--linha-forte); }
+
+html.marca .sidebar-group {
+  font-size: 0.74rem; text-transform: none; letter-spacing: 0; font-weight: 600;
+  color: var(--apagado); padding: 1rem 0.75rem 0.35rem; margin: 0;
+}
+html.marca .sidebar-link {
+  border-radius: var(--r-botao); padding: 0.5rem 0.75rem; gap: 0.75rem;
+  color: var(--texto-2); font-size: 0.92rem; font-weight: 500; border: 0; background: none;
+}
+html.marca .sidebar-link i { width: 1.1rem; text-align: center; color: var(--apagado); font-size: 0.9rem; }
+html.marca .sidebar-link:hover { background: var(--ameixa); color: var(--texto); }
+html.marca .sidebar-link.active { background: var(--ameixa); color: var(--texto); box-shadow: inset 3px 0 0 var(--rosa); }
+html.marca .sidebar-link.active i { color: var(--rosa); }
+html.marca .sidebar-link.active::before, html.marca .sidebar-link.active::after { display: none; }
+html.marca .pill {
+  font-family: var(--f-texto); font-size: 0.66rem; font-weight: 700; letter-spacing: 0; text-transform: none;
+  padding: 0.1rem 0.45rem; border-radius: 999px; border: 0;
+}
+html.marca .pill.novo { background: rgba(255, 181, 71, 0.16); color: var(--sol); }
+html.marca .pill.live { background: var(--rosa); color: #fff; }
+html.marca .sidebar-socials { border-top: 1px solid var(--linha); padding-top: 0.9rem; gap: 0.4rem; }
+html.marca .sidebar-socials a { background: transparent; border: 1px solid var(--linha); border-radius: var(--r-botao); color: var(--texto-2); }
+html.marca .sidebar-socials a:hover { color: #fff; border-color: var(--rosa); background: transparent; }
+
+/* barra de cima: discreta, cola ao topo */
+html.marca .topbar::before, html.marca .chat::before, html.marca .sidebar::before { display: none; }
+html.marca .topbar {
+  top: 0; margin: 0 calc(-1 * clamp(1rem, 2.4vw, 2.25rem)); padding: 0.7rem clamp(1rem, 2.4vw, 2.25rem);
+  border-radius: 0; border: 0; border-bottom: 1px solid var(--linha);
+  background: rgba(23, 10, 32, 0.86) !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: none;
+}
+html.marca .crumb small { display: none; }
+html.marca .crumb strong { font-family: var(--f-titulo); font-size: 1.2rem; font-weight: 700; text-transform: none; letter-spacing: 0; }
+html.marca .crumb::before, html.marca .crumb::after { display: none; }
+html.marca .search { background: var(--ameixa); border: 1px solid transparent; border-radius: var(--r-botao); max-width: 460px; }
+html.marca .search:focus-within { border-color: var(--linha-forte); }
+html.marca .search input { font-family: var(--f-texto); font-size: 0.9rem; }
+html.marca .search input::placeholder { color: var(--apagado); }
+html.marca .menu-toggle, html.marca .chat-toggle { background: var(--ameixa); border: 0; border-radius: var(--r-botao); color: var(--texto); }
+
+/* ---------- botões ---------- */
+html.marca .btn-twitch, html.marca .gm-claim, html.marca .age-btn-confirm,
+html.marca .nav-auth .btn-login, html.marca .nav-auth button:not(.nav-user-btn), html.marca .btn-primary {
+  font-family: var(--f-texto); font-weight: 700; font-size: 0.92rem; letter-spacing: 0; text-transform: none;
+  background: var(--rosa); color: #fff; border: 0; border-radius: var(--r-botao);
+  box-shadow: 0 8px 24px -10px rgba(255, 79, 163, 0.8);
+  transition: background 0.15s, transform 0.15s;
+}
+html.marca .btn-twitch:hover, html.marca .gm-claim:hover, html.marca .age-btn-confirm:hover,
+html.marca .nav-auth .btn-login:hover, html.marca .btn-primary:hover { background: #ff69b1; transform: translateY(-1px); }
+html.marca .btn-ghost, html.marca .btn-outline-green, html.marca .age-btn-deny {
+  font-family: var(--f-texto); font-weight: 600; font-size: 0.92rem; letter-spacing: 0; text-transform: none;
+  background: transparent; color: var(--texto); border: 1px solid var(--linha-forte); border-radius: var(--r-botao); box-shadow: none;
+}
+html.marca .btn-ghost:hover, html.marca .btn-outline-green:hover, html.marca .age-btn-deny:hover { border-color: var(--texto-2); background: rgba(255, 255, 255, 0.04); color: #fff; }
+html.marca .link-green, html.marca .ver-mais {
+  font-family: var(--f-texto); font-weight: 600; font-size: 0.88rem; text-transform: none; letter-spacing: 0; color: var(--mar);
+}
+html.marca .link-green:hover { color: #fff; }
+html.marca .link-green i, html.marca .btn-outline-green i { display: none; }
+
+/* ---------- verificação de idade ---------- */
+html.marca .age-gate { background: rgba(14, 5, 20, 0.82); backdrop-filter: blur(10px); }
+html.marca .age-gate-content {
+  background: var(--noite-2); border: 1px solid var(--linha-forte); border-radius: 20px;
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9); max-width: 420px; text-align: left; padding: 2rem;
+}
+html.marca .age-gate-icon {
+  width: auto; height: auto; margin: 0 0 1rem; background: none; box-shadow: none;
+  font-family: var(--f-titulo); font-size: 3rem; font-weight: 700; line-height: 1; color: var(--rosa);
+  justify-content: flex-start;
+}
+html.marca .age-gate-icon i { display: none; }
+html.marca .age-gate-icon::after { content: '18+'; text-shadow: 0 0 24px rgba(255, 79, 163, 0.6); }
+html.marca .age-gate-title { font-size: 1.7rem; font-weight: 700; margin-bottom: 0.5rem; }
+html.marca .age-gate-text { color: var(--texto-2); font-size: 0.92rem; }
+html.marca .age-gate-question { font-weight: 600; margin: 1.1rem 0 1.25rem; }
+html.marca .age-gate-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+html.marca .age-btn { padding: 0.8rem 1rem; }
+html.marca .age-gate-warning { color: var(--apagado); font-size: 0.8rem; margin-top: 1.1rem; justify-content: flex-start; }
+html.marca .age-gate-warning i { color: var(--sol); }
+
+/* ---------- secções: sem caixa, só espaço e uma linha ---------- */
+html.marca body main section.panel {
+  background: none !important; /* o style.css antigo força o fundo com !important */ border: 0; border-radius: 0; box-shadow: none;
+  padding: 2.75rem 0 0; margin: 0;
+}
+html.marca body main section.panel::before, html.marca body main section.panel::after { display: none; }
+html.marca .panel-head { align-items: flex-end; margin-bottom: 1.25rem; gap: 0.5rem 1.5rem; }
+html.marca .panel-title {
+  font-family: var(--f-titulo); font-size: clamp(1.6rem, 2.4vw, 2.1rem); font-weight: 700; line-height: 1.05;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+html.marca .panel-sub { color: var(--apagado); font-size: 0.92rem; margin-top: 0.3rem; max-width: 62ch; }
+html.marca .sec-conta {
+  font-family: var(--f-titulo); font-size: 0.95rem; font-weight: 700; color: var(--apagado);
+  background: none; border: 0; padding: 0; min-width: 0; height: auto; box-shadow: none;
+}
+html.marca .sec-dir .seta { background: var(--ameixa); border: 0; color: var(--texto); border-radius: var(--r-botao); }
+html.marca .sec-dir .seta:disabled { opacity: 0.35; }
+html.marca .schedule-note { color: var(--apagado); font-size: 0.82rem; }
+
+/* =====================================================================
+   PÁGINA INICIAL — o horizonte
+   ===================================================================== */
+html.marca .horizonte {
+  position: relative; isolation: isolate;
+  margin: 0 calc(-1 * clamp(1rem, 2.4vw, 2.25rem));
+}
+/* o céu: do roxo da noite até à linha do horizonte, onde o sol se põe */
+html.marca .ceu {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: end;
+  padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1rem, 2.4vw, 2.25rem) clamp(2.5rem, 4vw, 3.5rem);
+  background: linear-gradient(180deg, var(--noite) 0%, #2a0d3a 40%, #5a1356 70%, #a3285e 90%, #ff7a45 100%);
+  border-bottom: 2px solid #ffb547;
+  box-shadow: 0 0 40px 2px rgba(255, 122, 69, 0.55);
+}
+/* sol a riscas, meio posto no horizonte, atrás do ecrã */
+html.marca .horizonte .sol {
+  position: absolute; z-index: -2; pointer-events: none;
+  right: 8%; bottom: 0; width: min(44vw, 560px); aspect-ratio: 1; border-radius: 50%; transform: translateY(42%);
+  background: linear-gradient(180deg, #ffe066 0%, #ffb547 30%, #ff7a45 52%, #ff3d7f 70%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0 34%, transparent 34%), repeating-linear-gradient(180deg, transparent 0 4px, #000 4px 20px);
+          mask-image: linear-gradient(180deg, #000 0 34%, transparent 34%), repeating-linear-gradient(180deg, transparent 0 4px, #000 4px 20px);
+  filter: drop-shadow(0 0 60px rgba(255, 90, 140, 0.75));
+}
+html.marca .horizonte .palmas { position: absolute; z-index: -1; pointer-events: none; bottom: 0; height: 78%; width: auto; }
+html.marca .horizonte .palmas.esq { left: -90px; }
+html.marca .horizonte .palmas.dir { right: -90px; }
+/* o chão: grelha néon em perspetiva, com os números da comunidade por cima */
+html.marca .chao {
+  position: relative; isolation: isolate; overflow: hidden;
+  padding: 1.6rem clamp(1rem, 2.4vw, 2.25rem) 1.8rem;
+  background: linear-gradient(180deg, #2a0b31, var(--noite));
+}
+html.marca .chao::before {
+  content: ''; position: absolute; z-index: -1; inset: 0 -30% -40%; pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 79, 163, 0.5) 0 1px, transparent 1px 70px),
+    repeating-linear-gradient(180deg, rgba(255, 79, 163, 0.5) 0 1px, transparent 1px 26px);
+  transform: perspective(300px) rotateX(58deg); transform-origin: top;
+  -webkit-mask-image: linear-gradient(180deg, #000 10%, transparent 75%); mask-image: linear-gradient(180deg, #000 10%, transparent 75%);
+  opacity: 0.55;
+}
+
+html.marca .horizonte-texto { position: relative; z-index: 1; max-width: 560px; align-self: center; }
+html.marca .horizonte-logo { margin: 0 0 1.25rem; line-height: 0; }
+html.marca .horizonte-logo img {
+  width: min(100%, 470px); height: auto;
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 18px rgba(255, 79, 163, 0.95)) drop-shadow(0 0 48px rgba(255, 79, 163, 0.55));
+}
+html.marca .horizonte-frase {
+  font-family: var(--f-titulo); font-weight: 600; font-size: clamp(1.35rem, 2.2vw, 1.75rem); line-height: 1.2;
+  color: var(--texto); margin: 0 0 0.75rem; max-width: 30ch;
+}
+html.marca .horizonte-desc { color: var(--texto-2); font-size: 0.95rem; max-width: 48ch; margin: 0 0 1.6rem; }
+html.marca .horizonte .hero-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+html.marca .horizonte .hero-actions a { padding: 0.8rem 1.2rem; display: inline-flex; align-items: center; gap: 0.55rem; }
+html.marca .horizonte .btn-ghost { background: rgba(23, 10, 32, 0.4); backdrop-filter: blur(6px); }
+
+/* estado da live */
+html.marca .estado-live {
+  display: inline-flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;
+  font-size: 0.88rem; color: var(--texto-2); margin: 0 0 1.1rem;
+  background: none; border: 0; padding: 0; box-shadow: none; text-transform: none; letter-spacing: 0;
+}
+html.marca .estado-live .live-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--apagado); box-shadow: none; animation: none; }
+html.marca .estado-live #liveText { font-weight: 700; color: var(--texto); }
+html.marca .estado-live.live-active .live-dot { background: var(--rosa); box-shadow: 0 0 0 0 rgba(255, 79, 163, 0.7); animation: pulso-live 1.6s infinite; }
+html.marca .estado-live.live-active #liveText { color: var(--rosa); }
+html.marca .estado-live.live-active .proxima { display: none; }
+@keyframes pulso-live { 70% { box-shadow: 0 0 0 10px rgba(255, 79, 163, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 79, 163, 0); } }
+
+/* o ecrã da live, pousado no horizonte */
+html.marca .horizonte .stream-panel {
+  position: relative; z-index: 1;
+  border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.16);
+  background: #12071a; aspect-ratio: 16 / 9;
+  box-shadow: 0 0 0 6px rgba(18, 7, 26, 0.75), 0 30px 80px -20px rgba(0, 0, 0, 0.85), 0 0 60px -10px rgba(255, 79, 163, 0.45);
+}
+html.marca .offline-card { background: linear-gradient(180deg, rgba(18, 7, 26, 0.6), rgba(18, 7, 26, 0.92)); gap: 0.6rem; }
+html.marca .offline-card-image { width: 96px; height: 96px; border: 2px solid var(--rosa); box-shadow: 0 0 30px rgba(255, 79, 163, 0.5); }
+html.marca .offline-indicator { font-family: var(--f-titulo); font-size: 1.15rem; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--texto); }
+html.marca .offline-dot { background: var(--apagado); box-shadow: none; }
+html.marca .offline-text { color: var(--texto-2); font-size: 0.88rem; max-width: 34ch; }
+
+/* números da comunidade, pousados no chão */
+html.marca .horizonte .numeros {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0;
+}
+html.marca .numeros div { padding: 0 1.25rem; border-left: 1px solid rgba(255, 255, 255, 0.12); }
+html.marca .numeros div:first-child { padding-left: 0; border-left: 0; }
+html.marca .numeros dt { font-size: 0.82rem; color: var(--texto-2); order: 2; }
+html.marca .numeros dd {
+  margin: 0; font-family: var(--f-titulo); font-weight: 700; font-size: clamp(1.6rem, 2.6vw, 2.2rem); line-height: 1;
+  color: var(--texto); font-variant-numeric: tabular-nums;
+}
+html.marca .numeros div { display: flex; flex-direction: column-reverse; gap: 0.3rem; }
+html.marca .numeros .dinheiro dd { color: var(--sol); }
+
+/* ---------- cartões de oferta ---------- */
+html.marca .offers-grid.c-ofertas {
+  display: grid; grid-auto-flow: row; overflow: visible;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1rem;
+}
+html.marca .gm-card {
+  border-radius: var(--r-cartao); background: var(--ameixa); border: 1px solid var(--linha);
+  box-shadow: none; transition: border-color 0.15s;
+}
+html.marca .gm-card:hover { border-color: var(--linha-forte); transform: none; }
+html.marca .gm-card.gm-destaque { border-color: rgba(255, 181, 71, 0.5); }
+html.marca .gm-art { height: 140px; background-color: #12071a; }
+/* a arte da marca inteira, parada: sem desfoque nem flutuar */
+html.marca .gm-art::before { inset: 0; filter: none; animation: none; background: var(--art-img, none) center / cover no-repeat; }
+html.marca .gm-art::after { display: none; }
+html.marca .gm-card:hover .gm-art::before { filter: brightness(1.08); }
+html.marca .gm-destaque { padding: 0 !important; border: 1px solid rgba(255, 181, 71, 0.55) !important; box-shadow: 0 0 0 1px rgba(255, 181, 71, 0.15), 0 20px 50px -25px rgba(255, 181, 71, 0.45); }
+html.marca .gm-destaque::before, html.marca .gm-destaque::after { display: none; }
+html.marca .gm-destaque .gm-art { border-radius: 0; }
+html.marca .gm-destaque .gm-claim, html.marca .gm-destaque.gm-fogo .gm-claim { background: var(--rosa); color: #fff; animation: none; box-shadow: 0 8px 24px -10px rgba(255, 79, 163, 0.8); }
+html.marca .gm-destaque .gm-claim::after { display: none; }
+html.marca .gm-claim { height: 44px; border-radius: var(--r-botao); color: #fff; font-size: 0.92rem; }
+html.marca .gm-fade { background: linear-gradient(180deg, transparent 35%, rgba(42, 20, 54, 0.85) 80%, var(--ameixa) 100%); }
+html.marca .gm-blur { display: none; }
+html.marca .gm-logo { top: 42%; filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.6)); }
+html.marca .gm-text { display: none; }
+html.marca .gm-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+html.marca .gm-selo { display: none; }
+html.marca .gm-tag { font-size: 0.86rem; font-weight: 500; color: var(--texto-2); margin: 0; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8); }
+html.marca .gm-faixa {
+  inset: 12px auto auto 12px; width: auto; height: auto; transform: none; background: none; overflow: visible;
+}
+html.marca .gm-faixa span {
+  position: static; transform: none; width: auto; display: inline-block;
+  font-family: var(--f-titulo); font-size: 1rem; font-weight: 700; letter-spacing: 0;
+  padding: 0.15rem 0.6rem; border-radius: 999px; background: var(--sol); color: #2a1200; box-shadow: none;
+}
+html.marca .gm-faixa span { font-size: 0; }
+html.marca .gm-faixa span::after { content: 'Nº 1'; font-size: 0.95rem; }
+html.marca .gm-badges { top: 12px; right: 12px; gap: 0.3rem; }
+html.marca .gm-badges .badge {
+  font-family: var(--f-texto); font-size: 0.68rem; font-weight: 600; letter-spacing: 0; text-transform: none;
+  padding: 0.15rem 0.5rem; border-radius: 999px; border: 0;
+  background: rgba(18, 7, 26, 0.75); color: var(--texto); backdrop-filter: blur(6px);
+}
+html.marca .gm-body { padding: 0.9rem 1.15rem 1.1rem; gap: 0; }
+html.marca .gm-row.gm-label { display: none; }
+html.marca .gm-row { align-items: center; }
+html.marca .gm-value {
+  font-family: var(--f-titulo); font-size: 2.4rem; font-weight: 700; line-height: 1; color: var(--sol);
+  background: none; -webkit-text-fill-color: currentColor; letter-spacing: 0;
+}
+html.marca .gm-code {
+  font-family: var(--f-titulo); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.02em;
+  background: transparent; border: 1px dashed var(--linha-forte); color: var(--texto); border-radius: 8px; padding: 0.2rem 0.55rem;
+}
+html.marca .gm-code.none { display: none; }
+html.marca .gm-perks { margin: 0.9rem 0 1rem; gap: 0; border-top: 1px solid var(--linha); }
+html.marca .gm-perk {
+  background: none; border: 0; border-bottom: 1px solid var(--linha); border-radius: 0;
+  padding: 0.45rem 0; font-size: 0.86rem; color: var(--apagado);
+}
+html.marca .gm-perk i { display: none; }
+html.marca .gm-perk em { display: none; }
+html.marca .gm-perk b { margin-left: auto; color: var(--texto); font-weight: 600; }
+html.marca .gm-actions { gap: 0.5rem; }
+html.marca .gm-claim { flex: 1; padding: 0.75rem 1rem; text-align: center; }
+html.marca .gm-card:not(.gm-destaque) .gm-claim { background: var(--ameixa-2); box-shadow: none; border: 1px solid var(--linha-forte); }
+html.marca .gm-card:not(.gm-destaque) .gm-claim:hover { background: var(--rosa); border-color: var(--rosa); }
+html.marca .gm-more {
+  width: 2.7rem; height: auto; border-radius: var(--r-botao); background: transparent; border: 1px solid var(--linha-forte); color: var(--texto-2);
+}
+html.marca .gm-fine { display: block; text-align: left; color: var(--apagado); font-size: 0.72rem; margin-top: 0.7rem; letter-spacing: 0; }
+html.marca .offer-more { background: var(--noite-2); border-top: 1px solid var(--linha); }
+html.marca .offer-more h4 { font-family: var(--f-titulo); font-size: 1.05rem; text-transform: none; letter-spacing: 0; color: var(--texto); }
+html.marca .offer-more .perks i { color: var(--rosa); }
+html.marca .dep-list b { color: var(--sol); font-family: var(--f-titulo); }
+
+/* a faixa de marcas repetia os cartões: sai da página inicial */
+html.marca #offers .brand-marquee { display: none; }
+/* marcas em faixa: discreta */
+html.marca .brand-marquee { margin-top: 1.25rem; border: 0; background: none; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+html.marca .brand-chip { background: var(--noite-2); border: 1px solid var(--linha); border-radius: 12px; box-shadow: none; height: 56px; }
+html.marca .brand-chip::before { opacity: 0.25; }
+
+/* ---------- horário: uma semana em linha ---------- */
+html.marca .schedule-grid.c-dias {
+  display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; overflow: visible;
+  border: 1px solid var(--linha); border-radius: var(--r-cartao); background: var(--noite-2);
+}
+html.marca .day-card {
+  min-width: 0; padding: 1rem 0.9rem 1.1rem; border: 0; border-left: 1px solid var(--linha); border-radius: 0;
+  background: none; box-shadow: none; display: flex; flex-direction: column; gap: 0.2rem;
+}
+html.marca .day-card:first-child { border-left: 0; }
+html.marca .day-card .day { font-size: 0.8rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--apagado); }
+html.marca .day-card .time small { display: block; font-family: var(--f-texto); font-size: 0.75rem; font-weight: 500; color: var(--apagado); }
+html.marca .day-card .time { font-family: var(--f-titulo); font-size: 1.7rem; font-weight: 700; line-height: 1.1; color: var(--texto); }
+html.marca .day-card .what { font-size: 0.78rem; color: var(--apagado); }
+html.marca .day-card.off .time { color: var(--apagado); font-weight: 600; }
+html.marca .day-card.today { background: linear-gradient(180deg, rgba(255, 79, 163, 0.16), transparent); box-shadow: inset 0 3px 0 var(--rosa); }
+html.marca .day-card.today .day { color: var(--rosa); }
+html.marca .day-card.today::before, html.marca .day-card.today::after { display: none; }
+
+/* ---------- loja + como funciona ---------- */
+html.marca .shop-grid.c-loja { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; overflow: visible; }
+html.marca .shop-item {
+  min-width: 0; padding: 1.1rem; border-radius: var(--r-cartao); background: var(--ameixa); border: 1px solid var(--linha); box-shadow: none;
+  display: flex; flex-direction: column; gap: 0.15rem; align-items: flex-start;
+}
+html.marca .shop-item:hover { border-color: var(--linha-forte); transform: none; }
+html.marca .shop-item i { font-size: 1.3rem; color: var(--rosa); margin-bottom: 0.6rem; background: none; width: auto; height: auto; }
+html.marca .shop-item strong { font-family: var(--f-titulo); font-size: 1.2rem; font-weight: 700; }
+html.marca .shop-item span { font-size: 0.8rem; color: var(--apagado); text-transform: none; letter-spacing: 0; }
+
+html.marca .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; counter-reset: passo; border-top: 1px solid var(--linha); }
+html.marca .step {
+  counter-increment: passo; padding: 1.25rem 1.5rem 0 0; background: none; border: 0; border-radius: 0; box-shadow: none;
+  display: block;
+}
+html.marca .step + .step { padding-left: 1.5rem; border-left: 1px solid var(--linha); }
+html.marca .step i { display: none; }
+html.marca .step::before {
+  content: counter(passo); display: block; font-family: var(--f-titulo); font-size: 2.8rem; font-weight: 700; line-height: 1;
+  color: transparent; -webkit-text-stroke: 1.5px var(--rosa); margin-bottom: 0.6rem;
+}
+html.marca .step strong { display: block; font-family: var(--f-titulo); font-size: 1.3rem; font-weight: 700; margin-bottom: 0.25rem; }
+html.marca .step span { color: var(--texto-2); font-size: 0.9rem; }
+
+/* faixa promocional: uma linha simples */
+html.marca .promo-strip {
+  margin: 2.75rem 0 0; border-radius: var(--r-cartao); border: 1px solid rgba(255, 181, 71, 0.35);
+  background: linear-gradient(90deg, rgba(255, 181, 71, 0.08), rgba(255, 79, 163, 0.08)); box-shadow: none;
+  font-family: var(--f-texto); font-size: 0.88rem; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--texto-2);
+  padding: 0.9rem 1.2rem; justify-content: flex-start; gap: 0.75rem;
+}
+html.marca .promo-strip .brand { font-family: var(--f-titulo); font-size: 1.1rem; font-weight: 700; color: var(--texto); letter-spacing: 0; }
+html.marca .promo-strip .code { margin-left: auto; background: none; color: var(--sol); font-weight: 700; text-transform: none; letter-spacing: 0; border: 0; }
+
+/* ---------- rodapé ---------- */
+html.marca .footer {
+  margin: 3.5rem calc(-1 * clamp(1rem, 2.4vw, 2.25rem)) 0; padding: 2.25rem clamp(1rem, 2.4vw, 2.25rem) 1.5rem;
+  background: var(--noite-2); border: 0; border-top: 1px solid var(--linha); border-radius: 0; box-shadow: none;
+}
+html.marca .footer-brand img { border: 2px solid var(--rosa); }
+html.marca .footer-brand-name { font-family: var(--f-titulo); font-size: 1.3rem; font-weight: 700; text-transform: none; letter-spacing: 0; }
+html.marca .footer-brand-tagline { color: var(--apagado); }
+html.marca .footer-social a { background: transparent; border: 1px solid var(--linha); border-radius: var(--r-botao); color: var(--texto-2); }
+html.marca .footer-social a:hover { border-color: var(--rosa); color: #fff; }
+html.marca .gambling-logos a, html.marca .gambling-logos .age-warning {
+  border: 1px solid var(--linha-forte); border-radius: 8px; color: var(--texto-2); background: none; font-weight: 600; font-size: 0.78rem;
+}
+html.marca .gambling-logos .age-warning { border-radius: 50%; color: var(--texto); }
+html.marca .warning-header { color: var(--sol); text-transform: none; letter-spacing: 0; font-family: var(--f-titulo); font-size: 1.1rem; }
+html.marca .warning-text { color: var(--apagado); font-size: 0.82rem; max-width: 95ch; }
+html.marca .warning-text a { color: var(--mar); }
+html.marca .footer-bottom { border-top: 1px solid var(--linha); }
+html.marca .footer-bottom p, html.marca .footer-links a { text-transform: none; letter-spacing: 0; font-size: 0.8rem; color: var(--apagado); font-weight: 500; }
+html.marca .footer-links a:hover { color: var(--texto); }
+
+/* ---------- chat ---------- */
+html.marca .chat { top: 0; height: 100vh; border-radius: 0; border: 0; border-left: 1px solid var(--linha); background: var(--noite-2); box-shadow: none; }
+html.marca .chat-head { border-bottom: 1px solid var(--linha); font-family: var(--f-titulo); font-size: 1.05rem; font-weight: 700; text-transform: none; letter-spacing: 0; }
+html.marca .chat-head .live { font-family: var(--f-texto); font-style: normal; font-size: 0.72rem; text-transform: none; }
+html.marca .chat-bolha { background: var(--rosa); box-shadow: 0 10px 30px -8px rgba(255, 79, 163, 0.8); border: 0; }
+
+/* ---------- responsivo ---------- */
+@media (max-width: 1100px) {
+  html.marca .schedule-grid.c-dias { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  html.marca .day-card:nth-child(5) { border-left: 0; }
+  html.marca .day-card:nth-child(n+5) { border-top: 1px solid var(--linha); }
+}
+@media (max-width: 900px) {
+  html.marca .ceu { grid-template-columns: 1fr; gap: 2rem; }
+  html.marca .horizonte .sol { right: 50%; transform: translate(50%, 40%); width: min(110vw, 520px); }
+  html.marca .horizonte .palmas { height: 40%; }
+  html.marca .horizonte .numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.25rem; }
+  html.marca .numeros div:nth-child(3) { padding-left: 0; border-left: 0; }
+  html.marca .shop-grid.c-loja { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html.marca .steps { grid-template-columns: 1fr; }
+  html.marca .step, html.marca .step + .step { padding: 1.1rem 0; border-left: 0; border-bottom: 1px solid var(--linha); display: grid; grid-template-columns: 3rem 1fr; column-gap: 0.75rem; }
+  html.marca .step::before { grid-row: span 2; margin: 0; font-size: 2.4rem; }
+}
+@media (max-width: 760px) {
+  html.marca .main { padding-bottom: 1.5rem; }
+  html.marca .topbar .search { display: none; }
+  html.marca .horizonte-logo img { width: min(100%, 340px); }
+  html.marca .offers-grid.c-ofertas { grid-template-columns: 1fr; }
+  html.marca .schedule-grid.c-dias { grid-template-columns: 1fr; }
+  html.marca .day-card { flex-direction: row; align-items: baseline; gap: 0.75rem; border-left: 0; border-top: 1px solid var(--linha); padding: 0.8rem 1rem; }
+  html.marca .day-card:first-child { border-top: 0; }
+  html.marca .day-card .day { width: 6.5rem; flex: none; }
+  html.marca .day-card .time { font-size: 1.25rem; }
+  html.marca .day-card .time small { display: inline; margin-right: 0.3rem; }
+  html.marca .day-card .what { margin-left: auto; }
+  html.marca .promo-strip { flex-wrap: wrap; text-align: left; justify-content: flex-start; }
+  html.marca .promo-strip .code { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.marca .estado-live.live-active .live-dot { animation: none; }
+  html.marca * { transition: none !important; }
+}

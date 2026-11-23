@@ -295,10 +295,28 @@ if (scheduleGrid) {
     const whatHtml = d.what ? `<span class="what">${d.what}</span>` : (off ? `<span class="what">Sem live</span>` : '');
     return `<div class="day-card${i === todayIdx ? ' today' : ''}${off ? ' off' : ''}">
       <span class="day">${d.day}${i === todayIdx ? ' · hoje' : ''}</span>
-      <span class="time">${d.time}</span>
+      <span class="time">${d.time.replace(/^A partir das\s+/i, '<small>a partir das</small>')}</span>
       ${whatHtml}
     </div>`;
   }).join('');
+}
+
+// Próxima live, no topo da página inicial ("Próxima live: terça às 21h30")
+const proximaLive = document.getElementById('proximaLive');
+if (proximaLive) {
+  const agora = new Date();
+  const hoje = (agora.getDay() + 6) % 7;
+  const minAgora = agora.getHours() * 60 + agora.getMinutes();
+  for (let k = 0; k < 7; k++) {
+    const d = SCHEDULE[(hoje + k) % 7];
+    const m = /(\d{1,2})h(\d{2})/.exec(d.time);
+    if (!m) continue;
+    const ini = Number(m[1]) * 60 + Number(m[2]);
+    if (k === 0 && minAgora > ini + 240) continue; // a live de hoje já acabou
+    const quando = k === 0 ? 'hoje' : k === 1 ? 'amanhã' : d.day.toLowerCase();
+    proximaLive.textContent = `Próxima live ${quando} às ${m[1]}h${m[2]}`;
+    break;
+  }
 }
 
 // -------------------------------------------------------------------
@@ -317,7 +335,7 @@ if (!reduceMotion) {
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-  document.querySelectorAll('.stat-card, .offer-card').forEach((el) => {
+  if (!document.documentElement.classList.contains('marca')) document.querySelectorAll('.stat-card, .offer-card').forEach((el) => {
     el.style.opacity = '0';
     observer.observe(el);
   });
@@ -400,7 +418,7 @@ function setLiveUI(isLive) {
   const liveText = document.getElementById('liveText');
   if (offlineCard) offlineCard.classList.toggle('visible', !isLive);
   if (liveBadge) liveBadge.classList.toggle('live-active', isLive);
-  if (liveText) liveText.textContent = isLive ? 'AO VIVO' : 'OFFLINE';
+  if (liveText) liveText.textContent = isLive ? 'Ao vivo agora' : 'Offline';
   const pill = document.getElementById('navLivePill');
   if (pill) pill.hidden = !isLive;
   const chatLive = document.getElementById('chatLive');
