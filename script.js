@@ -12,7 +12,7 @@ const RESPONSIBLE_GAMBLING_URL = 'https://www.jogoresponsavel.pt/';
 // Popup atual: Coldbet — 100 free spins sem depósito (imagem do Fabio).
 // Para trocar a promoção basta mudar estes valores; para desligar,
 // põe PROMO_ATIVO = false.
-const PROMO_ATIVO = true;
+const PROMO_ATIVO = false;
 const PROMO = {
   link: 'https://coldb3.com/FABIOTV',
   imagem: 'assets/promo/coldbet-fs.jpg?v=1',
