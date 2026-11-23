@@ -1,18 +1,24 @@
-"""Gera tema-vice.css a partir de style.css e manager.css.
-Cada declaracao com cor azul e repetida com a cor rodada para rosa/roxo (tema Vice),
-com o prefixo :where(html.tema-vice) (nao muda a especificidade).
-Correr de novo sempre que style.css ou manager.css mudarem:  python3 _build/tema_vice.py
+"""Gera tema-laranja.css a partir dos CSS antigos (style, manager, banca, og).
+Tema "After Work": os azuis claros (destaques, contornos, brilhos) passam a laranja;
+os azuis escuros ficam, porque ja sao o azul-noite da marca.
+Prefixo :where(html.marca), que nao muda a especificidade: o vice.css ganha sempre.
+Correr de novo sempre que um desses CSS mudar:  python3 _build/tema_laranja.py
 """
 import re, colorsys, os, tinycss2
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PRE = ':where(html.tema-vice)'
+PRE = ':where(html.marca)'
 
 def rodar(r, g, b):
     h, l, s = colorsys.rgb_to_hls(r/255, g/255, b/255)
     hd = h*360
-    if 185 <= hd <= 255 and s > 0.12:
-        h = ((hd + (75 if l < 0.32 else 118)) % 360)/360  # fundos escuros -> roxo, destaques -> rosa
-        r2, g2, b2 = colorsys.hls_to_rgb(h, l, min(1, s*1.05))
+    if max(r, g, b) - min(r, g, b) < 70: return None  # brancos e cinzentos-azulados (texto) ficam
+    if 180 <= hd <= 260 and s > 0.12 and l >= 0.36:
+        # destaque azul/ciano -> laranja da marca (#ff7a1a anda nos 26 graus)
+        r2, g2, b2 = colorsys.hls_to_rgb(26/360, min(0.62, max(0.5, l)), min(1, max(0.9, s)))
+        return round(r2*255), round(g2*255), round(b2*255)
+    if 265 <= hd <= 340 and s > 0.2:
+        # rosas e roxos que tenham ficado de temas antigos -> laranja tambem
+        r2, g2, b2 = colorsys.hls_to_rgb(26/360, min(0.62, max(0.45, l)), min(1, s))
         return round(r2*255), round(g2*255), round(b2*255)
     return None
 
@@ -44,8 +50,8 @@ def prefixar(sel):
     for s in sel.split(','):
         s = s.strip()
         if not s: continue
-        if s.startswith(':root'): partes.append('html.tema-vice' + s[5:])  # tem de ganhar a :root
-        elif re.match(r'html\b', s): partes.append('html.tema-vice' + s[4:])
+        if s.startswith(':root'): partes.append('html.marca' + s[5:])  # tem de ganhar a :root
+        elif re.match(r'html\b', s): partes.append('html.marca' + s[4:])
         else: partes.append(PRE + ' ' + s)
     return ', '.join(partes)
 
@@ -58,7 +64,7 @@ def regras(nodes, ind=''):
             decls = tinycss2.parse_declaration_list(n.content, skip_comments=True, skip_whitespace=True)
             novas = []
             for d in decls:
-                if d.type != 'declaration': continue
+                if d.type != 'declaration' or d.name.startswith('--'): continue  # as variaveis sao do vice.css
                 val = tinycss2.serialize(d.value).strip()
                 nv, m = trocar(val)
                 if m: novas.append('%s: %s%s;' % (d.name, nv, ' !important' if d.important else ''))
@@ -68,10 +74,10 @@ def regras(nodes, ind=''):
             if dentro: out.append('%s@%s %s {\n%s\n%s}' % (ind, n.at_keyword, tinycss2.serialize(n.prelude).strip(), '\n'.join(dentro), ind))
     return out
 
-saida = ['/* GERADO por _build/tema_vice.py — nao editar a mao. Extras do tema em tema-vice-extra.css */']
-for f in ('style.css', 'manager.css', 'banca.css'):
+saida = ['/* GERADO por _build/tema_laranja.py — nao editar a mao. O sistema de design esta no vice.css */']
+for f in ('style.css', 'manager.css', 'banca.css', 'og.css'):
     css = open(os.path.join(RAIZ, f), encoding='utf-8').read()
     saida.append('/* ---- ' + f + ' ---- */')
     saida += regras(tinycss2.parse_stylesheet(css, skip_comments=True, skip_whitespace=True))
-open(os.path.join(RAIZ, 'tema-vice.css'), 'w', encoding='utf-8').write('\n'.join(saida) + '\n')
+open(os.path.join(RAIZ, 'tema-laranja.css'), 'w', encoding='utf-8').write('\n'.join(saida) + '\n')
 print('regras:', len(saida))

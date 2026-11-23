@@ -61,7 +61,7 @@ def offer_card(o):
       <div class="gm-perk"><i class="fas fa-star" aria-hidden="true"></i><span>Free spins</span><em></em><b>{fs}</b></div>
     </div>
     <div class="gm-actions">
-      <a class="gm-claim" href="{href}" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a>
+      <a class="gm-claim" href="{href}" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a>
       <button class="gm-more more-btn" type="button" aria-expanded="false" aria-label="Mais informação sobre {o['name']}"><svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M4 0H6V10H4V0Z" fill="currentColor"/><path d="M0 6V4H10V6H0Z" fill="currentColor"/></svg></button>
     </div>
     <span class="gm-fine">+18 · T&amp;C aplicáveis · Joga com responsabilidade</span>
@@ -76,7 +76,7 @@ def offer_card(o):
     <ul class="dep-list">{deps}</ul>
     <ul class="perks">{perks}</ul>
     <p class="schedule-note">{o['desc']}</p>
-    <div class="offer-foot"><a class="gm-claim" href="{href}" target="_blank" rel="noopener noreferrer sponsored">RECLAMAR BÓNUS</a><a class="tc-link" href="{href}" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
+    <div class="offer-foot"><a class="gm-claim" href="{href}" target="_blank" rel="noopener noreferrer sponsored">Reclamar bónus</a><a class="tc-link" href="{href}" target="_blank" rel="noopener noreferrer">T&amp;C</a></div>
   </div>
 </article>'''
 
@@ -204,14 +204,14 @@ PROMO = ''  # popup promocional desligado (pedido do Fabio, nov. 2026)
 def head(path, title, desc, extra=""):
     url = f"{SITE}/{path}"
     return f'''<!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-PT" class="marca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
     <meta name="description" content="{desc}">
     <link rel="canonical" href="{url}">
-    <meta name="theme-color" content="#040d1c">
+    <meta name="theme-color" content="#0a1022">
     <meta name="rating" content="adult">{extra}
     <link rel="icon" href="assets/favicon-64.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -230,9 +230,11 @@ def head(path, title, desc, extra=""):
     <meta name="twitter:image" content="{SITE}/assets/og-image.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css?v={VER}">
+    <link rel="stylesheet" href="tema-laranja.css?v=1">
+    <link rel="stylesheet" href="vice.css?v=1">
 </head>'''
 
 def page(path, title, desc, crumb, main, age_gate=True, promo=False, scripts=(), with_chat=True, extra_head="", body_attr=""):

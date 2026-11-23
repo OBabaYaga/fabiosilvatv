@@ -150,3 +150,23 @@ Lei do Jogo, art. 159.º).
 
 **Se correres o `_build/build.py`**, ele volta a gerar as páginas antigas
 dos jogos — corre `python3 _build/originals.py` logo a seguir.
+
+## Marca "After Work" (novembro 2026)
+
+O site passou a ter um sistema de design próprio, igual às overlays:
+céu azul-noite e horizonte em brasa, porque a live começa quando o dia
+de trabalho acaba.
+
+| Ficheiro | Função |
+|---|---|
+| `vice.css` | **O sistema de design.** Paleta, fontes, menu, botões, cartões, página inicial. Carrega por último em todas as páginas. |
+| `tema-laranja.css` | Gerado por `_build/tema_laranja.py`. Passa a laranja os azuis claros que ainda estão escritos à mão no `style.css`, `manager.css`, `banca.css` e `og.css`. Correr de novo se esses ficheiros mudarem. |
+
+Cores (no topo do `vice.css`): `--acao` `#ff7a1a` é a única cor de
+clicar e de "ao vivo"; `--sol` `#ffd34d` é só para dinheiro (bónus,
+vitórias); `--mar` `#5fd3ff` para ligações; fundo `--noite` `#0a1022`.
+Fontes: **Rajdhani** nos títulos e números (a das overlays) e **Sora**
+no texto.
+
+Todas as páginas têm `<html class="marca">`. O `tema-vice.css` e o
+`tema-vice-extra.css` foram apagados.
