@@ -170,3 +170,15 @@ no texto.
 
 Todas as páginas têm `<html class="marca">`. O `tema-vice.css` e o
 `tema-vice-extra.css` foram apagados.
+
+## Google Search Console (novembro 2026)
+
+O site está registado no Search Console (propriedade `https://fabiosilvatv.com/`,
+conta parceriasobabayaga@gmail.com) e o `sitemap.xml` foi enviado.
+A validação é a etiqueta `google-site-verification` no `<head>` do
+`index.html`: **não a apagues**, senão o Google deixa de reconhecer o site.
+
+As ferramentas (Bonus Hunt, Gestão de Banca, FS Manager, Minijogos) têm no
+fim uma secção `#guia` com o texto para o Google e perguntas frequentes, e
+dados estruturados (`<script type="application/ld+json" data-seo>`) no
+`<head>`. Se mudares as perguntas, muda-as nos dois sítios.
