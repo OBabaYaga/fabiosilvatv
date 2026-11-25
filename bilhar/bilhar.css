@@ -1,0 +1,90 @@
+/* Bilhar 8 bolas — página e ecrã do jogo */
+
+/* página (reaproveita o estilo da Arena para a entrada e as salas) */
+.bh-niveis { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.bh-niveis button[aria-pressed=true] { border-color: var(--acao); color: var(--acao); }
+
+/* ecrã do jogo */
+html.bh-a-jogar, html.bh-a-jogar body { overflow: hidden; }
+#bilharJogo { position: fixed; inset: 0; z-index: 5000; background: radial-gradient(ellipse at 50% 40%, #16213f 0%, #0a1022 60%, #05070f 100%); }
+.bh-raiz { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; padding: 0.7rem 1rem 0.8rem; height: 100%; box-sizing: border-box; font-family: var(--f-texto); color: var(--texto); user-select: none; -webkit-user-select: none; touch-action: none; }
+
+.bh-topo { width: min(1150px, 100%); display: grid; grid-template-columns: 1fr minmax(0, 1.3fr) 1fr; gap: 0.8rem; align-items: center; }
+.bh-jog { background: rgba(15, 23, 48, 0.85); border: 1px solid var(--linha); border-radius: 14px; padding: 0.5rem 0.75rem; display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; transition: border-color 0.2s, box-shadow 0.2s; }
+.bh-jog.vez { border-color: var(--acao); box-shadow: 0 0 0 1px var(--acao), 0 0 22px rgba(var(--acao-rgb), 0.25); }
+.bh-jog.dir { text-align: right; align-items: flex-end; }
+.bh-nome { font: 700 1.15rem/1.1 var(--f-titulo); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.bh-nome small { color: var(--apagado); font: 500 0.75rem var(--f-texto); }
+.bh-nome.apagado { color: var(--apagado); }
+.bh-vit { color: var(--sol); margin-left: 0.3rem; }
+.bh-grupo { display: flex; gap: 3px; min-height: 16px; align-items: center; }
+.bh-grupo small { color: var(--apagado); font-size: 0.78rem; }
+.bh-mini { width: 15px; height: 15px; border-radius: 50%; background: var(--c); box-shadow: inset -2px -2px 3px rgba(0, 0, 0, 0.35); display: inline-block; }
+.bh-mini.risc { background: linear-gradient(#f7f4ea 0 28%, var(--c) 28% 72%, #f7f4ea 72%); }
+.bh-mini.fora { opacity: 0.18; }
+.bh-tempo { height: 4px; background: rgba(255, 255, 255, 0.08); border-radius: 2px; overflow: hidden; width: 100%; }
+.bh-tempo span { display: block; height: 100%; width: 0; background: var(--acao); }
+.bh-jog.dir .bh-tempo span { margin-left: auto; }
+.bh-tempo.pouco span { background: #ff5c5c; }
+.bh-msg { text-align: center; font-size: 0.92rem; color: var(--texto-2); line-height: 1.35; min-height: 2.6em; display: flex; align-items: center; justify-content: center; }
+
+.bh-zona { display: flex; gap: 0.8rem; align-items: center; justify-content: center; width: min(1220px, 100%); flex: 1; min-height: 0; }
+.bh-mesa { flex: 1; min-width: 0; display: flex; justify-content: center; }
+.bh-mesa canvas { display: block; touch-action: none; cursor: crosshair; border-radius: 18px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55); }
+.bh-forca { --f: 0; position: relative; width: 46px; flex: none; background: linear-gradient(to bottom, rgba(255, 255, 255, 0.04), rgba(255, 122, 26, 0.18)); border: 1px solid var(--linha); border-radius: 23px; overflow: hidden; touch-action: none; cursor: ns-resize; opacity: 0.45; }
+.bh-forca.ativa { opacity: 1; border-color: var(--linha-forte); }
+.bh-forca::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: calc(var(--f) * 100%); background: linear-gradient(to bottom, rgba(255, 211, 77, 0.35), rgba(255, 92, 92, 0.6)); pointer-events: none; }
+.bh-taco { position: absolute; left: 50%; top: 4%; width: 10px; height: 92%; margin-left: -5px; border-radius: 5px; background: linear-gradient(to bottom, #f4f1e6 0 2%, #ff7a1a 2% 6%, #e8c890 6% 58%, #2a1a10 58%); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3); pointer-events: none; }
+.bh-forca span { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 0.62rem; color: var(--apagado); writing-mode: vertical-rl; transform: rotate(180deg); left: 50%; margin-left: -0.5em; z-index: 1; pointer-events: none; }
+
+.bh-baixo { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+.bh-efeito { width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #ddd8c8 70%); border: 2px solid var(--linha-forte); position: relative; cursor: pointer; padding: 0; }
+.bh-efeito span, .bh-bola-branca span { position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: #d62a1f; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8); pointer-events: none; }
+.bh-fino { display: flex; gap: 0.4rem; align-items: center; font-size: 0.8rem; color: var(--apagado); }
+.bh-fino button, .bh-botao { background: rgba(15, 23, 48, 0.85); border: 1px solid var(--linha-forte); color: var(--texto); border-radius: 10px; padding: 0.45rem 0.8rem; font: 600 0.88rem var(--f-texto); cursor: pointer; }
+.bh-fino button { width: 44px; height: 38px; padding: 0; touch-action: none; }
+.bh-fino button:hover, .bh-botao:hover { border-color: var(--acao); }
+.bh-efeito-grande { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 1rem; background: rgba(5, 8, 18, 0.75); z-index: 5; text-align: center; padding: 1rem; }
+.bh-efeito-grande[hidden] { display: none; }
+.bh-efeito-grande p { max-width: 320px; color: var(--texto-2); margin: 0; font-size: 0.9rem; }
+.bh-bola-branca { width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #ddd8c8 70%, #b9b3a0); position: relative; cursor: crosshair; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+.bh-bola-branca span { width: 22px; height: 22px; margin: -11px 0 0 -11px; }
+
+.bh-painel { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(5, 8, 18, 0.6); backdrop-filter: blur(3px); z-index: 6; padding: 1rem; }
+.bh-painel[hidden] { display: none; }
+.bh-caixa { width: min(480px, 100%); background: rgba(15, 23, 48, 0.97); border: 1px solid var(--linha-forte); border-radius: 18px; padding: 1.4rem 1.5rem; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); text-align: center; }
+.bh-caixa h2 { font: 700 2.1rem/1.1 var(--f-titulo); margin: 0 0 0.5rem; }
+.bh-caixa h2.ganhou { color: var(--sol); }
+.bh-caixa h2.perdeu { color: var(--texto-2); }
+.bh-caixa p { color: var(--texto-2); line-height: 1.5; margin: 0 0 1rem; }
+.bh-cod { color: var(--sol); letter-spacing: 0.15em; user-select: all; }
+.bh-aviso { color: #ffb27a !important; }
+.bh-placar b { font: 700 1.4rem var(--f-titulo); color: var(--texto); margin: 0 0.4rem; }
+.bh-acoes { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+.bh-acoes > button { flex: none; width: auto; }
+
+@media (max-width: 760px) {
+  .bh-raiz { padding: 0.4rem; gap: 0.4rem; }
+  .bh-topo { grid-template-columns: 1fr 1fr; }
+  .bh-msg { grid-column: 1 / -1; grid-row: 2; min-height: 0; font-size: 0.82rem; }
+  .bh-nome { font-size: 1rem; }
+  .bh-forca { width: 38px; }
+  .bh-mesa canvas { border-radius: 10px; }
+}
+@media (orientation: portrait) and (max-width: 760px) {
+  .bh-zona::before { content: 'Vira o telemóvel na horizontal para jogar melhor.'; position: absolute; top: 40%; left: 0; right: 0; text-align: center; color: var(--apagado); font-size: 0.85rem; pointer-events: none; z-index: -1; }
+}
+@media (prefers-reduced-motion: reduce) { .bh-jog { transition: none; } }
+@media (max-height: 520px) {
+  .bh-raiz { padding: 0.3rem 0.6rem; gap: 0.3rem; }
+  .bh-topo { grid-template-columns: 1fr 1.4fr 1fr; gap: 0.4rem; }
+  .bh-msg { grid-column: auto; grid-row: auto; font-size: 0.75rem; min-height: 0; }
+  .bh-jog { padding: 0.3rem 0.5rem; gap: 0.15rem; border-radius: 10px; }
+  .bh-nome { font-size: 0.95rem; }
+  .bh-mini { width: 11px; height: 11px; }
+  .bh-baixo { gap: 0.4rem; }
+  .bh-efeito { width: 34px; height: 34px; }
+  .bh-fino button { width: 38px; height: 30px; }
+  .bh-fino span { display: none; }
+  .bh-botao { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+}

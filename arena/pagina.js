@@ -1,5 +1,5 @@
 // Arena 4v4 — página de entrada: criar sala, entrar com código, salas abertas, treino.
-import { Api, Anfitriao, Cliente } from './rede.js?v=2';
+import { Api, Anfitriao, Cliente } from './rede.js?v=3';
 
 const BASE = window.FSTV_API || 'https://fabiosilvatv-api.vercel.app';
 const TOKEN_KEY = 'obaba_twitch_token';

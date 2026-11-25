@@ -23,7 +23,7 @@ export class Api {
   }
   criar(dados) { return this.pedir('POST', '', Object.assign({ acao: 'criar' }, dados)); }
   ver(cod) { return this.pedir('GET', '?acao=ver&cod=' + encodeURIComponent(cod)); }
-  lista() { return this.pedir('GET', '?acao=lista'); }
+  lista(jogo) { return this.pedir('GET', '?acao=lista' + (jogo ? '&jogo=' + jogo : '')); }
   estado(dados) { return this.pedir('POST', '', Object.assign({ acao: 'estado' }, dados)); }
   fechar(cod) { return this.pedir('POST', '', { acao: 'fechar', cod }); }
   sinal(cod, para, tipo, dados, nome) { return this.pedir('POST', '', { acao: 'sinal', cod, para, tipo, dados, nome }); }
