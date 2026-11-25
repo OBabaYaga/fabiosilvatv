@@ -135,10 +135,35 @@
     vista.innerHTML =
       '<div class="hl-topo">' +
       '<p class="hl-estado' + (ao ? ' vivo' : '') + '"><span class="ponto"></span>' + estadoTexto(h) + (ao ? ' <span class="hl-hora">atualizada às ' + hora(h.atualizada) + '</span>' : '') + '</p>' +
+      '<span class="hl-topo-acoes">' +
+      (ehDono() ? '<button type="button" class="btn-ghost hl-apagar" id="hlApagar"><i class="fas fa-trash" aria-hidden="true"></i> Apagar hunt</button>' : '') +
       (idArquivo ? '<a class="btn-ghost" href="hunt.html">Voltar à hunt atual</a>' : '') +
-      '</div>' +
+      '</span></div>' +
       blocoNumeros(h) + blocoGuess(h) + blocoBonus(h);
     ligarFormulario();
+    ligarApagar(h);
+  }
+
+  // Só o streamer vê o botão de apagar (a API confirma na mesma)
+  const DONOS = ['fabiosilva_tv'];
+  function ehDono() { const u = user(); return !!(u && token() && DONOS.includes(String(u.login || '').toLowerCase())); }
+
+  function ligarApagar(h) {
+    const b = $('hlApagar');
+    if (!b) return;
+    b.addEventListener('click', async () => {
+      const nome = (h.nome || 'Bonus Hunt') + (h.num ? ' #' + h.num : '');
+      if (!window.confirm('Apagar "' + nome + '" do site? Os bónus e os palpites desta hunt desaparecem e não dá para desfazer.')) return;
+      b.disabled = true;
+      try {
+        await api('', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token() }, body: JSON.stringify({ acao: 'apagar', id: h.id }) });
+        pagina = 0; carregarArquivo(false);
+        if (idArquivo) { location.hash = ''; } else { ultima = null; carregar(); }
+      } catch (e) {
+        b.disabled = false;
+        window.alert('Não foi possível apagar: ' + e.message);
+      }
+    });
   }
 
   function ligarFormulario() {

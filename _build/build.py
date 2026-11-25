@@ -234,7 +234,7 @@ def head(path, title, desc, extra=""):
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="style.css?v={VER}">
     <link rel="stylesheet" href="tema-laranja.css?v=1">
-    <link rel="stylesheet" href="vice.css?v=3">
+    <link rel="stylesheet" href="vice.css?v=4">
 </head>'''
 
 def page(path, title, desc, crumb, main, age_gate=True, promo=False, scripts=(), with_chat=True, extra_head="", body_attr=""):

@@ -541,6 +541,8 @@ html.marca .guia-faq details p { margin: 0 0 1rem; color: var(--texto-2); line-h
 html.marca .guia-nota { margin-top: 1.5rem; font-size: 0.85rem; color: var(--apagado); }
 
 /* ---------- hunt ao vivo (hunt.html) ---------- */
+html.marca .hl-topo-acoes { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+html.marca .hl-apagar:hover { color: #ff6b6b; border-color: #ff6b6b; }
 html.marca .hl-topo { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 0.5rem; }
 html.marca .hl-estado { display: inline-flex; align-items: center; gap: 0.55rem; margin: 0; font-weight: 600; color: var(--texto-2); }
 html.marca .hl-estado .ponto { width: 10px; height: 10px; border-radius: 50%; background: var(--apagado); }
