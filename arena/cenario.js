@@ -1,6 +1,6 @@
 // Arena 4v4 — tudo o que se vê: mapa, céu, bonecos, armas e efeitos.
 import * as THREE from './three.module.min.js';
-import { CAIXAS, LIMITES, ALTURA } from './mapa.js';
+import { CAIXAS, LIMITES, ALTURA, MAPA } from './mapa.js?v=2';
 
 export const CORES = { L: 0xff7a1a, A: 0x3d8bff };
 
@@ -66,50 +66,178 @@ function texturas() {
     g.fillStyle = 'rgba(255,122,26,.85)'; g.fillRect(0, h - 26, w, 12);
     ruido(g, w, h, 2000, 0.2, () => '#333');
   });
+
+  // ── Lisboa ──
+  const fachada = (base, janela, faixa) => tela(256, 256, (g, w, h) => {
+    g.fillStyle = base; g.fillRect(0, 0, w, h);
+    ruido(g, w, h, 2500, 0.18, () => '#000');
+    for (let y = 18; y < h - 10; y += 64) for (let x = 20; x < w; x += 64) {
+      const acesa = Math.random() < 0.45;
+      g.fillStyle = acesa ? janela : '#1a2030'; g.fillRect(x, y, 26, 38);
+      g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(x - 3, y + 38, 32, 4);
+    }
+    g.fillStyle = faixa; g.fillRect(0, h - 8, w, 8);
+  });
+  TEX.predio_a = fachada('#d9c27a', '#ffd98a', '#8a7a4a');
+  TEX.predio_b = fachada('#c98a7a', '#ffe0a0', '#7a4a3a');
+  TEX.predio_c = tela(256, 256, (g, w, h) => {
+    // azulejo azul e branco
+    for (let y = 0; y < h; y += 16) for (let x = 0; x < w; x += 16) {
+      g.fillStyle = (x + y) % 32 ? '#e9eef7' : '#2f5aa8'; g.fillRect(x, y, 16, 16);
+      g.fillStyle = 'rgba(0,0,0,.12)'; g.fillRect(x, y, 16, 1); g.fillRect(x, y, 1, 16);
+    }
+    for (let y = 18; y < h - 10; y += 64) for (let x = 20; x < w; x += 64) { g.fillStyle = Math.random() < 0.5 ? '#ffd98a' : '#1a2030'; g.fillRect(x, y, 26, 38); }
+  });
+  TEX.calcada = tela(512, 512, (g, w, h) => {
+    g.fillStyle = '#d8d4c8'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 2600; i++) { g.fillStyle = Math.random() < 0.5 ? '#cfcabd' : '#e4e0d6'; g.fillRect(Math.random() * w, Math.random() * h, 9, 9); }
+    // ondas de pedra preta (calçada portuguesa)
+    g.fillStyle = '#2b2b30';
+    for (let o = 0; o < 4; o++) for (let x = 0; x < w; x += 4) {
+      const y = h * (o + 0.5) / 4 + Math.sin(x / w * Math.PI * 4) * 22;
+      g.fillRect(x, y, 5, 14);
+    }
+    g.strokeStyle = 'rgba(0,0,0,.08)';
+    for (let x = 0; x < w; x += 9) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
+  });
+  TEX.eletrico = tela(256, 128, (g, w, h) => {
+    g.fillStyle = '#f2c230'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#f4f1e6'; g.fillRect(0, 0, w, 26);
+    g.fillStyle = '#2a3040'; for (let x = 14; x < w - 10; x += 40) g.fillRect(x, 32, 28, 40);
+    g.fillStyle = '#8a1f1f'; g.fillRect(0, h - 18, w, 18);
+    g.fillStyle = '#222'; g.font = 'bold 18px sans-serif'; g.fillText('28', w - 40, 20);
+  });
+  TEX.carro = tela(128, 64, (g, w, h) => { g.fillStyle = '#b8202a'; g.fillRect(0, 0, w, h); g.fillStyle = '#2a3346'; g.fillRect(18, 6, 92, 22); g.fillStyle = '#111'; g.fillRect(0, h - 10, w, 10); });
+  TEX.carro_b = tela(128, 64, (g, w, h) => { g.fillStyle = '#e8e8ea'; g.fillRect(0, 0, w, h); g.fillStyle = '#2a3346'; g.fillRect(18, 6, 92, 22); g.fillStyle = '#111'; g.fillRect(0, h - 10, w, 10); });
+  TEX.quiosque = tela(128, 128, (g, w, h) => { g.fillStyle = '#2f6b4a'; g.fillRect(0, 0, w, h); g.fillStyle = '#e9d9a0'; g.fillRect(10, 30, w - 20, 50); g.fillStyle = '#c33'; g.fillRect(0, 0, w, 14); });
+  TEX.banco = tela(64, 64, (g, w, h) => { g.fillStyle = '#6b4a2a'; g.fillRect(0, 0, w, h); g.fillStyle = '#4a3218'; for (let y = 0; y < h; y += 12) g.fillRect(0, y, w, 3); });
+  TEX.lixo = tela(64, 64, (g, w, h) => { g.fillStyle = '#2f5a3a'; g.fillRect(0, 0, w, h); g.fillStyle = '#244a2e'; g.fillRect(0, 0, w, 10); });
+  TEX.pilarete = tela(32, 64, (g, w, h) => { g.fillStyle = '#2a2a2e'; g.fillRect(0, 0, w, h); g.fillStyle = '#d8b04a'; g.fillRect(0, 8, w, 6); });
+  TEX.floreira = tela(64, 64, (g, w, h) => { g.fillStyle = '#7a5a3a'; g.fillRect(0, 0, w, h); g.fillStyle = '#3f7a2f'; g.fillRect(0, 0, w, 18); for (let i = 0; i < 20; i++) { g.fillStyle = ['#e33', '#fd4', '#f8a'][i % 3]; g.fillRect(Math.random() * w, Math.random() * 14, 5, 5); } });
+  // ── Casino ──
+  TEX.alcatifa = tela(256, 256, (g, w, h) => {
+    g.fillStyle = '#5a0f22'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#d4a63a'; g.lineWidth = 3;
+    for (let y = 0; y <= h; y += 64) for (let x = 0; x <= w; x += 64) { g.beginPath(); g.moveTo(x, y - 20); g.lineTo(x + 20, y); g.lineTo(x, y + 20); g.lineTo(x - 20, y); g.closePath(); g.stroke(); }
+    g.fillStyle = '#2a0a3a'; for (let y = 32; y < h; y += 64) for (let x = 32; x < w; x += 64) { g.beginPath(); g.arc(x, y, 7, 0, 7); g.fill(); }
+  });
+  TEX.parede_casino = tela(256, 256, (g, w, h) => {
+    const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#2a0f3e'); gr.addColorStop(1, '#4a1a5e'); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#d4a63a'; g.fillRect(0, h * 0.62, w, 5); g.fillRect(0, h * 0.08, w, 3);
+    for (let x = 16; x < w; x += 64) { g.fillStyle = 'rgba(212,166,58,.25)'; g.fillRect(x, h * 0.15, 32, h * 0.4); }
+  });
+  const slot = (cor) => tela(64, 128, (g, w, h) => {
+    g.fillStyle = cor; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#0d0d14'; g.fillRect(8, 26, w - 16, 40);
+    for (let i = 0; i < 3; i++) { g.fillStyle = ['#ff4', '#f44', '#4f8'][(i + (cor.length)) % 3]; g.fillRect(12 + i * 14, 38, 10, 16); }
+    g.fillStyle = '#ffd34d'; g.fillRect(0, 0, w, 14); g.fillStyle = '#222'; g.fillRect(10, 78, w - 20, 10);
+  });
+  TEX.slot = slot('#7a1fd6'); TEX.slot_b = slot('#d61f6a');
+  TEX.mesa = tela(128, 64, (g, w, h) => { g.fillStyle = '#0f6a3a'; g.fillRect(0, 0, w, h); g.strokeStyle = '#e9d9a0'; g.lineWidth = 2; g.strokeRect(10, 10, w - 20, h - 20); g.fillStyle = '#5a3418'; g.fillRect(0, 0, w, 5); g.fillRect(0, h - 5, w, 5); });
+  TEX.mesa_roleta = tela(128, 64, (g, w, h) => { g.fillStyle = '#0f6a3a'; g.fillRect(0, 0, w, h); for (let i = 0; i < 12; i++) { g.fillStyle = i % 2 ? '#b11' : '#111'; g.fillRect(40 + i * 6, 14, 6, 36); } g.fillStyle = '#5a3418'; g.fillRect(0, 0, w, 5); });
+  TEX.balcao = tela(128, 64, (g, w, h) => { g.fillStyle = '#3a1f12'; g.fillRect(0, 0, w, h); g.fillStyle = '#d4a63a'; g.fillRect(0, 0, w, 6); for (let x = 8; x < w; x += 20) { g.fillStyle = '#4a2a18'; g.fillRect(x, 14, 12, h - 20); } });
+  TEX.pilar_ouro = tela(64, 256, (g, w, h) => { const gr = g.createLinearGradient(0, 0, w, 0); gr.addColorStop(0, '#8a6a1a'); gr.addColorStop(0.5, '#f4d26a'); gr.addColorStop(1, '#8a6a1a'); g.fillStyle = gr; g.fillRect(0, 0, w, h); });
+  TEX.sofa = tela(64, 64, (g, w, h) => { g.fillStyle = '#6a1230'; g.fillRect(0, 0, w, h); g.fillStyle = '#4a0a20'; for (let x = 0; x < w; x += 16) g.fillRect(x, 0, 2, h); });
+  // ── Aldeia ──
+  TEX.terra = tela(512, 512, (g, w, h) => {
+    g.fillStyle = '#c9a876'; g.fillRect(0, 0, w, h);
+    ruido(g, w, h, 9000, 0.35, (r) => (r > 0.5 ? '#b8956a' : '#d8bb8a'));
+    for (let i = 0; i < 260; i++) { g.fillStyle = 'rgba(110,90,60,.5)'; g.beginPath(); g.arc(Math.random() * w, Math.random() * h, 2 + Math.random() * 4, 0, 7); g.fill(); }
+  });
+  TEX.casa = tela(256, 256, (g, w, h) => {
+    g.fillStyle = '#f6f3ea'; g.fillRect(0, 0, w, h);
+    ruido(g, w, h, 1500, 0.12, () => '#9a9080');
+    g.fillStyle = '#2f62b8'; g.fillRect(0, h - 26, w, 26); // barra azul caiada
+    g.fillStyle = '#2f62b8'; g.fillRect(40, 70, 46, 60); g.fillRect(170, 70, 46, 60);
+    g.fillStyle = '#5a3a22'; g.fillRect(112, 120, 40, 110);
+  });
+  TEX.telhado = tela(128, 64, (g, w, h) => { g.fillStyle = '#c4562a'; g.fillRect(0, 0, w, h); g.fillStyle = '#a8441e'; for (let x = 0; x < w; x += 10) g.fillRect(x, 0, 4, h); });
+  TEX.igreja = tela(256, 256, (g, w, h) => {
+    g.fillStyle = '#f8f5ec'; g.fillRect(0, 0, w, h); ruido(g, w, h, 1200, 0.1, () => '#999');
+    g.fillStyle = '#d8b04a'; g.fillRect(0, 0, w, 8); g.fillRect(0, h - 14, w, 14);
+    g.fillStyle = '#4a3020'; g.beginPath(); g.moveTo(98, h - 14); g.lineTo(98, 150); g.arc(128, 150, 30, Math.PI, 0); g.lineTo(158, h - 14); g.fill();
+  });
+  TEX.pedra = tela(128, 128, (g, w, h) => {
+    g.fillStyle = '#8c8578'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 40; i++) { g.fillStyle = ['#a39b8c', '#77705f', '#9a917f'][i % 3]; g.beginPath(); g.ellipse(Math.random() * w, Math.random() * h, 10 + Math.random() * 12, 7 + Math.random() * 8, Math.random(), 0, 7); g.fill(); }
+  });
+  TEX.muro_pedra_alto = TEX.pedra;
+  TEX.fardo = tela(64, 64, (g, w, h) => { g.fillStyle = '#d9b85a'; g.fillRect(0, 0, w, h); ruido(g, w, h, 900, 0.4, () => '#a88a3a'); g.fillStyle = '#8a6a2a'; g.fillRect(w * 0.3, 0, 3, h); g.fillRect(w * 0.7, 0, 3, h); });
+  TEX.carroca = tela(64, 64, (g, w, h) => { g.fillStyle = '#7a5230'; g.fillRect(0, 0, w, h); g.fillStyle = '#5a3a20'; for (let y = 0; y < h; y += 10) g.fillRect(0, y, w, 2); });
+  TEX.tronco = tela(32, 64, (g, w, h) => { g.fillStyle = '#5a4630'; g.fillRect(0, 0, w, h); ruido(g, w, h, 300, 0.4, () => '#3a2a18'); });
+  TEX.copa = tela(64, 64, (g, w, h) => { g.fillStyle = '#6f8a4a'; g.fillRect(0, 0, w, h); ruido(g, w, h, 1500, 0.5, (r) => (r > 0.5 ? '#55703a' : '#8aa45e')); });
   TEX.pilar = TEX.betao;
   return TEX;
 }
 
-// ── céu "After Work": pôr do sol laranja a cair para azul-noite ─────
-function ceu() {
+// ── céu de cada mapa (gradiente; estrelas em Lisboa) ─────────────────
+function ceu(tema) {
   const t = tela(16, 512, (g, w, h) => {
     const gr = g.createLinearGradient(0, 0, 0, h);
-    gr.addColorStop(0, '#141d3f'); gr.addColorStop(0.4, '#2a3770'); gr.addColorStop(0.72, '#7a3b4a'); gr.addColorStop(0.86, '#ff7a1a'); gr.addColorStop(1, '#ffd34d');
+    for (const [cor, pos] of tema.ceu) gr.addColorStop(pos, cor);
     g.fillStyle = gr; g.fillRect(0, 0, w, h);
   });
   t.wrapS = THREE.ClampToEdgeWrapping; t.wrapT = THREE.ClampToEdgeWrapping;
-  const m = new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, fog: false, depthWrite: false });
-  const s = new THREE.Mesh(new THREE.SphereGeometry(400, 24, 16), m);
-  return s;
+  const grupo = new THREE.Group();
+  grupo.add(new THREE.Mesh(new THREE.SphereGeometry(400, 24, 16), new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, fog: false, depthWrite: false })));
+  if (tema.estrelas) {
+    const pos = [];
+    for (let i = 0; i < 700; i++) {
+      const a = Math.random() * Math.PI * 2, e = 0.15 + Math.random() * 1.3;
+      pos.push(Math.cos(a) * Math.cos(e) * 380, Math.sin(e) * 380, Math.sin(a) * Math.cos(e) * 380);
+    }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    grupo.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xffffff, size: 1.4, sizeAttenuation: false, fog: false })));
+    const lua = new THREE.Mesh(new THREE.SphereGeometry(9, 20, 14), new THREE.MeshBasicMaterial({ color: 0xf4f1dc, fog: false }));
+    lua.position.set(120, 160, -220); grupo.add(lua);
+  }
+  return grupo;
 }
 
 export function criarCena(renderer) {
   texturas();
+  const tema = MAPA.tema;
   const cena = new THREE.Scene();
-  cena.fog = new THREE.Fog(0x2a2440, 45, 140);
-  cena.add(ceu());
+  cena.fog = new THREE.Fog(tema.nevoeiro[0], tema.nevoeiro[1], tema.nevoeiro[2]);
+  if (tema.interior) cena.background = new THREE.Color(tema.fundo);
+  else cena.add(ceu(tema));
+  renderer.toneMappingExposure = tema.exposicao || 1.25;
 
-  cena.add(new THREE.HemisphereLight(0xffd2aa, 0x2a3770, 1.4));
-  const sol = new THREE.DirectionalLight(0xffb070, 2.2);
-  sol.position.set(-40, 35, 18);
-  sol.castShadow = true;
+  cena.add(new THREE.HemisphereLight(tema.hemi[0], tema.hemi[1], tema.hemi[2]));
+  const sol = new THREE.DirectionalLight(tema.sol[0], tema.sol[1]);
+  sol.position.set(...tema.sol[2]);
+  sol.castShadow = !tema.interior;
   sol.shadow.mapSize.set(2048, 2048);
-  Object.assign(sol.shadow.camera, { left: -45, right: 45, top: 32, bottom: -32, near: 5, far: 120 });
+  Object.assign(sol.shadow.camera, { left: -LIMITES.x - 6, right: LIMITES.x + 6, top: LIMITES.z + 10, bottom: -LIMITES.z - 10, near: 5, far: 160 });
   sol.shadow.bias = -0.0006;
   sol.shadow.normalBias = 0.02;
   cena.add(sol);
-  cena.add(new THREE.AmbientLight(0x404a70, 0.35));
+  cena.add(new THREE.AmbientLight(tema.ambiente[0], tema.ambiente[1]));
 
   // chão
-  const tc = TEX.chao.clone(); tc.needsUpdate = true; tc.repeat.set(LIMITES.x / 4, LIMITES.z / 4);
+  const tc = (TEX[tema.chao] || TEX.chao).clone(); tc.needsUpdate = true;
+  const escChao = tema.chao === 'calcada' ? 2.5 : 4;
+  tc.repeat.set(LIMITES.x / escChao, LIMITES.z / escChao);
   const chao = new THREE.Mesh(new THREE.PlaneGeometry(LIMITES.x * 2 + 2, LIMITES.z * 2 + 2), new THREE.MeshStandardMaterial({ map: tc, roughness: 0.95 }));
   chao.rotation.x = -Math.PI / 2;
   chao.receiveShadow = true;
   cena.add(chao);
-  // água para lá dos muros (é um porto)
-  const agua = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: 0x1b2a4a, roughness: 0.25, metalness: 0.6 }));
-  agua.rotation.x = -Math.PI / 2; agua.position.y = -0.6;
-  cena.add(agua);
+  if (tema.agua) {
+    const agua = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: 0x1b2a4a, roughness: 0.25, metalness: 0.6 }));
+    agua.rotation.x = -Math.PI / 2; agua.position.y = -0.6;
+    cena.add(agua);
+  }
+  if (tema.interior) {
+    // teto com sancas douradas
+    const teto = new THREE.Mesh(new THREE.PlaneGeometry(LIMITES.x * 2 + 2, LIMITES.z * 2 + 2), new THREE.MeshStandardMaterial({ color: 0x1c0f2a, roughness: 0.9 }));
+    teto.rotation.x = Math.PI / 2; teto.position.y = tema.interior;
+    cena.add(teto);
+  } else if (tema.deco !== 'gruas') {
+    // chão à volta do mapa, para não se ver o vazio por cima dos muros
+    const fora = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: tema.deco === 'montes' ? 0xa89068 : 0x2a2f3a, roughness: 1 }));
+    fora.rotation.x = -Math.PI / 2; fora.position.y = -0.02;
+    cena.add(fora);
+  }
 
   // caixas do mapa
   const mats = {};
@@ -118,9 +246,11 @@ export function criarCena(renderer) {
     const k = tipo + ':' + w.toFixed(1) + ':' + h.toFixed(1);
     if (!mats[k]) {
       const tx = t.clone(); tx.needsUpdate = true;
-      const esc = tipo.startsWith('cont') ? [w / 6.5, 1] : tipo === 'caixote' ? [1, 1] : [w / 4, h / 4];
+      const unico = ['caixote', 'slot', 'slot_b', 'mesa', 'mesa_roleta', 'carro', 'carro_b', 'eletrico', 'quiosque', 'lixo', 'fardo', 'sofa', 'pilarete', 'tronco', 'pilar_ouro'];
+      const esc = tipo.startsWith('cont') ? [w / 6.5, 1] : unico.includes(tipo) ? [1, 1] : tipo.startsWith('predio') ? [w / 8, h / 8] : [w / 4, h / 4];
       tx.repeat.set(Math.max(0.5, esc[0]), Math.max(0.5, esc[1]));
-      mats[k] = new THREE.MeshStandardMaterial({ map: tx, roughness: tipo.startsWith('cont') ? 0.6 : 0.9, metalness: tipo.startsWith('cont') ? 0.3 : 0 });
+      const brilho = tipo.startsWith('cont') || tipo === 'pilar_ouro' || tipo.startsWith('carro') || tipo === 'eletrico';
+      mats[k] = new THREE.MeshStandardMaterial({ map: tx, roughness: brilho ? 0.5 : 0.9, metalness: tipo === 'pilar_ouro' ? 0.7 : brilho ? 0.3 : 0, emissive: tipo.startsWith('slot') ? 0x401060 : 0x000000, emissiveIntensity: 0.6 });
     }
     return mats[k];
   };
@@ -129,27 +259,61 @@ export function criarCena(renderer) {
     const lado = Math.max(w, d);
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c.tipo, lado, h));
     m.position.set((c.min[0] + c.max[0]) / 2, (c.min[1] + c.max[1]) / 2, (c.min[2] + c.max[2]) / 2);
-    m.castShadow = c.tipo !== 'muro' || h < 6;
+    m.castShadow = h < 9;
     m.receiveShadow = true;
     cena.add(m);
   }
 
-  // gruas e candeeiros (só decoração, fora da zona de jogo)
-  const ferro = new THREE.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.6, metalness: 0.4 });
-  for (const [x, z] of [[-20, 30], [18, 31], [0, -32]]) {
-    const g = new THREE.Group();
-    const torre = new THREE.Mesh(new THREE.BoxGeometry(1.2, 22, 1.2), ferro); torre.position.y = 11; g.add(torre);
-    const braco = new THREE.Mesh(new THREE.BoxGeometry(18, 0.9, 0.9), ferro); braco.position.set(5, 21.5, 0); g.add(braco);
-    g.position.set(x, 0, z);
-    g.rotation.y = Math.random() * Math.PI;
-    cena.add(g);
+  // decoração fora da zona de jogo
+  if (tema.deco === 'gruas') {
+    const ferro = new THREE.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.6, metalness: 0.4 });
+    for (const [x, z] of [[-20, 30], [18, 31], [0, -32]]) {
+      const g = new THREE.Group();
+      const torre = new THREE.Mesh(new THREE.BoxGeometry(1.2, 22, 1.2), ferro); torre.position.y = 11; g.add(torre);
+      const braco = new THREE.Mesh(new THREE.BoxGeometry(18, 0.9, 0.9), ferro); braco.position.set(5, 21.5, 0); g.add(braco);
+      g.position.set(x, 0, z);
+      g.rotation.y = x * 0.37;
+      cena.add(g);
+    }
+  } else if (tema.deco === 'predios') {
+    // mais prédios e o castelo ao fundo
+    const tipos = ['predio_a', 'predio_b', 'predio_c'];
+    let n = 0;
+    for (let x = -LIMITES.x - 6; x <= LIMITES.x + 6; x += 9) for (const z of [LIMITES.z + 6, -LIMITES.z - 6]) {
+      const h = 13 + ((n * 7) % 9);
+      const b = new THREE.Mesh(new THREE.BoxGeometry(8.5, h, 9), mat(tipos[n++ % 3], 9, h)); b.position.set(x, h / 2, z); cena.add(b);
+    }
+    for (const x of [LIMITES.x + 6, -LIMITES.x - 6]) for (let z = -LIMITES.z; z <= LIMITES.z; z += 9) {
+      const h = 13 + ((n * 5) % 8);
+      const b = new THREE.Mesh(new THREE.BoxGeometry(9, h, 8.5), mat(tipos[n++ % 3], 9, h)); b.position.set(x, h / 2, z); cena.add(b);
+    }
+    const pedra = new THREE.MeshStandardMaterial({ color: 0x8a8470, roughness: 1 });
+    const castelo = new THREE.Group();
+    const base = new THREE.Mesh(new THREE.BoxGeometry(40, 8, 14), pedra); base.position.y = 22; castelo.add(base);
+    for (const x of [-18, -6, 6, 18]) { const t = new THREE.Mesh(new THREE.BoxGeometry(5, 8, 5), pedra); t.position.set(x, 30, 0); castelo.add(t); }
+    const monte = new THREE.Mesh(new THREE.BoxGeometry(70, 18, 30), new THREE.MeshStandardMaterial({ color: 0x1a2a2a, roughness: 1 })); monte.position.y = 9; castelo.add(monte);
+    castelo.position.set(10, 0, 70); cena.add(castelo);
+  } else if (tema.deco === 'montes') {
+    const verde = new THREE.MeshStandardMaterial({ color: 0x8a9a5a, roughness: 1 });
+    for (let i = 0; i < 14; i++) {
+      const a = (i / 14) * Math.PI * 2, r = 110 + (i % 3) * 25;
+      const m = new THREE.Mesh(new THREE.SphereGeometry(30 + (i % 4) * 8, 12, 8), verde);
+      m.scale.y = 0.35; m.position.set(Math.cos(a) * r, -4, Math.sin(a) * r); cena.add(m);
+    }
+    const moinho = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.8, 9, 12), new THREE.MeshStandardMaterial({ color: 0xf6f3ea }));
+    moinho.position.set(-60, 8, 75); cena.add(moinho);
   }
+
+  // candeeiros / luzes do teto
   const luzMat = new THREE.MeshBasicMaterial({ color: 0xffd34d });
-  for (const [x, z] of [[-22, 0], [22, 0], [0, 10.5], [0, -10.5]]) {
-    const poste = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 6), new THREE.MeshStandardMaterial({ color: 0x222833 }));
-    poste.position.set(x, 3, z); cena.add(poste);
-    const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.15, 0.3), luzMat); lamp.position.set(x, 6, z); cena.add(lamp);
-    const pl = new THREE.PointLight(0xffc070, 6, 14, 1.6); pl.position.set(x, 5.7, z); cena.add(pl);
+  for (const [x, z] of tema.luzes || []) {
+    const y = tema.alturaLuz || 6;
+    if (!tema.interior) {
+      const poste = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, y), new THREE.MeshStandardMaterial({ color: 0x222833 }));
+      poste.position.set(x, y / 2, z); cena.add(poste);
+    }
+    const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.15, 0.3), luzMat); lamp.position.set(x, y, z); cena.add(lamp);
+    const pl = new THREE.PointLight(tema.corLuz || 0xffc070, tema.intLuz || 6, tema.interior ? 18 : 15, 1.6); pl.position.set(x, y - 0.3, z); cena.add(pl);
   }
   return cena;
 }

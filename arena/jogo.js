@@ -5,8 +5,8 @@
 // posição e os seus tiros, e recebem dele o estado do jogo 20x por
 // segundo. No modo Treino o anfitrião és tu e só há bots.
 import * as THREE from './three.module.min.js';
-import { CAIXAS, SPAWNS, OLHAR_INICIAL, raioMapa, raioJogador, visivel, mover, cabeDePe, ALTURA, OLHOS, LIMITES } from './mapa.js';
-import { criarCena, criarBoneco, poseBoneco, criarArmaFP, Efeitos, normalCaixa, CORES } from './cenario.js';
+import { CAIXAS, SPAWNS, OLHAR_INICIAL, raioMapa, raioJogador, visivel, mover, cabeDePe, ALTURA, OLHOS, LIMITES, MAPA, MAPAS, usarMapa } from './mapa.js?v=2';
+import { criarCena, criarBoneco, poseBoneco, criarArmaFP, Efeitos, normalCaixa, CORES } from './cenario.js?v=2';
 
 export const ARMAS = {
   rifle:   { nome: 'Rifle',   tecla: '1', pente: 30, reserva: 90, cadencia: 0.1,  auto: true,  dano: { cabeca: 115, corpo: 33, pernas: 25 }, recarga: 2.3, base: 0.0025, mover: 0.045, ar: 0.12, agachado: 0.6, acum: 0.006, maxAcum: 0.05, recuo: 0.011, alcance: 250 },
@@ -38,7 +38,8 @@ function angDif(a, b) { let d = a - b; while (d > Math.PI) d -= Math.PI * 2; whi
 
 // ── navegação dos bots: grelha com caminhos livres ──────────────────
 let NAV = null;
-function grelhaNav() {
+export function esquecerNav() { NAV = null; }
+export function grelhaNav() {
   if (NAV) return NAV;
   const passo = 2, nos = [], idx = new Map();
   for (let x = -LIMITES.x + 1; x <= LIMITES.x - 1; x += passo) {
@@ -68,7 +69,7 @@ function noMaisPerto(x, z) {
   for (let i = 0; i < nos.length; i++) { const d = (nos[i].x - x) ** 2 + (nos[i].z - z) ** 2; if (d < bd) { bd = d; b = i; } }
   return b;
 }
-function caminho(de, para) {
+export function caminho(de, para) {
   const { nos } = grelhaNav();
   const a = noMaisPerto(de[0], de[2]), b = noMaisPerto(para[0], para[2]);
   if (a < 0 || b < 0) return [];
@@ -176,6 +177,7 @@ export class Jogo {
     this.espectar = null;
     this.feed = [];
     this.ultimoEstadoApi = 0;
+    usarMapa(o.mapa || 'docas'); esquecerNav();
     this.montarDom();
     this.montar3D();
     this.ligarInput();
@@ -240,6 +242,25 @@ export class Jogo {
     window.addEventListener('resize', this.redimensionar);
     this.redimensionar();
     this.mostrarArma('rifle');
+  }
+
+  // Troca o mapa: volta a construir a cena (só no lobby)
+  trocarMapa(id) {
+    if (!MAPAS[id] || (MAPA.id === id && this.cena)) return;
+    usarMapa(id); esquecerNav();
+    this.cena.traverse((o) => { if (o.geometry) o.geometry.dispose(); });
+    this.bonecos.clear();
+    this.cena = criarCena(this.renderer);
+    this.efeitos = new Efeitos(this.cena);
+  }
+  hostMudarMapa(id) {
+    if (!MAPAS[id] || this.fase !== 'lobby') return;
+    this.trocarMapa(id);
+    if (this.ehHost) grelhaNav();
+    const idx = { L: 0, A: 0 };
+    for (const J of this.jogadores.values()) { this.irParaSpawn(J, idx[J.equipa]++); if (J.ia) { J.ia.caminho = []; J.ia.repath = 0; } }
+    this.evento({ t: 'mapa', id, spawns: Object.fromEntries([...this.jogadores.values()].map((J) => [J.id, [J.p[0], J.p[2], J.yaw]])) }, true);
+    this.ultimoEstadoApi = 0;
   }
 
   ligarInput() {
@@ -482,7 +503,7 @@ export class Jogo {
     const J = this.novoJogador(id, nome, eq);
     J.vivo = this.fase === 'lobby';
     this.irParaSpawn(J, this.contar(eq) - 1);
-    this.rede.enviar(id, { t: 'bem', eu: id, host: this.eu.id, fase: this.fase, ronda: this.ronda, placar: this.placar, resta: Math.max(0, this.faseAte - agora()), lista: this.lista(), p: J.p, yaw: J.yaw });
+    this.rede.enviar(id, { t: 'bem', eu: id, host: this.eu.id, mapa: MAPA.id, fase: this.fase, ronda: this.ronda, placar: this.placar, resta: Math.max(0, this.faseAte - agora()), lista: this.lista(), p: J.p, yaw: J.yaw });
     this.hostAvisarLista();
     this.evento({ t: 'aviso', txt: nome + ' entrou na sala' }, true);
   }
@@ -604,7 +625,7 @@ export class Jogo {
     // a sala continua na lista do site
     if (this.api && this.cod && this.modo === 'anfitriao' && t - this.ultimoEstadoApi > 20000) {
       this.ultimoEstadoApi = t;
-      this.api.estado({ cod: this.cod, n: this.jogadores.size - [...this.jogadores.values()].filter((J) => J.bot).length, estado: this.fase === 'lobby' ? 'lobby' : this.fase === 'terminado' ? 'fim' : 'jogo', placar: this.fase === 'lobby' ? '' : this.placar.L + '-' + this.placar.A }).catch(() => {});
+      this.api.estado({ cod: this.cod, mapa: MAPA.id, n: this.jogadores.size - [...this.jogadores.values()].filter((J) => J.bot).length, estado: this.fase === 'lobby' ? 'lobby' : this.fase === 'terminado' ? 'fim' : 'jogo', placar: this.fase === 'lobby' ? '' : this.placar.L + '-' + this.placar.A }).catch(() => {});
     }
   }
   hostVoltarLobby() {
@@ -730,6 +751,7 @@ export class Jogo {
     switch (m.t) {
       case 'bem':
         this.eu.id = m.eu;
+        if (m.mapa) this.trocarMapa(m.mapa);
         this.fase = m.fase; this.ronda = m.ronda; this.placar = m.placar; this.faseAte = agora() + (m.resta || 0);
         this.aplicarLista(m.lista);
         { const J = this.jogadores.get(this.eu.id); if (J) { J.p = m.p; J.yaw = m.yaw; this.posicionarLocal(J); } }
@@ -807,6 +829,12 @@ export class Jogo {
         if (!this.ehHost) this.aplicarLista(m.lista);
         for (const [id, s] of Object.entries(m.spawns || {})) { const J = this.jogadores.get(id); if (J) { J.p = [s[0], 0, s[1]]; J.yaw = s[2]; J.vivo = true; J.hp = 100; if (id === this.eu.id) this.posicionarLocal(J); } }
         this.encherArmas();
+        this.desenharPainel();
+        break;
+      case 'mapa':
+        if (!this.ehHost) this.trocarMapa(m.id);
+        for (const [id, s] of Object.entries(m.spawns || {})) { const J = this.jogadores.get(id); if (J) { J.p = [s[0], 0, s[1]]; J.yaw = s[2]; J.ver = J.p.slice(); J.verYaw = J.yaw; if (id === this.eu.id) this.posicionarLocal(J); } }
+        this.addFeedTexto('Mapa: ' + MAPAS[m.id].nome);
         this.desenharPainel();
         break;
       case 'aviso': this.addFeedTexto(m.txt); break;
@@ -1069,7 +1097,12 @@ export class Jogo {
       topo = '<h2>Pausa</h2><p>O jogo continua a correr. Clica em voltar para jogares.</p>';
       acoes = '<button class="btn-primary" data-ac="entrar">Voltar ao jogo</button>';
     }
-    const corpo = this.fase === 'terminado' ? '' : '<div class="ar-equipas">' + equipa('L') + equipa('A') + '</div>';
+    let corpo = this.fase === 'terminado' ? '' : '<div class="ar-equipas">' + equipa('L') + equipa('A') + '</div>';
+    if (this.fase === 'lobby') {
+      corpo = (this.ehHost
+        ? '<div class="ar-mapas" role="radiogroup" aria-label="Mapa">' + Object.values(MAPAS).map((M) => '<button type="button" role="radio" aria-checked="' + (M.id === MAPA.id) + '" class="ar-mapa' + (M.id === MAPA.id ? ' ativo' : '') + '" data-ac="mapa" data-eq="' + M.id + '"><b>' + esc(M.nome) + '</b><small>' + esc(M.desc) + '</small></button>').join('') + '</div>'
+        : '<p class="ar-mapa-atual">Mapa: <b>' + esc(MAPA.nome) + '</b> · ' + esc(MAPA.desc) + '</p>') + corpo;
+    }
     p.innerHTML = '<div class="ar-caixa">' + topo + corpo +
       '<div class="ar-acoes">' + acoes + '<button class="btn-ghost" data-ac="sair">' + (this.ehHost && this.modo === 'anfitriao' ? 'Fechar a sala' : 'Sair') + '</button></div>' +
       '<details class="ar-opcoes"><summary>Controlos e opções</summary>' +
@@ -1100,6 +1133,7 @@ export class Jogo {
       (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => { if (b) b.textContent = 'Copiado!'; }, () => { if (b) b.textContent = this.cod; });
       return;
     }
+    if (ac === 'mapa' && this.ehHost) { this.hostMudarMapa(eq); return this.desenharPainel(); }
     if (ac === 'bot+' && this.ehHost) return this.addBot(eq);
     if (ac === 'bot-' && this.ehHost) return this.tirarBot(eq);
   }

@@ -130,3 +130,16 @@ html.ar-a-jogar, html.ar-a-jogar body { overflow: hidden; }
 .ar-teclas { line-height: 2; margin: 0.6rem 0 0; }
 @media (max-width: 640px) { .ar-equipas, .ar-tabela { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { .ar-centro, .ar-barra span { transition: none; } .ar-dano.ver { animation-duration: 0.01s; } }
+
+/* escolha do mapa no lobby */
+.ar-mapas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 0.9rem; }
+.ar-mapa { text-align: left; background: var(--noite); border: 1px solid var(--linha); border-radius: 12px; padding: 0.55rem 0.7rem; color: var(--texto); cursor: pointer; display: flex; flex-direction: column; gap: 0.2rem; font: inherit; }
+.ar-mapa b { font: 700 1.1rem var(--f-titulo); }
+.ar-mapa small { color: var(--apagado); font-size: 0.75rem; line-height: 1.35; }
+.ar-mapa:hover { border-color: var(--linha-forte); }
+.ar-mapa.ativo { border-color: var(--acao); box-shadow: inset 0 0 0 1px var(--acao); }
+.ar-mapa.ativo b { color: var(--acao); }
+.ar-mapa:focus-visible { outline: 2px solid var(--acao); outline-offset: 2px; }
+.ar-mapa-atual { margin: 0 0 0.9rem; color: var(--texto-2); font-size: 0.92rem; }
+.ar-mapa-atual b { color: var(--acao); }
+@media (max-width: 760px) { .ar-mapas { grid-template-columns: 1fr 1fr; } }

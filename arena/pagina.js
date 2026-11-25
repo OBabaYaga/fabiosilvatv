@@ -1,9 +1,10 @@
 // Arena 4v4 — página de entrada: criar sala, entrar com código, salas abertas, treino.
-import { Api, Anfitriao, Cliente } from './rede.js';
+import { Api, Anfitriao, Cliente } from './rede.js?v=2';
 
 const BASE = window.FSTV_API || 'https://fabiosilvatv-api.vercel.app';
 const TOKEN_KEY = 'obaba_twitch_token';
 const $ = (id) => document.getElementById(id);
+const NOMES_MAPAS = { docas: 'Docas', lisboa: 'Lisboa', casino: 'Casino', aldeia: 'Aldeia' };
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const token = () => { try { return localStorage.getItem(TOKEN_KEY); } catch (e) { return null; } };
 // twitch-auth.js declara TwitchAuth com const (não fica em window)
@@ -13,7 +14,7 @@ const user = () => (TA() && TA().getUser && TA().getUser()) || null;
 let a_jogar = false;
 let modJogo = null;
 async function carregarJogo() {
-  if (!modJogo) modJogo = await import('./jogo.js?v=1');
+  if (!modJogo) modJogo = await import('./jogo.js?v=2');
   return modJogo;
 }
 
