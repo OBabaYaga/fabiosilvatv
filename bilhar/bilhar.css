@@ -88,3 +88,6 @@ html.bh-a-jogar, html.bh-a-jogar body { overflow: hidden; }
   .bh-fino span { display: none; }
   .bh-botao { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
 }
+.bh-dica { flex-basis: 100%; order: -1; text-align: center; margin: 0; font-size: 0.8rem; color: var(--apagado); }
+.bh-forca span { writing-mode: vertical-rl; font-size: 0.66rem; color: var(--texto-2); }
+@media (max-height: 520px) { .bh-dica { display: none; } }

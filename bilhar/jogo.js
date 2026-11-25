@@ -77,10 +77,11 @@ export class Bilhar {
       </div>
       <div class="bh-zona">
         <div class="bh-mesa"><canvas id="bhCanvas"></canvas></div>
-        <div class="bh-forca" id="bhForca" title="Puxa para baixo e larga para dar a tacada"><div class="bh-taco" id="bhTaco"></div><span>Força</span></div>
+        <div class="bh-forca" id="bhForca" title="Puxa para baixo e larga para dar a tacada"><div class="bh-taco" id="bhTaco"></div><span>Puxa para baixo ↓</span></div>
       </div>
       <div class="bh-baixo">
         <button class="bh-efeito" id="bhEfeito" type="button" aria-label="Efeito na bola branca"><span id="bhEfeitoPonto"></span></button>
+        <p class="bh-dica" id="bhDica"></p>
         <div class="bh-fino"><button type="button" id="bhEsq" aria-label="Rodar a mira para a esquerda">◀</button><span>Ajuste fino</span><button type="button" id="bhDir" aria-label="Rodar a mira para a direita">▶</button></div>
         <button class="bh-botao" id="bhSom" type="button"></button>
         <button class="bh-botao" id="bhSair" type="button">Sair</button>
@@ -90,6 +91,10 @@ export class Bilhar {
     const $ = (id) => r.querySelector('#' + id);
     this.el = { canvas: $('bhCanvas'), j0: $('bhJ0'), j1: $('bhJ1'), msg: $('bhMsg'), forca: $('bhForca'), taco: $('bhTaco'), efeito: $('bhEfeito'), efeitoP: $('bhEfeitoPonto'), efG: $('bhEfeitoG'), bb: $('bhBB'), bbp: $('bhBBp'), painel: $('bhPainel'), som: $('bhSom') };
     this.ctx = this.el.canvas.getContext('2d');
+    const rato = matchMedia('(pointer: fine)').matches;
+    r.querySelector('#bhDica').textContent = rato
+      ? 'Aponta com o rato. Para tacar: carrega na mesa, puxa o rato para trás e larga (ou mantém Espaço).'
+      : 'Arrasta na mesa para apontar. Para tacar: puxa o taco da direita para baixo e larga.';
     this.redim = () => this.redimensionar();
     window.addEventListener('resize', this.redim);
     this.redimensionar();
@@ -133,26 +138,50 @@ export class Bilhar {
         if (k >= 0) { this.chamado = k; this.mostrarMsg('Bolso escolhido. Agora aponta e dá a tacada.'); return; }
       }
       if (this.estado.mao && (cue.x - x) ** 2 + (cue.y - y) ** 2 < (M.R * 2.6) ** 2) { arrastarBranca = true; c.setPointerCapture(ev.pointerId); return; }
-      this.apontarPara(x, y);
       c.setPointerCapture(ev.pointerId);
+      if (ev.pointerType === 'mouse') {
+        // rato: carregar e puxar para trás (para longe da bola) dá a força
+        this.puxarRato = { x, y };
+        return;
+      }
+      this.apontarPara(x, y);
       this.aApontar = true;
     });
     c.addEventListener('pointermove', (ev) => {
       if (!this.minhaVez()) return;
       const [x, y] = this.paraMesa(ev);
       if (arrastarBranca) { this.moverBranca(x, y); return; }
+      if (this.puxarRato) {
+        const p = this.puxarRato;
+        const atras = -((x - p.x) * this.mira.dx + (y - p.y) * this.mira.dy);
+        this.forca = Math.max(0, Math.min(1, atras / 220));
+        return;
+      }
       // com rato aponta só de passar; com o dedo só a arrastar
       if (ev.pointerType === 'mouse' || this.aApontar) this.apontarPara(x, y);
     });
-    const fim = () => { arrastarBranca = false; this.aApontar = false; };
+    const fim = () => {
+      arrastarBranca = false; this.aApontar = false;
+      if (this.puxarRato) {
+        this.puxarRato = null;
+        if (this.forca > 0.03 && this.minhaVez()) this.tacar(); else this.forca = 0;
+      }
+    };
     c.addEventListener('pointerup', fim); c.addEventListener('pointercancel', fim);
     c.addEventListener('wheel', (ev) => { if (!this.minhaVez()) return; ev.preventDefault(); this.rodar(ev.deltaY > 0 ? 0.0025 : -0.0025); }, { passive: false });
     this.onKey = (ev) => {
       if (!this.minhaVez() || ev.target.closest('input')) return;
       if (ev.key === 'ArrowLeft') { this.rodar(ev.shiftKey ? -0.01 : -0.0015); ev.preventDefault(); }
       if (ev.key === 'ArrowRight') { this.rodar(ev.shiftKey ? 0.01 : 0.0015); ev.preventDefault(); }
+      if (ev.code === 'Space' && ev.type === 'keydown') { ev.preventDefault(); if (!this.carregarEspaco) this.carregarEspaco = agora(); }
+    };
+    this.onKeyUp = (ev) => {
+      if (ev.code !== 'Space' || !this.carregarEspaco) return;
+      this.carregarEspaco = 0;
+      if (this.forca > 0.03 && this.minhaVez()) this.tacar(); else this.forca = 0;
     };
     document.addEventListener('keydown', this.onKey);
+    document.addEventListener('keyup', this.onKeyUp);
     // ajuste fino (botões, carregar e manter)
     for (const [id, d] of [['bhEsq', -0.0015], ['bhDir', 0.0015]]) {
       const b = this.raiz.querySelector('#' + id);
@@ -553,6 +582,7 @@ export class Bilhar {
     el.parentElement.classList.toggle('pouco', resta < 0.25);
     const outro = (i ? this.el.j0 : this.el.j1).querySelector('.bh-tempo span');
     if (outro) outro.style.width = '0%';
+    if (this.carregarEspaco && this.minhaVez()) { const t = ((agora() - this.carregarEspaco) / 1400) % 2; this.forca = t < 1 ? t : 2 - t; }
     // força a mexer na barra
     this.el.taco.style.transform = 'translateY(' + (this.forca * 70) + '%)';
     this.el.forca.classList.toggle('ativa', this.minhaVez());
@@ -595,6 +625,7 @@ export class Bilhar {
     this.pararRelogio();
     window.removeEventListener('resize', this.redim);
     document.removeEventListener('keydown', this.onKey);
+    document.removeEventListener('keyup', this.onKeyUp);
     if (this.rede) this.rede.fechar();
     if (this.ehHost && this.api && this.cod && this.modo === 'anfitriao') this.api.fechar(this.cod).catch(() => {});
     this.raiz.innerHTML = '';

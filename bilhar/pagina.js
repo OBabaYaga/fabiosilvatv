@@ -12,7 +12,7 @@ const user = () => (TA() && TA().getUser && TA().getUser()) || null;
 
 let aJogar = false;
 let nivel = parseInt(localStorage.getItem('bilhar_nivel') || '1', 10);
-const carregar = () => import('./jogo.js?v=1');
+const carregar = () => import('./jogo.js?v=2');
 
 function estado(msg, erro) {
   const e = $('bhEstado');
