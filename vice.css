@@ -674,3 +674,30 @@ html.marca .hl-vazio { color: var(--apagado); }
   html.marca .estado-live.live-active .live-dot { animation: none; }
   html.marca * { transition: none !important; }
 }
+
+/* ── jogos: cartões em destaque (página Jogos e início) ───────────── */
+html.marca .jg-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.9rem; }
+html.marca .jg-card { position: relative; display: flex; flex-direction: column; background: var(--noite-2); border: 1px solid var(--linha); border-radius: var(--r-cartao); overflow: hidden; color: var(--texto); text-decoration: none; transition: border-color 0.15s, transform 0.15s; }
+html.marca .jg-card:hover { border-color: var(--acao); transform: translateY(-2px); }
+html.marca .jg-card:focus-visible { outline: 2px solid var(--acao); outline-offset: 2px; }
+html.marca .jg-card img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+html.marca .jg-info { padding: 0.75rem 0.9rem 0.9rem; display: flex; flex-direction: column; gap: 0.3rem; }
+html.marca .jg-info strong { font: 700 1.3rem/1.1 var(--f-titulo); }
+html.marca .jg-info > span:last-child { color: var(--texto-2); font-size: 0.86rem; line-height: 1.45; }
+html.marca .jg-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+html.marca .jg-tags em { font-style: normal; font-size: 0.68rem; font-weight: 600; color: var(--texto-2); background: rgba(255, 255, 255, 0.06); border-radius: 999px; padding: 0.15rem 0.5rem; }
+html.marca .jg-tags em.novo { background: var(--acao); color: #0a1022; }
+@media (max-width: 1100px) { html.marca .jg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { html.marca .jg-grid { grid-template-columns: 1fr; } }
+html.marca .mini-hero h2 { font: 700 clamp(1.6rem, 3vw, 2.2rem)/1.1 var(--f-titulo); margin: 0 0 0.35rem; }
+html.marca .mini-hero { scroll-margin-top: 80px; }
+
+/* atalho "Jogos" no topo do menu */
+html.marca .atalho.jogos i { color: var(--mar); }
+
+/* rodapé: mapa do site */
+html.marca .footer-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; padding: 1.2rem 0; border-top: 1px solid var(--linha); border-bottom: 1px solid var(--linha); margin: 1rem 0; }
+html.marca .footer-nav h4 { font: 700 0.95rem var(--f-titulo); color: var(--texto); margin: 0 0 0.5rem; letter-spacing: 0.02em; }
+html.marca .footer-nav a { display: block; color: var(--texto-2); text-decoration: none; font-size: 0.86rem; padding: 0.18rem 0; }
+html.marca .footer-nav a:hover { color: var(--acao); }
+@media (max-width: 700px) { html.marca .footer-nav { grid-template-columns: 1fr 1fr; } }
