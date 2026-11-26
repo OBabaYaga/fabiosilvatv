@@ -10,28 +10,28 @@ export const PISTAS = {
     largura: 13, relevo: 26, voltas: 3,
     pontos: [[0, 0], [170, -10], [280, 50], [310, 160], [240, 250], [130, 230], [70, 300], [-60, 320], [-170, 250], [-150, 140], [-240, 60], [-200, -60], [-90, -60]],
     pisos: [[0, 0.12, 'asfalto'], [0.12, 1, 'terra']],
-    tema: { ceu: [['#2a5aa8', 0], ['#7fb0e8', 0.55], ['#ffd9a0', 0.9], ['#ffb070', 1]], nevoeiro: [0xe8c9a0, 160, 650], sol: [0xffd9a8, 2.6, [-120, 160, 80]], hemi: [0xcfe2ff, 0x8a6a40, 1.2], fora: 'erva_seca', arvores: 'oliveira', densidade: 0.8, vinhas: true },
+    tema: { ceu: [['#2a5aa8', 0], ['#7fb0e8', 0.55], ['#ffd9a0', 0.9], ['#ffb070', 1]], nevoeiro: [0xe8c9a0, 160, 650], sol: [0xffd9a8, 2.6, [-120, 160, 80]], hemi: [0xcfe2ff, 0x8a6a40, 1.2], fora: 'erva_seca', arvores: 'oliveira', densidade: 0.8, vinhas: true, real: { elevacao: 14, azimute: 235, turbidez: 6, rayleigh: 1.6, mie: 0.006 }, erva: [0x8a8a3a, 0xa89a4a] },
   },
   sintra: {
     id: 'sintra', nome: 'Sintra', desc: 'Floresta com nevoeiro, terra e lama nas curvas apertadas.',
     largura: 11.5, relevo: 18, voltas: 3,
     pontos: [[0, 0], [130, 0], [210, -80], [310, -60], [330, 60], [250, 120], [270, 220], [160, 290], [40, 230], [-60, 290], [-190, 230], [-210, 110], [-120, 50], [-170, -60], [-70, -90]],
     pisos: [[0, 0.3, 'terra'], [0.3, 0.45, 'lama'], [0.45, 0.75, 'terra'], [0.75, 0.88, 'lama'], [0.88, 1, 'terra']],
-    tema: { ceu: [['#5a6a70', 0], ['#8a9a9a', 0.6], ['#c8d0c8', 1]], nevoeiro: [0x9aa8a0, 40, 240], sol: [0xf0f4e8, 1.4, [80, 140, -60]], hemi: [0xd8e8d8, 0x3a4a2a, 1.3], fora: 'erva', arvores: 'pinheiro', densidade: 1.6 },
+    tema: { ceu: [['#5a6a70', 0], ['#8a9a9a', 0.6], ['#c8d0c8', 1]], nevoeiro: [0x9aa8a0, 40, 240], sol: [0xf0f4e8, 1.4, [80, 140, -60]], hemi: [0xd8e8d8, 0x3a4a2a, 1.3], fora: 'erva', arvores: 'pinheiro', densidade: 1.6, real: { elevacao: 32, azimute: 150, turbidez: 14, rayleigh: 3.2, mie: 0.02, intensidadeAmbiente: 0.7 }, erva: [0x3e6a2a, 0x5a8a3a] },
   },
   estrela: {
     id: 'estrela', nome: 'Serra da Estrela', desc: 'Neve compacta e pouca aderência, ao anoitecer.',
     largura: 12.5, relevo: 34, voltas: 3,
     pontos: [[0, 0], [190, 30], [270, 140], [190, 230], [70, 190], [10, 270], [-120, 260], [-210, 160], [-150, 60], [-230, -40], [-120, -100]],
     pisos: [[0, 1, 'neve']],
-    tema: { ceu: [['#141d3f', 0], ['#3a4a80', 0.5], ['#c98aa0', 0.85], ['#ffb08a', 1]], nevoeiro: [0xb8c0d8, 90, 520], sol: [0xffc8b0, 1.6, [150, 90, -120]], hemi: [0xdfe8ff, 0x6a7090, 1.3], fora: 'neve', arvores: 'abeto', densidade: 1.0, neve: true },
+    tema: { ceu: [['#141d3f', 0], ['#3a4a80', 0.5], ['#c98aa0', 0.85], ['#ffb08a', 1]], nevoeiro: [0xb8c0d8, 90, 520], sol: [0xffc8b0, 1.6, [150, 90, -120]], hemi: [0xdfe8ff, 0x6a7090, 1.3], fora: 'neve', arvores: 'abeto', densidade: 1.0, neve: true, real: { elevacao: 3, azimute: 300, turbidez: 3, rayleigh: 2.5, mie: 0.004 }, erva: null },
   },
   algarve: {
     id: 'algarve', nome: 'Algarve', desc: 'Asfalto rápido junto ao mar, com troços de areia.',
     largura: 14, relevo: 9, voltas: 3,
     pontos: [[0, 0], [210, 0], [330, 60], [340, 180], [230, 210], [150, 150], [40, 190], [-80, 250], [-210, 210], [-270, 90], [-190, -20], [-90, -60]],
     pisos: [[0, 0.4, 'asfalto'], [0.4, 0.55, 'areia'], [0.55, 0.85, 'asfalto'], [0.85, 0.93, 'areia'], [0.93, 1, 'asfalto']],
-    tema: { ceu: [['#1a3a8a', 0], ['#4a8ad8', 0.5], ['#ffc07a', 0.88], ['#ff7a1a', 1]], nevoeiro: [0xf0c8a0, 180, 800], sol: [0xffc890, 2.8, [200, 70, 150]], hemi: [0xcfe8ff, 0xc8a070, 1.2], fora: 'areia_fora', arvores: 'palmeira', densidade: 0.5, mar: true },
+    tema: { ceu: [['#1a3a8a', 0], ['#4a8ad8', 0.5], ['#ffc07a', 0.88], ['#ff7a1a', 1]], nevoeiro: [0xf0c8a0, 180, 800], sol: [0xffc890, 2.8, [200, 70, 150]], hemi: [0xcfe8ff, 0xc8a070, 1.2], fora: 'areia_fora', arvores: 'palmeira', densidade: 0.5, mar: true, real: { elevacao: 7, azimute: 250, turbidez: 5, rayleigh: 2, mie: 0.008 }, erva: [0x9a9a5a, 0xb8a868] },
   },
 };
 

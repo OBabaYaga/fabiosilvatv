@@ -1,6 +1,11 @@
 // Arena 4v4 — tudo o que se vê: mapa, céu, bonecos, armas e efeitos.
 import * as THREE from './three.module.min.js';
-import { CAIXAS, LIMITES, ALTURA, MAPA } from './mapa.js?v=2';
+import { CAIXAS, LIMITES, ALTURA, MAPA } from './mapa.js?v=3';
+import { RoundedBoxGeometry } from '../vendor/three/geometries/RoundedBoxGeometry.js';
+import { normalDe, ceuReal, ambienteInterior, ambienteDe } from '../comum/grafico.js?v=1';
+const NORM = {};
+const FORCA_NORMAL = { cont_laranja: 3, cont_azul: 3, muro: 1.6, armazem: 1.4, caixote: 2.5, betao: 1.2, chao: 1.5, calcada: 2, alcatifa: 1, terra: 1.6, pedra: 4, muro_pedra_alto: 4, telhado: 3, fardo: 2.5, tronco: 3, copa: 2, casa: 0.6, igreja: 0.6, predio_a: 1, predio_b: 1, predio_c: 1.2 };
+function normalCache(tipo, tex) { if (!NORM[tipo]) NORM[tipo] = normalDe(tex, FORCA_NORMAL[tipo] || 2); const n = NORM[tipo].clone(); n.needsUpdate = true; n.repeat.copy(tex.repeat); return n; }
 
 export const CORES = { L: 0xff7a1a, A: 0x3d8bff };
 
@@ -199,13 +204,16 @@ export function criarCena(renderer) {
   const tema = MAPA.tema;
   const cena = new THREE.Scene();
   cena.fog = new THREE.Fog(tema.nevoeiro[0], tema.nevoeiro[1], tema.nevoeiro[2]);
-  if (tema.interior) cena.background = new THREE.Color(tema.fundo);
-  else cena.add(ceu(tema));
-  renderer.toneMappingExposure = tema.exposicao || 1.25;
+  let solDir = null;
+  if (tema.interior) { cena.background = new THREE.Color(tema.fundo); ambienteInterior(renderer, cena, 0.45); }
+  else if (tema.real) { const r = ceuReal(renderer, cena, { ...tema.real, tamanho: 450 }); solDir = r.sol; }
+  else { const c = ceu(tema); cena.add(c); const fonte = new THREE.Scene(); fonte.add(ceu(tema)); ambienteDe(renderer, cena, fonte, 0.55); }
+  renderer.toneMappingExposure = tema.real ? (tema.exposicao ? 0.62 : 0.72) : tema.exposicao || 1.25;
 
-  cena.add(new THREE.HemisphereLight(tema.hemi[0], tema.hemi[1], tema.hemi[2]));
-  const sol = new THREE.DirectionalLight(tema.sol[0], tema.sol[1]);
+  cena.add(new THREE.HemisphereLight(tema.hemi[0], tema.hemi[1], tema.hemi[2] * (tema.real ? 0.45 : 0.75)));
+  const sol = new THREE.DirectionalLight(tema.sol[0], tema.sol[1] * (tema.real ? 0.8 : 1));
   sol.position.set(...tema.sol[2]);
+  if (solDir) { const d = solDir.clone(); if (d.y < 0.12) d.y = 0.12; d.normalize(); sol.position.copy(d.multiplyScalar(80)); }
   sol.castShadow = !tema.interior;
   sol.shadow.mapSize.set(2048, 2048);
   Object.assign(sol.shadow.camera, { left: -LIMITES.x - 6, right: LIMITES.x + 6, top: LIMITES.z + 10, bottom: -LIMITES.z - 10, near: 5, far: 160 });
@@ -218,7 +226,7 @@ export function criarCena(renderer) {
   const tc = (TEX[tema.chao] || TEX.chao).clone(); tc.needsUpdate = true;
   const escChao = tema.chao === 'calcada' ? 2.5 : 4;
   tc.repeat.set(LIMITES.x / escChao, LIMITES.z / escChao);
-  const chao = new THREE.Mesh(new THREE.PlaneGeometry(LIMITES.x * 2 + 2, LIMITES.z * 2 + 2), new THREE.MeshStandardMaterial({ map: tc, roughness: 0.95 }));
+  const chao = new THREE.Mesh(new THREE.PlaneGeometry(LIMITES.x * 2 + 2, LIMITES.z * 2 + 2), new THREE.MeshStandardMaterial({ map: tc, normalMap: normalCache(tema.chao, tc), normalScale: new THREE.Vector2(0.9, 0.9), roughness: 0.92 }));
   chao.rotation.x = -Math.PI / 2;
   chao.receiveShadow = true;
   cena.add(chao);
@@ -250,7 +258,7 @@ export function criarCena(renderer) {
       const esc = tipo.startsWith('cont') ? [w / 6.5, 1] : unico.includes(tipo) ? [1, 1] : tipo.startsWith('predio') ? [w / 8, h / 8] : [w / 4, h / 4];
       tx.repeat.set(Math.max(0.5, esc[0]), Math.max(0.5, esc[1]));
       const brilho = tipo.startsWith('cont') || tipo === 'pilar_ouro' || tipo.startsWith('carro') || tipo === 'eletrico';
-      mats[k] = new THREE.MeshStandardMaterial({ map: tx, roughness: brilho ? 0.5 : 0.9, metalness: tipo === 'pilar_ouro' ? 0.7 : brilho ? 0.3 : 0, emissive: tipo.startsWith('slot') ? 0x401060 : 0x000000, emissiveIntensity: 0.6 });
+      mats[k] = new THREE.MeshStandardMaterial({ map: tx, normalMap: normalCache(tipo, tx), normalScale: new THREE.Vector2(0.9, 0.9), roughness: brilho ? 0.45 : 0.88, metalness: tipo === 'pilar_ouro' ? 0.7 : brilho ? 0.3 : 0, emissive: tipo.startsWith('slot') ? 0x401060 : 0x000000, emissiveIntensity: 0.6 });
     }
     return mats[k];
   };
@@ -262,6 +270,29 @@ export function criarCena(renderer) {
     m.castShadow = h < 9;
     m.receiveShadow = true;
     cena.add(m);
+  }
+
+  // sombra de contacto: escurece o chão junto à base de cada caixa
+  const texAO = tela(64, 64, (g, w, h) => {
+    const img = g.createImageData(w, h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const dx = Math.max(0, Math.abs(x - w / 2 + 0.5) - w * 0.3) / (w * 0.2), dy = Math.max(0, Math.abs(y - h / 2 + 0.5) - h * 0.3) / (h * 0.2);
+      const d = Math.min(1, Math.hypot(dx, dy)); const a = (1 - d) * (1 - d) * 0.55;
+      img.data.set([0, 0, 0, a * 255], (y * w + x) * 4);
+    }
+    g.putImageData(img, 0, 0);
+  });
+  texAO.wrapS = texAO.wrapT = THREE.ClampToEdgeWrapping; texAO.colorSpace = THREE.NoColorSpace;
+  const matAO = new THREE.MeshBasicMaterial({ map: texAO, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
+  for (const c of CAIXAS) {
+    if (c.min[1] > 0.01 || c.max[1] - c.min[1] < 0.7) continue;
+    const w = c.max[0] - c.min[0], d = c.max[2] - c.min[2];
+    if (w > LIMITES.x * 1.5 || d > LIMITES.z * 1.5) continue;
+    const ao = new THREE.Mesh(new THREE.PlaneGeometry(w / 0.6, d / 0.6), matAO);
+    ao.rotation.x = -Math.PI / 2; ao.position.set((c.min[0] + c.max[0]) / 2, 0.02, (c.min[2] + c.max[2]) / 2);
+    ao.scale.set(1 + 0.6 / w, 1 + 0.6 / d, 1);
+    ao.renderOrder = 1;
+    cena.add(ao);
   }
 
   // decoração fora da zona de jogo
@@ -321,26 +352,48 @@ export function criarCena(renderer) {
 // ── boneco de um jogador ─────────────────────────────────────────────
 export function criarBoneco(equipa, nome) {
   const cor = new THREE.Color(CORES[equipa]);
-  const pele = new THREE.MeshStandardMaterial({ color: 0xd8a27a, roughness: 0.8 });
-  const roupa = new THREE.MeshStandardMaterial({ color: cor, roughness: 0.7 });
-  const escuro = new THREE.MeshStandardMaterial({ color: 0x1c2333, roughness: 0.8 });
+  const pele = new THREE.MeshStandardMaterial({ color: 0xc98f6a, roughness: 0.75 });
+  const roupa = new THREE.MeshStandardMaterial({ color: cor.clone().multiplyScalar(0.85), roughness: 0.85 });
+  const calcas = new THREE.MeshStandardMaterial({ color: 0x2a3142, roughness: 0.9 });
+  const colete = new THREE.MeshStandardMaterial({ color: 0x23282f, roughness: 0.7 });
+  const botas = new THREE.MeshStandardMaterial({ color: 0x15171b, roughness: 0.6 });
+  const capacete = new THREE.MeshStandardMaterial({ color: cor, roughness: 0.45, metalness: 0.1 });
+  const metal = new THREE.MeshStandardMaterial({ color: 0x1a1d24, metalness: 0.7, roughness: 0.35 });
   const g = new THREE.Group();
   const corpo = new THREE.Group(); g.add(corpo);
-  const pernaE = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.8, 0.26), escuro); pernaE.position.set(-0.13, 0.4, 0);
-  const pernaD = pernaE.clone(); pernaD.position.x = 0.13;
-  const tronco = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.68, 0.32), roupa); tronco.position.y = 1.15;
-  const colete = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.4, 0.36), escuro); colete.position.y = 1.2;
-  const cabeca = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.32, 0.3), pele); cabeca.position.y = 1.66;
-  const gorro = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.12, 0.32), roupa); gorro.position.y = 1.8;
-  const bracoE = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.55), roupa); bracoE.position.set(-0.22, 1.3, -0.28);
-  const bracoD = bracoE.clone(); bracoD.position.x = 0.22;
-  const arma = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.8), new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.5, roughness: 0.4 }));
-  arma.position.set(0.12, 1.32, -0.6);
-  for (const m of [pernaE, pernaD, tronco, colete, cabeca, gorro, bracoE, bracoD, arma]) { m.castShadow = true; corpo.add(m); }
+  const add = (pai, geo, mat, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; pai.add(m); return m; };
+  // pernas: rodam a partir da anca
+  const perna = (x) => {
+    const piv = new THREE.Group(); piv.position.set(x, 0.86, 0); corpo.add(piv);
+    add(piv, new THREE.CapsuleGeometry(0.1, 0.34, 4, 8), calcas, 0, -0.22, 0);
+    add(piv, new THREE.CapsuleGeometry(0.085, 0.32, 4, 8), calcas, 0, -0.6, 0);
+    add(piv, new RoundedBoxGeometry(0.16, 0.12, 0.28, 2, 0.04), botas, 0, -0.81, -0.04);
+    return piv;
+  };
+  const pernaE = perna(-0.12), pernaD = perna(0.12);
+  // tronco, colete e cinto
+  add(corpo, new RoundedBoxGeometry(0.44, 0.6, 0.26, 3, 0.09), roupa, 0, 1.17, 0);
+  add(corpo, new RoundedBoxGeometry(0.48, 0.42, 0.32, 3, 0.07), colete, 0, 1.22, 0);
+  for (const x of [-0.12, 0, 0.12]) add(corpo, new RoundedBoxGeometry(0.1, 0.12, 0.06, 2, 0.02), colete, x, 1.1, -0.18);
+  add(corpo, new THREE.BoxGeometry(0.46, 0.06, 0.28), botas, 0, 0.9, 0);
+  // cabeça com capacete e óculos
+  add(corpo, new THREE.CylinderGeometry(0.06, 0.07, 0.1, 8), pele, 0, 1.52, 0);
+  const cabeca = add(corpo, new THREE.SphereGeometry(0.13, 16, 12), pele, 0, 1.65, 0);
+  const cap = add(corpo, new THREE.SphereGeometry(0.155, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.55), capacete, 0, 1.68, 0.01);
+  add(corpo, new THREE.TorusGeometry(0.155, 0.012, 6, 20).rotateX(Math.PI / 2), capacete, 0, 1.66, 0.01);
+  add(corpo, new RoundedBoxGeometry(0.2, 0.05, 0.04, 2, 0.015), new THREE.MeshStandardMaterial({ color: 0x0b0d12, metalness: 0.8, roughness: 0.1 }), 0, 1.67, -0.12);
+  // braços a segurar a arma
+  const braco = (x, z, rx) => { const piv = new THREE.Group(); piv.position.set(x, 1.38, 0); piv.rotation.set(rx, 0, 0); corpo.add(piv); add(piv, new THREE.CapsuleGeometry(0.065, 0.42, 4, 8), roupa, 0, 0, -0.25).rotation.x = Math.PI / 2; add(piv, new THREE.SphereGeometry(0.06, 10, 8), pele, 0, 0, z); return piv; };
+  braco(-0.25, -0.5, -0.12); braco(0.25, -0.32, 0.1);
+  // arma
+  const arma = new THREE.Group(); arma.position.set(0.06, 1.3, -0.45); corpo.add(arma);
+  add(arma, new RoundedBoxGeometry(0.07, 0.11, 0.7, 2, 0.02), metal, 0, 0, 0);
+  add(arma, new THREE.CylinderGeometry(0.018, 0.018, 0.3, 8).rotateX(Math.PI / 2), metal, 0, 0.02, -0.48);
+  add(arma, new THREE.BoxGeometry(0.05, 0.16, 0.07), metal, 0, -0.12, -0.05);
+  add(arma, new THREE.BoxGeometry(0.06, 0.03, 0.26), new THREE.MeshStandardMaterial({ color: 0xff7a1a, roughness: 0.5 }), 0, 0.07, -0.1);
   g.userData = { corpo, pernaE, pernaD, cabeca, arma, nome, equipa };
-  // nome por cima
   const etiqueta = criarEtiqueta(nome, equipa);
-  etiqueta.position.y = 2.25;
+  etiqueta.position.y = 2.2;
   g.add(etiqueta);
   g.userData.etiqueta = etiqueta;
   return g;
@@ -379,32 +432,32 @@ export function poseBoneco(b, p, yaw, agachado, vivo, tAnim, aMexer) {
 // ── arma na primeira pessoa ──────────────────────────────────────────
 export function criarArmaFP() {
   const grupo = new THREE.Group();
-  const metal = new THREE.MeshStandardMaterial({ color: 0x3b4356, metalness: 0.45, roughness: 0.4 });
+  const metal = new THREE.MeshPhysicalMaterial({ color: 0x2c313d, metalness: 0.85, roughness: 0.3, clearcoat: 0.4, clearcoatRoughness: 0.3 });
   const detalhe = new THREE.MeshStandardMaterial({ color: 0xff7a1a, metalness: 0.3, roughness: 0.5 });
-  const luva = new THREE.MeshStandardMaterial({ color: 0x2a2f3a, roughness: 0.9 });
+  const luva = new THREE.MeshStandardMaterial({ color: 0x3a3426, roughness: 0.95 });
   const fazer = (geo, m, x, y, z) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); return o; };
 
   const rifle = new THREE.Group();
-  rifle.add(fazer(new THREE.BoxGeometry(0.07, 0.1, 0.62), metal, 0, 0, -0.25));
-  rifle.add(fazer(new THREE.BoxGeometry(0.035, 0.035, 0.32), metal, 0, 0.02, -0.7));
-  rifle.add(fazer(new THREE.BoxGeometry(0.05, 0.16, 0.08), metal, 0, -0.12, -0.28));
-  rifle.add(fazer(new THREE.BoxGeometry(0.06, 0.12, 0.06), metal, 0, -0.09, -0.05));
-  rifle.add(fazer(new THREE.BoxGeometry(0.06, 0.08, 0.2), metal, 0, -0.02, 0.12));
-  rifle.add(fazer(new THREE.BoxGeometry(0.075, 0.02, 0.3), detalhe, 0, 0.06, -0.3));
-  rifle.add(fazer(new THREE.BoxGeometry(0.09, 0.09, 0.12), luva, 0.0, -0.08, -0.45));
-  rifle.add(fazer(new THREE.BoxGeometry(0.09, 0.1, 0.1), luva, 0.0, -0.11, -0.04));
+  rifle.add(fazer(new RoundedBoxGeometry(0.07, 0.1, 0.62, 2, 0.021), metal, 0, 0, -0.25));
+  rifle.add(fazer(new RoundedBoxGeometry(0.035, 0.035, 0.32, 2, 0.011), metal, 0, 0.02, -0.7));
+  rifle.add(fazer(new RoundedBoxGeometry(0.05, 0.16, 0.08, 2, 0.015), metal, 0, -0.12, -0.28));
+  rifle.add(fazer(new RoundedBoxGeometry(0.06, 0.12, 0.06, 2, 0.018), metal, 0, -0.09, -0.05));
+  rifle.add(fazer(new RoundedBoxGeometry(0.06, 0.08, 0.2, 2, 0.018), metal, 0, -0.02, 0.12));
+  rifle.add(fazer(new RoundedBoxGeometry(0.075, 0.02, 0.3, 2, 0.006), detalhe, 0, 0.06, -0.3));
+  rifle.add(fazer(new RoundedBoxGeometry(0.09, 0.09, 0.12, 2, 0.027), luva, 0.0, -0.08, -0.45));
+  rifle.add(fazer(new RoundedBoxGeometry(0.09, 0.1, 0.1, 2, 0.027), luva, 0.0, -0.11, -0.04));
   rifle.userData.boca = new THREE.Vector3(0, 0.02, -0.88);
 
   const pistola = new THREE.Group();
-  pistola.add(fazer(new THREE.BoxGeometry(0.05, 0.07, 0.24), metal, 0, 0, -0.12));
-  pistola.add(fazer(new THREE.BoxGeometry(0.045, 0.13, 0.06), metal, 0, -0.08, -0.02));
-  pistola.add(fazer(new THREE.BoxGeometry(0.052, 0.015, 0.2), detalhe, 0, 0.04, -0.12));
-  pistola.add(fazer(new THREE.BoxGeometry(0.09, 0.1, 0.1), luva, 0, -0.1, 0.0));
+  pistola.add(fazer(new RoundedBoxGeometry(0.05, 0.07, 0.24, 2, 0.015), metal, 0, 0, -0.12));
+  pistola.add(fazer(new RoundedBoxGeometry(0.045, 0.13, 0.06, 2, 0.013), metal, 0, -0.08, -0.02));
+  pistola.add(fazer(new RoundedBoxGeometry(0.052, 0.015, 0.2, 2, 0.004), detalhe, 0, 0.04, -0.12));
+  pistola.add(fazer(new RoundedBoxGeometry(0.09, 0.1, 0.1, 2, 0.027), luva, 0, -0.1, 0.0));
   pistola.userData.boca = new THREE.Vector3(0, 0.01, -0.26);
 
   const faca = new THREE.Group();
-  faca.add(fazer(new THREE.BoxGeometry(0.02, 0.05, 0.22), new THREE.MeshStandardMaterial({ color: 0xc8ccd6, metalness: 0.9, roughness: 0.2 }), 0, 0, -0.15));
-  faca.add(fazer(new THREE.BoxGeometry(0.035, 0.04, 0.1), luva, 0, 0, 0.0));
+  faca.add(fazer(new RoundedBoxGeometry(0.02, 0.05, 0.22, 2, 0.006), new THREE.MeshStandardMaterial({ color: 0xc8ccd6, metalness: 0.9, roughness: 0.2 }), 0, 0, -0.15));
+  faca.add(fazer(new RoundedBoxGeometry(0.035, 0.04, 0.1, 2, 0.011), luva, 0, 0, 0.0));
   faca.userData.boca = new THREE.Vector3(0, 0, -0.25);
 
   grupo.add(rifle, pistola, faca);

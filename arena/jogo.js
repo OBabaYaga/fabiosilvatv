@@ -5,8 +5,9 @@
 // posição e os seus tiros, e recebem dele o estado do jogo 20x por
 // segundo. No modo Treino o anfitrião és tu e só há bots.
 import * as THREE from './three.module.min.js';
-import { CAIXAS, SPAWNS, OLHAR_INICIAL, raioMapa, raioJogador, visivel, mover, cabeDePe, ALTURA, OLHOS, LIMITES, MAPA, MAPAS, usarMapa } from './mapa.js?v=2';
-import { criarCena, criarBoneco, poseBoneco, criarArmaFP, Efeitos, normalCaixa, CORES } from './cenario.js?v=2';
+import { CAIXAS, SPAWNS, OLHAR_INICIAL, raioMapa, raioJogador, visivel, mover, cabeDePe, ALTURA, OLHOS, LIMITES, MAPA, MAPAS, usarMapa } from './mapa.js?v=3';
+import { criarCena, criarBoneco, poseBoneco, criarArmaFP, Efeitos, normalCaixa, CORES } from './cenario.js?v=3';
+import { qualidade, definirQualidade, NOMES_QUALIDADE, criarComposer } from '../comum/grafico.js?v=1';
 
 export const ARMAS = {
   rifle:   { nome: 'Rifle',   tecla: '1', pente: 30, reserva: 90, cadencia: 0.1,  auto: true,  dano: { cabeca: 115, corpo: 33, pernas: 25 }, recarga: 2.3, base: 0.0025, mover: 0.045, ar: 0.12, agachado: 0.6, acum: 0.006, maxAcum: 0.05, recuo: 0.011, alcance: 250 },
@@ -214,7 +215,9 @@ export class Jogo {
 
   montar3D() {
     const renderer = new THREE.WebGLRenderer({ canvas: this.el.canvas, antialias: true, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    this.q = qualidade();
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.q === 'baixa' ? 1 : this.q === 'media' ? 1.25 : 1.5));
+    renderer.shadowMap.enabled = this.q !== 'baixa';
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -228,6 +231,7 @@ export class Jogo {
     this.cenaFP.add(new THREE.HemisphereLight(0xffd0a0, 0x304070, 2.4));
     const dl = new THREE.DirectionalLight(0xffffff, 1.2); dl.position.set(1, 2, 1); this.cenaFP.add(dl);
     this.camFP = new THREE.PerspectiveCamera(65, 1, 0.01, 10);
+    this.cenaFP.environment = this.cena.environment; this.cenaFP.environmentIntensity = 0.7;
     this.armaFP = criarArmaFP();
     this.armaFP.scale.setScalar(0.62);
     this.cenaFP.add(this.armaFP);
@@ -238,7 +242,13 @@ export class Jogo {
       renderer.setSize(w, h, false);
       this.camera.aspect = this.camFP.aspect = w / h;
       this.camera.updateProjectionMatrix(); this.camFP.updateProjectionMatrix();
+      if (this.comp) this.comp.setSize(w, h);
     };
+    renderer.setSize(this.raiz.clientWidth || innerWidth, this.raiz.clientHeight || innerHeight, false);
+    if (this.q === 'alta') {
+      this.comp = criarComposer(renderer, [[this.cena, this.camera], [this.cenaFP, this.camFP]], { forca: 0.4, raio: 0.4, limiar: 0.88 });
+      this.passoArma = this.comp.comp.passes[1];
+    }
     window.addEventListener('resize', this.redimensionar);
     this.redimensionar();
     this.mostrarArma('rifle');
@@ -251,6 +261,8 @@ export class Jogo {
     this.cena.traverse((o) => { if (o.geometry) o.geometry.dispose(); });
     this.bonecos.clear();
     this.cena = criarCena(this.renderer);
+    this.cenaFP.environment = this.cena.environment;
+    if (this.comp) this.comp.comp.passes[0].scene = this.cena;
     this.efeitos = new Efeitos(this.cena);
   }
   hostMudarMapa(id) {
@@ -877,11 +889,12 @@ export class Jogo {
     this.atualizarCamera(dt, t);
     this.efeitos.atualizar(dt);
     this.atualizarHud(t);
-    this.renderer.clear();
-    this.renderer.render(this.cena, this.camera);
-    if (this.eu_().vivo || this.fase === 'lobby') {
-      this.renderer.clearDepth();
-      this.renderer.render(this.cenaFP, this.camFP);
+    const comArma = this.eu_().vivo || this.fase === 'lobby';
+    if (this.comp) { this.passoArma.enabled = comArma; this.comp.render(); }
+    else {
+      this.renderer.clear();
+      this.renderer.render(this.cena, this.camera);
+      if (comArma) { this.renderer.clearDepth(); this.renderer.render(this.cenaFP, this.camFP); }
     }
   }
 
@@ -1108,9 +1121,11 @@ export class Jogo {
       '<details class="ar-opcoes"><summary>Controlos e opções</summary>' +
       '<p class="ar-teclas"><b>WASD</b> mover · <b>Rato</b> apontar · <b>Clique</b> disparar · <b>Espaço</b> saltar · <b>Ctrl/C</b> agachar · <b>Shift</b> andar devagar · <b>R</b> recarregar · <b>1 2 3 / Q / roda</b> armas · <b>Tab</b> tabela · <b>Esc</b> pausa</p>' +
       '<label>Sensibilidade do rato <input type="range" min="0.2" max="3" step="0.05" value="' + this.sens + '" data-op="sens"> <output>' + this.sens.toFixed(2) + '</output></label>' +
-      '<label>Volume <input type="range" min="0" max="1" step="0.05" value="' + this.som.vol + '" data-op="vol"></label></details></div>';
+      '<label>Volume <input type="range" min="0" max="1" step="0.05" value="' + this.som.vol + '" data-op="vol"></label>' +
+      '<label>Gráficos <select data-op="graf">' + Object.entries(NOMES_QUALIDADE).map(([k, n]) => '<option value="' + k + '"' + (k === this.q ? ' selected' : '') + '>' + n + '</option>').join('') + '</select> <small>(na próxima vez que entrares)</small></label></details></div>';
     p.querySelectorAll('[data-ac]').forEach((b) => b.addEventListener('click', () => this.acao(b.dataset.ac, b.dataset.eq)));
     p.querySelectorAll('[data-op]').forEach((i) => i.addEventListener('input', () => {
+      if (i.dataset.op === 'graf') { definirQualidade(i.value); return; }
       if (i.dataset.op === 'sens') { this.sens = parseFloat(i.value); localStorage.setItem('arena_sens', i.value); i.nextElementSibling.textContent = this.sens.toFixed(2); }
       else { this.som.vol = parseFloat(i.value); localStorage.setItem('arena_vol', i.value); }
     }));

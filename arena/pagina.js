@@ -14,7 +14,7 @@ const user = () => (TA() && TA().getUser && TA().getUser()) || null;
 let a_jogar = false;
 let modJogo = null;
 async function carregarJogo() {
-  if (!modJogo) modJogo = await import('./jogo.js?v=2');
+  if (!modJogo) modJogo = await import('./jogo.js?v=3');
   return modJogo;
 }
 

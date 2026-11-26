@@ -23,7 +23,7 @@ export const MAPAS = {};
 MAPAS.docas = {
   id: 'docas', nome: 'Docas', desc: 'Porto ao pôr do sol, contentores e três corredores.',
   limites: { x: 36, z: 23 },
-  tema: { ceu: [['#141d3f', 0], ['#2a3770', 0.4], ['#7a3b4a', 0.72], ['#ff7a1a', 0.86], ['#ffd34d', 1]], nevoeiro: [0x2a2440, 45, 140], hemi: [0xffd2aa, 0x2a3770, 1.4], sol: [0xffb070, 2.2, [-40, 35, 18]], ambiente: [0x404a70, 0.35], chao: 'chao', agua: true, deco: 'gruas', luzes: [[-22, 0], [22, 0], [0, 10.5], [0, -10.5]], corLuz: 0xffc070 },
+  tema: { ceu: [['#141d3f', 0], ['#2a3770', 0.4], ['#7a3b4a', 0.72], ['#ff7a1a', 0.86], ['#ffd34d', 1]], nevoeiro: [0x2a2440, 45, 140], hemi: [0xffd2aa, 0x2a3770, 1.4], sol: [0xffb070, 2.2, [-40, 35, 18]], ambiente: [0x404a70, 0.35], chao: 'chao', agua: true, deco: 'gruas', real: { elevacao: 5, azimute: 290, turbidez: 8, rayleigh: 2.6, mie: 0.01, intensidadeAmbiente: 0.6 }, luzes: [[-22, 0], [22, 0], [0, 10.5], [0, -10.5]], corLuz: 0xffc070 },
 };
 MAPAS.docas.caixas = construir(MAPAS.docas.limites, 'muro', 7, (caixa) => {
   for (const lado of [-1, 1]) {
@@ -146,7 +146,7 @@ MAPAS.casino.spawns = { L: [[-23, 2], [-23, -2], [-21, 4.5], [-21, -4.5], [-24.5
 MAPAS.aldeia = {
   id: 'aldeia', nome: 'Aldeia', desc: 'Aldeia ao sol: praça, igreja, muros de pedra e olival.',
   limites: { x: 34, z: 22 },
-  tema: { ceu: [['#2f7fd6', 0], ['#6fb2ee', 0.6], ['#cfe8ff', 0.9], ['#f4efe0', 1]], nevoeiro: [0xcfe2f2, 60, 180], hemi: [0xdfeeff, 0x9a8460, 1.5], sol: [0xfff1d6, 3.0, [30, 60, 25]], ambiente: [0xb0b8c8, 0.3], chao: 'terra', deco: 'montes', exposicao: 1.0 },
+  tema: { ceu: [['#2f7fd6', 0], ['#6fb2ee', 0.6], ['#cfe8ff', 0.9], ['#f4efe0', 1]], nevoeiro: [0xa9c2dc, 140, 360], hemi: [0xdfeeff, 0x9a8460, 0.9], sol: [0xfff1d6, 2.4, [30, 60, 25]], ambiente: [0xb0b8c8, 0.15], chao: 'terra', deco: 'montes', exposicao: 1.0, real: { elevacao: 58, azimute: 140, turbidez: 3, rayleigh: 1.2, mie: 0.004, intensidadeAmbiente: 0.45 } },
 };
 MAPAS.aldeia.caixas = construir(MAPAS.aldeia.limites, 'muro_pedra_alto', 3.2, (caixa) => {
   const casa = (cx, cz, w, d, h) => { caixa(cx, cz, w, d, h, 'casa'); caixa(cx, cz, w + 0.4, d + 0.4, 0.5, 'telhado', h); };

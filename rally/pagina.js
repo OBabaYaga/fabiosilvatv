@@ -1,5 +1,5 @@
 // Rally — página: escolher pista e modo, correr, ranking das melhores voltas.
-import { PISTAS, construirPista } from './pistas.js?v=1';
+import { PISTAS, construirPista } from './pistas.js?v=2';
 
 const BASE = window.FSTV_API || 'https://fabiosilvatv-api.vercel.app';
 const TOKEN_KEY = 'obaba_twitch_token';
@@ -75,7 +75,7 @@ async function correr() {
   aJogar = true;
   const btn = $('rlCorrer'); btn.disabled = true; btn.textContent = 'A carregar…';
   try {
-    const { Rally } = await import('./jogo.js?v=1');
+    const { Rally } = await import('./jogo.js?v=2');
     const raiz = $('rallyJogo');
     raiz.hidden = false; document.documentElement.classList.add('rl-a-jogar');
     const u = user();
